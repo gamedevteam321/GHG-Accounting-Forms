@@ -1,0 +1,63 @@
+*{ box-sizing:border-box; }
+body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Ubuntu,system-ui; background:#f8f9fa; color:#2c3e50; }
+
+/* Header */
+.page-header{ padding:24px; border-bottom:1px solid #e9ecef; }
+.page-header h1{ margin:0 0 4px; font-size:22px; font-weight:600; }
+.subtitle{ margin:0; color:#6c757d; font-size:13px; }
+
+/* Layout */
+main{ padding:24px; display:grid; gap:16px; grid-template-columns:1fr; max-width:1200px; margin:0 auto; }
+
+/* Card */
+.card{ background:#ffffff; border-radius:16px; border:1px solid #e9ecef; box-shadow:0 4px 12px rgba(0,0,0,0.08); padding:16px; }
+.card h2{ margin:0 0 12px; font-size:16px; font-weight:600; }
+
+/* Controls */
+input, select, textarea{ background:#ffffff; color:#2c3e50; border:2px solid #e9ecef; padding:12px 14px; border-radius:8px; outline:none; font-size:14px; }
+input:focus, select:focus, textarea:focus{ border-color:#007bff; box-shadow:0 0 0 3px rgba(0,123,255,0.1); }
+.row{ display:flex; gap:12px; flex-wrap:wrap; }
+
+/* Buttons */
+button{ background:#007bff; color:#fff; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-size:14px; font-weight:500; transition:all .2s ease; }
+button:hover{ background:#0056b3; transform:translateY(-1px); }
+button:disabled{ opacity:.6; cursor:not-allowed; transform:none; }
+
+/* Table */
+.table{ width:100%; border-collapse:separate; border-spacing:0; }
+.table th, .table td{ padding:12px 10px; border-bottom:1px solid #e9ecef; font-size:14px; vertical-align:middle; }
+.table th{ background:#f8f9fa; font-weight:600; color:#495057; border-bottom:2px solid #dee2e6; }
+.table tr:hover{ background:#f8f9fa; }
+
+/* Utility */
+.results-pre{ background:#ffffff; color:#2c3e50; border:1px solid #e9ecef; padding:12px; border-radius:10px; overflow:auto; }
+
+/* Tabs */
+/* Mobile Combustion-like tabs */
+.tab-section{ background:#fff; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.08); overflow:hidden; margin-bottom:30px; }
+.tab-header{ display:flex; justify-content:space-between; align-items:center; padding:24px 32px; border-bottom:1px solid #e9ecef; }
+.tab-header h2{ font-size:24px; font-weight:600; color:#2c3e50; margin:0; }
+.tab-nav{ display:flex; border-bottom:2px solid #e9ecef; background:#f8f9fa; }
+.tab-button{ flex:1; padding:16px 24px; background:none; border:none; font-size:16px; font-weight:500; color:#6c757d; cursor:pointer; transition:all .3s ease; border-bottom:3px solid transparent; }
+.tab-button.active{ color:#28a745; background:#fff; border-bottom-color:#28a745; }
+.tab-button:hover{ background:#e9ecef; }
+.tab-content{ display:none; padding:0; }
+.tab-content.active{ display:block; }
+.table-actions{ display:flex; justify-content:flex-start; gap:16px; padding:20px 32px; background:#f8f9fa; border-bottom:1px solid #e9ecef; }
+.table-container{ overflow-x:auto; padding:20px 32px; }
+.emissions-table{ width:100%; border-collapse:separate; border-spacing:0; min-width:1400px; }
+.emissions-table th,.emissions-table td{ padding:16px 12px; text-align:left; border-bottom:1px solid #e9ecef; vertical-align:middle; font-size:14px; }
+.emissions-table th{ background:#f8f9fa; font-weight:600; color:#495057; font-size:15px; padding:20px 12px; border-bottom:2px solid #dee2e6; }
+.emissions-table tbody tr.data-entry-row{ background:#e8f5e8; border-left:4px solid #28a745; }
+.entry-row input, .entry-row select{ background:#fff; }
+
+/* Action button in last column */
+.btn-add{ background:#28a745; color:#fff; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-size:13px; display:inline-flex; align-items:center; gap:6px; }
+.btn-add:hover{ background:#218838; transform:translateY(-1px); }
+
+/* Highlighted entry row */
+.entry-row{ background:#e9f5e9; }
+.entry-row input{ background:#ffffff; }
+
+/* Formula box */
+.formula-box{ background:#e9f2ff; border:1px solid #cfe2ff; color:#0d47a1; padding:16px; border-radius:8px; margin-top:16px; }

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>End-of-Life Treatment of Sold Products</title>
+  <link rel="stylesheet" href="./main.css" />
+</head>
+<body>
+  <header class="page-header">
+    <h1>End-of-Life Treatment of Sold Products</h1>
+    <!-- <p class="subtitle">Scope 3 – Downstream calculator</p> -->
+  </header>
+  <main>
+    <section class="card tab-section">
+     
+      <div class="tab-nav">
+        <button type="button" class="tab-button active" data-tab="tab-supplier">Method 1: Supplier-Specific</button>
+        <button type="button" class="tab-button" data-tab="tab-waste-type">Method 2: Waste-Type-Specific</button>
+        <button type="button" class="tab-button" data-tab="tab-average">Method 3: Average-Data</button>
+      </div>
+
+      <div class="tab-content active" id="tab-supplier">
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>S No</th>
+                <th>Date</th>
+                <th>Product & Packaging</th>
+                <th>Waste Handler</th>
+                <th>Total Mass Sold</th>
+                <th>Unit (tonne)</th>
+                <th>Handler-Specific EF</th>
+                <th>EF Unit (kg CO2e/tonne)</th>
+                <th>Calculated Emissions (CO2e)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="eol-tbody-supplier">
+              <tr class="data-entry-row entry-row">
+                <td><input type="number" name="s_no" value="1" readonly /></td>
+                <td><input type="date" name="date" /></td>
+                <td><input type="text" name="product" placeholder="e.g., Product X" /></td>
+                <td><input type="text" name="handler" placeholder="Waste Co. A" /></td>
+                <td><input type="number" name="mass" step="any" placeholder="Numeric" /></td>
+                <td><input type="text" name="unit" value="tonne" /></td>
+                <td><input type="number" name="ef" step="any" placeholder="(Direct)" /></td>
+                <td><input type="text" name="ef_unit" value="kg CO2e/tonne" /></td>
+                <td><input type="number" name="co2e" step="any" placeholder="Auto" readonly /></td>
+                <td class="actions"><button type="button" class="btn-add add-btn-row">+ Add</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tab-waste-type">
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>S No</th>
+                <th>Date</th>
+                <th>Product & Packaging</th>
+                <th>Material Type</th>
+                <th>Total Mass Sold</th>
+                <th>Treatment Method</th>
+                <th>% Sent to Treatment</th>
+                <th>Waste Treatment EF</th>
+                <th>EF Unit (kg CO2e/tonne)</th>
+                <th>Calculated Emissions (CO2e)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="eol-tbody-waste-type">
+              <tr class="data-entry-row entry-row">
+                <td><input type="number" name="s_no" value="1" readonly /></td>
+                <td><input type="date" name="date" /></td>
+                <td><input type="text" name="product" placeholder="e.g., Product X" /></td>
+                <td><input type="text" name="material" placeholder="Plastic / Metal" /></td>
+                <td><input type="number" name="mass" step="any" placeholder="Numeric" /></td>
+                <td><input type="text" name="method" placeholder="Landfill / Recycling" /></td>
+                <td><input type="number" name="pct" step="any" placeholder="%" /></td>
+                <td><input type="number" name="ef" step="any" placeholder="EF" /></td>
+                <td><input type="text" name="ef_unit" value="kg CO2e/tonne" /></td>
+                <td><input type="number" name="co2e" step="any" placeholder="Auto" readonly /></td>
+                <td class="actions"><button type="button" class="btn-add add-btn-row">+ Add</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tab-average">
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>S No</th>
+                <th>Date</th>
+                <th>Product & Packaging</th>
+                <th>Total Mass Sold</th>
+                <th>Unit (tonne)</th>
+                <th>Treatment Method</th>
+                <th>% Sent to Treatment</th>
+                <th>Average Waste Treatment EF</th>
+                <th>EF Unit (kg CO2e/tonne)</th>
+                <th>Calculated Emissions (CO2e)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="eol-tbody-average">
+              <tr class="data-entry-row entry-row">
+                <td><input type="number" name="s_no" value="1" readonly /></td>
+                <td><input type="date" name="date" /></td>
+                <td><input type="text" name="product" placeholder="e.g., Mixed Products" /></td>
+                <td><input type="number" name="mass" step="any" placeholder="Numeric" /></td>
+                <td><input type="text" name="unit" value="tonne" /></td>
+                <td><input type="text" name="method" placeholder="Landfill / Incineration" /></td>
+                <td><input type="number" name="pct" step="any" placeholder="%" /></td>
+                <td><input type="number" name="ef" step="any" placeholder="Avg EF" /></td>
+                <td><input type="text" name="ef_unit" value="kg CO2e/tonne" /></td>
+                <td><input type="number" name="co2e" step="any" placeholder="Auto" readonly /></td>
+                <td class="actions"><button type="button" class="btn-add add-btn-row">+ Add</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./main.js"></script>
+</body>
+</html>
