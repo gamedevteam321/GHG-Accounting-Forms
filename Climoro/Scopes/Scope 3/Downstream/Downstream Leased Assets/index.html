@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Downstream Leased Assets</title>
+  <link rel="stylesheet" href="./main.css" />
+  </head>
+<body>
+  <header class="page-header">
+    <h1>Downstream Leased Assets</h1>
+    <!-- <p class="subtitle">Scope 3 – Downstream calculator</p> -->
+  </header>
+  <main>
+    <section class="card tab-section">
+        <!-- <div class="tab-header">
+          <h2>Category 13: Downstream Leased Assets</h2>
+        </div> -->
+
+      <div class="tab-nav">
+        <button type="button" class="tab-button active" data-tab="dla-asset">Method 1: Asset-Specific</button>
+        <button type="button" class="tab-button" data-tab="dla-lessee">Method 2: Lessee-Specific</button>
+        <button type="button" class="tab-button" data-tab="dla-average">Method 3: Average-Data</button>
+      </div>
+
+      <div class="tab-content active" id="dla-asset">
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>S No</th>
+                <th>Date</th>
+                <th>Leased Asset ID</th>
+                <th>Emission Source</th>
+                <th>Activity Data</th>
+                <th>Unit</th>
+                <th>Emission Factor</th>
+                <th>EF Unit</th>
+                <th>Calculated Emissions (CO2e)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="dla-tb-asset">
+              <tr class="data-entry-row entry-row">
+                <td><input type="number" name="s_no" value="1" readonly /></td>
+                <td><input type="date" name="date" /></td>
+                <td><input type="text" name="asset_id" placeholder="e.g., Leased Building A" /></td>
+                <td><input type="text" name="source" placeholder="Electricity / Gas" /></td>
+                <td><input type="number" name="activity" step="any" placeholder="Numeric" /></td>
+                <td><input type="text" name="unit" placeholder="kWh / m3 / litres" /></td>
+                <td><input type="number" name="ef" step="any" placeholder="EF" /></td>
+                <td><input type="text" name="ef_unit" placeholder="kg CO2e/kWh" /></td>
+                <td><input type="number" name="co2e" step="any" placeholder="Auto" readonly /></td>
+                <td class="actions"><button type="button" class="btn-add add-btn">+ Add</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-content" id="dla-lessee">
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>S No</th>
+                <th>Date</th>
+                <th>Leased Asset ID</th>
+                <th>Lessee-Reported Emissions</th>
+                <th>Unit (kg CO2e)</th>
+                <th>Your Ownership Share (%)</th>
+                <th>Calculated Emissions (CO2e)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="dla-tb-lessee">
+              <tr class="data-entry-row entry-row">
+                <td><input type="number" name="s_no" value="1" readonly /></td>
+                <td><input type="date" name="date" /></td>
+                <td><input type="text" name="asset_id" placeholder="e.g., Leased Property C" /></td>
+                <td><input type="number" name="lessee_emission" step="any" placeholder="Numeric" /></td>
+                <td><input type="text" name="unit" value="kg CO2e" /></td>
+                <td><input type="number" name="share" step="any" placeholder="%" /></td>
+                <td><input type="number" name="co2e" step="any" placeholder="Auto" readonly /></td>
+                <td class="actions"><button type="button" class="btn-add add-btn">+ Add</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-content" id="dla-average">
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>S No</th>
+                <th>Date</th>
+                <th>Asset Type</th>
+                <th>Description (e.g., Location, Model)</th>
+                <th>Activity Data</th>
+                <th>Unit (e.g., m², # of assets)</th>
+                <th>Average Emission Factor</th>
+                <th>EF Unit (e.g., kg CO2e/m²/year)</th>
+                <th>Calculated Emissions (CO2e)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="dla-tb-average">
+              <tr class="data-entry-row entry-row">
+                <td><input type="number" name="s_no" value="1" readonly /></td>
+                <td><input type="date" name="date" /></td>
+                <td><input type="text" name="asset_type" placeholder="e.g., Building / Vehicle" /></td>
+                <td><input type="text" name="desc" placeholder="Commercial Space / Fleet" /></td>
+                <td><input type="number" name="activity" step="any" placeholder="Numeric" /></td>
+                <td><input type="text" name="unit" placeholder="m² / # of cars" /></td>
+                <td><input type="number" name="avg_ef" step="any" placeholder="Avg EF" /></td>
+                <td><input type="text" name="ef_unit" placeholder="kg CO2e/m²/year" /></td>
+                <td><input type="number" name="co2e" step="any" placeholder="Auto" readonly /></td>
+                <td class="actions"><button type="button" class="btn-add add-btn">+ Add</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./main.js"></script>
+</body>
+</html>
