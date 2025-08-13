@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Transportation and Distribution - Transportation</title>
+  <link rel="stylesheet" href="./main.css" />
+</head>
+<body>
+  <header class="page-header">
+    <h1>Transportation (Downstream Transportation and Distribution)</h1>
+  </header>
+  <main>
+    <section class="card tab-section">
+      <div class="tab-nav">
+        <button type="button" class="tab-button active" data-tab="tab-fuel">Fuel-Based</button>
+        <button type="button" class="tab-button" data-tab="tab-distance">Distance-Based</button>
+        <button type="button" class="tab-button" data-tab="tab-spend">Spend-Based</button>
+      </div>
+
+      <div class="tab-content active" id="tab-fuel">
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>S No</th>
+                <th>Date</th>
+                <th>Description (e.g., Product Shipment)</th>
+                <th>Fuel Consumed</th>
+                <th>Unit</th>
+                <th>Emission Factor</th>
+                <th>EF Unit</th>
+                <th>Calculated Emissions (CO2e)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="trans-tb-fuel">
+              <tr class="data-entry-row entry-row">
+                <td><input type="number" name="s_no" value="1" readonly /></td>
+                <td><input type="date" name="date" /></td>
+                <td><input type="text" name="desc" placeholder="e.g., Customer Pickup Truck" /></td>
+                <td><input type="number" name="fuel_litres" step="any" /></td>
+                <td><input type="text" name="unit" value="litres" /></td>
+                <td><input type="number" name="ef" step="any" placeholder="Fuel Life Cycle EF" /></td>
+                <td><input type="text" name="ef_unit" value="kg CO2e/litre" /></td>
+                <td><input type="number" name="co2e" step="any" placeholder="Auto" readonly /></td>
+                <td class="actions"><button type="button" class="btn-add add-btn">+ Add</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tab-distance">
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>S No</th>
+                <th>Date</th>
+                <th>Description (e.g., Product Shipment)</th>
+                <th>Mass</th>
+                <th>Distance</th>
+                <th>Mode</th>
+                <th>Unit</th>
+                <th>Emission Factor</th>
+                <th>EF Unit</th>
+                <th>Calculated Emissions (CO2e)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="trans-tb-distance">
+              <tr class="data-entry-row entry-row">
+                <td><input type="number" name="s_no" value="1" readonly /></td>
+                <td><input type="date" name="date" /></td>
+                <td><input type="text" name="desc" placeholder="e.g., Product X to Customer Y" /></td>
+                <td><input type="number" name="mass" step="any" /></td>
+                <td><input type="number" name="distance" step="any" /></td>
+                <td><input type="text" name="mode" placeholder="Road / Rail / Air" /></td>
+                <td><input type="text" name="unit" value="kg km" /></td>
+                <td><input type="number" name="ef" step="any" placeholder="Mode-Specific EF" /></td>
+                <td><input type="text" name="ef_unit" value="kg CO2e/kg-km" /></td>
+                <td><input type="number" name="co2e" step="any" placeholder="Auto" readonly /></td>
+                <td class="actions"><button type="button" class="btn-add add-btn">+ Add</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tab-spend">
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>S No</th>
+                <th>Date</th>
+                <th>Description (e.g., Product Shipment)</th>
+                <th>Amount Spent</th>
+                <th>Unit</th>
+                <th>EEIO EF</th>
+                <th>EF Unit</th>
+                <th>Calculated Emissions (CO2e)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="trans-tb-spend">
+              <tr class="data-entry-row entry-row">
+                <td><input type="number" name="s_no" value="1" readonly /></td>
+                <td><input type="date" name="date" /></td>
+                <td><input type="text" name="desc" placeholder="e.g., Customer Shipping Costs" /></td>
+                <td><input type="number" name="amount" step="any" /></td>
+                <td><input type="text" name="unit" value="$" /></td>
+                <td><input type="number" name="ef" step="any" placeholder="EEIO EF" /></td>
+                <td><input type="text" name="ef_unit" value="kg CO2e/$" /></td>
+                <td><input type="number" name="co2e" step="any" placeholder="Auto" readonly /></td>
+                <td class="actions"><button type="button" class="btn-add add-btn">+ Add</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script src="./main.js"></script>
+</body>
+</html>
+
+
