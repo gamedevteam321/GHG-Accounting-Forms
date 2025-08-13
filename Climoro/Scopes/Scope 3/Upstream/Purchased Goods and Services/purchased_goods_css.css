@@ -1,0 +1,917 @@
+/* Purchased Goods and Services Container Styles */
+.purchased-goods-container {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Header Section */
+.header-section {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e8f4fd;
+}
+
+.header-section h1 {
+    color: #1a365d;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #1a365d 0%, #2d5a87 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.header-section .description {
+    color: #64748b;
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Tabs Navigation */
+.tabs-container {
+    margin-bottom: 30px;
+}
+
+.tabs-nav {
+    display: flex;
+    gap: 8px;
+    background: #f8fafc;
+    padding: 8px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.tabs-nav::-webkit-scrollbar {
+    height: 6px;
+}
+
+.tabs-nav::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+}
+
+.tabs-nav::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: #64748b;
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    min-width: fit-content;
+}
+
+.tab-btn:hover {
+    background: #e2e8f0;
+    color: #475569;
+    transform: translateY(-1px);
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.tab-btn i {
+    font-size: 1rem;
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Table Section */
+.table-section {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.table-container {
+    overflow-x: auto;
+    border-radius: 12px;
+    max-width: 100%;
+}
+
+.purchased-goods-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    font-size: 0.9rem;
+    min-width: 1400px; /* Ensure minimum width for all columns */
+}
+
+.purchased-goods-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    font-size: 0.9rem;
+}
+
+.purchased-goods-table thead {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.purchased-goods-table th {
+    padding: 16px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #1e293b;
+    border-bottom: 2px solid #e2e8f0;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.purchased-goods-table td {
+    padding: 12px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.purchased-goods-table tbody tr:hover {
+    background: #f8fafc;
+    transition: background-color 0.2s ease;
+}
+
+/* Consistent Column Widths - Improved for better readability */
+.purchased-goods-table th,
+.purchased-goods-table td {
+    width: 160px; /* Increased base width */
+    min-width: 160px;
+    max-width: 160px;
+    padding: 12px 8px;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+/* Special handling for specific columns */
+.purchased-goods-table th:nth-child(1), /* S.No */
+.purchased-goods-table td:nth-child(1) {
+    width: 60px;
+    min-width: 60px;
+    max-width: 60px;
+    text-align: center;
+}
+
+/* Actions column */
+.purchased-goods-table th:last-child,
+.purchased-goods-table td:last-child {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+    text-align: center;
+}
+
+/* Date column */
+.purchased-goods-table th:nth-child(2),
+.purchased-goods-table td:nth-child(2) {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+}
+
+/* Description columns (for methods 3 and 4) */
+.purchased-goods-table th:nth-child(3),
+.purchased-goods-table td:nth-child(3) {
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
+}
+
+/* Invoice column (hybrid method) */
+.purchased-goods-table th:nth-child(3):has(+ th:nth-child(4):contains("SUPPLIER")),
+.purchased-goods-table td:nth-child(3):has(+ td:nth-child(4)) {
+    width: 140px;
+    min-width: 140px;
+    max-width: 140px;
+}
+
+/* Supplier Scope columns (hybrid method) */
+.purchased-goods-table th:nth-child(4),
+.purchased-goods-table td:nth-child(4),
+.purchased-goods-table th:nth-child(5),
+.purchased-goods-table td:nth-child(5) {
+    width: 140px;
+    min-width: 140px;
+    max-width: 140px;
+}
+
+/* Material/Transport/Waste List columns (hybrid method) */
+.purchased-goods-table th:nth-child(7),
+.purchased-goods-table td:nth-child(7),
+.purchased-goods-table th:nth-child(8),
+.purchased-goods-table td:nth-child(8),
+.purchased-goods-table th:nth-child(9),
+.purchased-goods-table td:nth-child(9) {
+    width: 180px;
+    min-width: 180px;
+    max-width: 180px;
+}
+
+/* Data Entry Row Styles */
+.data-entry-row {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-left: 4px solid #0ea5e9;
+}
+
+.data-entry-row:hover {
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+}
+
+/* Form Controls */
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: white;
+    min-height: 44px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 10;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+.form-control.readonly {
+    background: #f8f9fa;
+    border-color: #dee2e6;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+.form-control::placeholder {
+    color: #adb5bd;
+    font-style: italic;
+}
+
+/* File Upload */
+.file-input {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.file-input:hover {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.file-input:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.file-upload-label:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+}
+
+/* View Document Link */
+.view-document {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.view-document:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+.no-file {
+    color: #6c757d;
+    font-style: italic;
+    font-size: 13px;
+}
+
+/* Prevent awesome bar interference */
+.purchased-goods-container input:focus,
+.purchased-goods-container select:focus,
+.purchased-goods-container textarea:focus {
+    outline: none !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+    position: relative !important;
+    z-index: 9999 !important;
+}
+
+/* Ensure form elements stay above awesome bar */
+.purchased-goods-container .form-control {
+    position: relative !important;
+    z-index: 9999 !important;
+}
+
+/* Completely isolate the form from global Frappe styles */
+.purchased-goods-container {
+    position: relative;
+    z-index: 1;
+}
+
+.purchased-goods-container * {
+    box-sizing: border-box;
+}
+
+/* Prevent any global Frappe interference */
+.purchased-goods-container input,
+.purchased-goods-container select,
+.purchased-goods-container textarea {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    color: inherit !important;
+    background-color: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 6px !important;
+    padding: 8px 12px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    z-index: 9999 !important;
+}
+
+/* Override any Frappe global styles */
+.purchased-goods-container input:focus,
+.purchased-goods-container select:focus,
+.purchased-goods-container textarea:focus {
+    outline: none !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+    background-color: #ffffff !important;
+    position: relative !important;
+    z-index: 9999 !important;
+}
+
+/* Isolated wrapper styles */
+.purchased-goods-isolated-wrapper {
+    position: relative !important;
+    z-index: 10000 !important;
+    isolation: isolate !important;
+    contain: layout style paint !important;
+}
+
+.purchased-goods-isolated-wrapper * {
+    position: relative !important;
+    z-index: inherit !important;
+}
+
+/* Ensure our form stays completely isolated */
+.purchased-goods-isolated-wrapper .purchased-goods-container {
+    position: relative !important;
+    z-index: 10001 !important;
+    isolation: isolate !important;
+}
+
+/* Additional styling for better field appearance */
+.purchased-goods-table input[type="number"],
+.purchased-goods-table input[type="text"],
+.purchased-goods-table input[type="date"] {
+    min-width: 120px;
+    max-width: 140px;
+}
+
+.purchased-goods-table select {
+    min-width: 120px;
+    max-width: 140px;
+}
+
+/* Button styling improvements */
+.purchased-goods-table .btn {
+    margin: 2px;
+    white-space: nowrap;
+}
+
+.purchased-goods-table .btn-sm {
+    padding: 6px 10px;
+    font-size: 12px;
+}
+
+/* Summary divs for hybrid method */
+.material-summary,
+.transport-summary,
+.waste-summary {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 4px;
+    padding: 4px 8px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Display row summary styling for saved data */
+.display-material,
+.display-transport,
+.display-waste {
+    font-size: 12px;
+    color: #28a745;
+    background: #f8fff9;
+    border: 1px solid #28a745;
+    border-radius: 4px;
+    padding: 4px 8px;
+    display: inline-block;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Add buttons for hybrid method */
+.add-material-btn,
+.add-transport-btn,
+.add-waste-btn {
+    background: #007bff !important;
+    color: white !important;
+    border: none !important;
+    padding: 8px 12px !important;
+    border-radius: 6px !important;
+    font-size: 12px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 4px !important;
+    font-weight: 500 !important;
+}
+
+.add-material-btn:hover,
+.add-transport-btn:hover,
+.add-waste-btn:hover {
+    background: #0056b3 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2) !important;
+}
+
+/* Popup styling */
+#hybrid-popup-container {
+    font-family: inherit;
+}
+
+#hybrid-popup-container .popup-content {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    min-width: 400px;
+    max-width: 500px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid #e9ecef;
+}
+
+#hybrid-popup-container .popup-title {
+    margin-bottom: 20px;
+    color: #1a365d;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+#hybrid-popup-container .form-group {
+    margin-bottom: 16px;
+}
+
+#hybrid-popup-container label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #374151;
+}
+
+#hybrid-popup-container input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+#hybrid-popup-container input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+#hybrid-popup-container .popup-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+#hybrid-popup-container .popup-buttons .btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#hybrid-popup-container .popup-buttons .btn-secondary {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    color: #6c757d;
+}
+
+#hybrid-popup-container .popup-buttons .btn-secondary:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+#hybrid-popup-container .popup-buttons .btn-primary {
+    background: #007bff;
+    border: 1px solid #007bff;
+    color: white;
+}
+
+#hybrid-popup-container .popup-buttons .btn-primary:hover {
+    background: #0056b3;
+    border-color: #0056b3;
+    transform: translateY(-1px);
+}
+
+/* Override any global Frappe styles that might interfere */
+.purchased-goods-isolated-wrapper input,
+.purchased-goods-isolated-wrapper select,
+.purchased-goods-isolated-wrapper textarea {
+    position: relative !important;
+    z-index: 10002 !important;
+    outline: none !important;
+}
+
+.purchased-goods-isolated-wrapper input:focus,
+.purchased-goods-isolated-wrapper select:focus,
+.purchased-goods-isolated-wrapper textarea:focus {
+    outline: none !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+    background-color: #ffffff !important;
+    position: relative !important;
+    z-index: 10002 !important;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-control::placeholder {
+    color: #9ca3af;
+}
+
+/* Select Dropdowns */
+select.form-control {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 40px;
+    appearance: none;
+}
+
+/* Buttons */
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* Total Emissions Display */
+.total-emissions {
+    font-weight: 600;
+    color: #059669;
+    background: #ecfdf5;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #a7f3d0;
+}
+
+/* Formula Section */
+.formula-section {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    padding: 20px;
+    border-radius: 0 0 12px 12px;
+    border-top: 1px solid #f59e0b;
+}
+
+.formula-section h3 {
+    color: #92400e;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.formula-section h3::before {
+    content: "🧮";
+    font-size: 1.2rem;
+}
+
+.formula-section p {
+    color: #78350f;
+    margin: 8px 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.formula-section p strong {
+    color: #92400e;
+    font-weight: 600;
+}
+
+.formula-section p em {
+    color: #a16207;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .purchased-goods-container {
+        padding: 15px;
+    }
+    
+    .header-section h1 {
+        font-size: 2rem;
+    }
+    
+    .tabs-nav {
+        flex-wrap: wrap;
+    }
+    
+    .tab-btn {
+        flex: 1;
+        min-width: 150px;
+    }
+}
+
+@media (max-width: 768px) {
+    .purchased-goods-container {
+        padding: 10px;
+        margin: 10px;
+    }
+    
+    .header-section h1 {
+        font-size: 1.8rem;
+    }
+    
+    .header-section .description {
+        font-size: 1rem;
+    }
+    
+    .tabs-nav {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .tab-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .purchased-goods-table {
+        font-size: 0.8rem;
+    }
+    
+    .purchased-goods-table th,
+    .purchased-goods-table td {
+        padding: 8px 6px;
+    }
+    
+    .formula-section {
+        padding: 15px;
+    }
+    
+    .formula-section h3 {
+        font-size: 1rem;
+    }
+    
+    .formula-section p {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-section h1 {
+        font-size: 1.5rem;
+    }
+    
+    .purchased-goods-table {
+        font-size: 0.75rem;
+    }
+    
+    .btn-sm {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
+    
+    .formula-section {
+        padding: 12px;
+    }
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Success/Error States */
+.success-row {
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border-left: 4px solid #10b981;
+}
+
+.error-row {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    border-left: 4px solid #ef4444;
+}
+
+/* Print Styles */
+@media print {
+    .purchased-goods-container {
+        box-shadow: none;
+        padding: 0;
+    }
+    
+    .tabs-nav,
+    .btn {
+        display: none;
+    }
+    
+    .tab-content {
+        display: block !important;
+        page-break-inside: avoid;
+    }
+    
+    .formula-section {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+    }
+}
+
+/* Isolated input styles - completely ignore Frappe's global handlers */
+.isolated-input {
+    position: relative !important;
+    z-index: 99999 !important;
+    isolation: isolate !important;
+    contain: layout style paint !important;
+}
+
+.isolated-input:focus {
+    outline: none !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+    background-color: #ffffff !important;
+    position: relative !important;
+    z-index: 99999 !important;
+}
+
+/* Prevent any global Frappe interference with isolated inputs */
+.isolated-input[data-frappe-ignore="true"] {
+    pointer-events: auto !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+}
+
+/* Ensure isolated inputs stay focused */
+.isolated-input:focus {
+    position: relative !important;
+    z-index: 99999 !important;
+}
+
+/* Override any Frappe global styles for isolated inputs */
+.purchased-goods-container .isolated-input {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    color: inherit !important;
+    background-color: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 6px !important;
+    padding: 8px 12px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    z-index: 99999 !important;
+    outline: none !important;
+} 

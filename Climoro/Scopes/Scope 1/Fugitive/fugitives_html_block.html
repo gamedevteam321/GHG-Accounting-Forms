@@ -1,0 +1,133 @@
+<div class="refrigeration-fugitives-container">
+    <div class="header-section">
+        <h1>Fugitives Emissions</h1>
+    </div>
+
+    <div class="tabs-container">
+        <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="scale-base">
+                <i class="fa fa-chart-line"></i>
+                Scale Base Approach
+            </button>
+            <button class="tab-btn" data-tab="screening">
+                <i class="fa fa-filter"></i>
+                Screening Method
+            </button>
+            <button class="tab-btn" data-tab="simple">
+                <i class="fa fa-calculator"></i>
+                Simple Method
+            </button>
+        </div>
+    </div>
+
+    <div class="tab-content-container">
+        <div class="tab-content active" id="scale-base-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="refrigeration-table" id="scaleBaseTable">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>Type of Gas</th>
+                                <th>Unit Selection</th>
+                                <th>Inventory START</th>
+                                <th>Inventory CLOSE</th>
+                                <th>Decreased Inventory</th>
+                                <th>Refrigeration Purchase</th>
+                                <th>Refrigeration Returned by user</th>
+                                <th>Refrigeration Returned after recycling</th>
+                                <th>Total Refrigeration Returned</th>
+                                <th>Refrigeration charged into equipment</th>
+                                <th>Refrigeration Delivered to user</th>
+                                <th>Refrigeration returned to producer</th>
+                                <th>Refrigeration sent off site</th>
+                                <th>Refrigeration Sent for Destruction</th>
+                                <th>Total Distributed</th>
+                                <th>Refrigerant Emission</th>
+                                <th>Conversion</th>
+                                <th>ETCO2eq</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scaleBaseTableBody">
+                            </tbody>
+                    </table>
+                </div>
+
+                <div class="formula-section">
+                    <h3>Scale Base Approach Formula:</h3>
+                    <p><strong>Decreased Inventory</strong> = Inventory START (A) - Inventory CLOSE (B)</p>
+                    <p><strong>Total Refrigeration Returned</strong> = Purchase (C) + Returned by user (D) + Returned after recycling (E)</p>
+                    <p><strong>Total Distributed</strong> = Charged (F) + Delivered (G) + Returned to producer (H) + Sent off site (I) + Sent for Destruction (J)</p>
+                    <p><strong>Refrigerant Emission</strong> = (X1 + X2 - X3) where X1=Decreased, X2=Total Returned, X3=Total Distributed</p>
+                    <p><strong>ETCO2eq</strong> = Conversion * GWP (<span id="scale-base-gwp-display" style="font-weight:700;">N/A</span>)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="screening-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="refrigeration-table" id="screeningTable">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>Refrigeration Equipment Selection (A)</th>
+                                <th>Type of Refrigeration selection (B)</th>
+                                <th>GWP Refrigeration (C)</th>
+                                <th>No of Units (D)</th>
+                                <th>Unit Selection</th>
+                                <th>Original Refrigeration Charge (E)</th>
+                                <th>Assembly EF (F)</th>
+                                <th>ETCO2eq</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="screeningTableBody">
+                            </tbody>
+                    </table>
+                </div>
+
+                <div class="formula-section">
+                    <h3>Screening Method Formula:</h3>
+                    <p><strong>ETCO2eq</strong> = C * D * E * F</p>
+                    <p><em>(Only applicable to convert unit type from kg to Tonnes)</em></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="simple-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="refrigeration-table" id="simpleTable">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>Invoice No</th>
+                                <th>Upload Invoice</th>
+                                <th>Type of Refrigeration</th>
+                                <th>Amount Purchased</th>
+                                <th>No of Units</th>
+                                <th>Unit Selection</th>
+                                <th>GWP</th>
+                                <th>ETCO2eq</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="simpleTableBody">
+                            </tbody>
+                    </table>
+                </div>
+
+                <div class="formula-section">
+                    <h3>Simple Method Formula:</h3>
+                    <p><strong>ETCO2eq</strong> = A * B</p>
+                    <p><em>(Only applicable to convert unit type from kg to Tonnes)</em></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

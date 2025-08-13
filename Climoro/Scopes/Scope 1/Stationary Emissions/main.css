@@ -1,0 +1,436 @@
+.stationary-emissions-container {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 24px;
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* Table Section */
+.table-section {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 32px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.table-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.table-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.sort-dropdown {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.sort-dropdown:hover {
+    background: #e9ecef;
+}
+
+.add-emission-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.add-emission-btn:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+/* Table Container */
+.table-container {
+    overflow-x: auto;
+}
+
+.emissions-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 1600px;
+}
+
+.emissions-table th,
+.emissions-table td {
+    padding: 16px 12px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+.emissions-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+    font-size: 15px;
+    padding: 20px 12px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.emissions-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.emissions-table tbody tr.data-entry-row {
+    background: #e8f5e8;
+    border-left: 4px solid #28a745;
+}
+
+.emissions-table tbody tr.data-entry-row:hover {
+    background: #d4edda;
+}
+
+/* Form Controls */
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: white;
+    min-height: 44px;
+    box-sizing: border-box;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+.form-control.readonly {
+    background: #f8f9fa;
+    border-color: #dee2e6;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+.form-control::placeholder {
+    color: #adb5bd;
+    font-style: italic;
+}
+
+/* File Upload */
+.file-upload {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    width: 100%;
+}
+
+.file-upload input[type=file] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.file-upload-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 16px;
+    background: #007bff;
+    color: white;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    min-height: 44px;
+    box-sizing: border-box;
+}
+
+.file-upload-label:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+}
+
+/* Action Buttons */
+.action-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.delete-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+/* Add Button Styling */
+.add-btn {
+    background: #28a745 !important;
+    color: white !important;
+    padding: 10px 16px !important;
+    border: none !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    font-size: 13px !important;
+    transition: all 0.3s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    font-weight: 500 !important;
+}
+
+.add-btn:hover {
+    background: #218838 !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Display Row Styling */
+.data-display-row {
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.data-display-row:hover {
+    background: #f8f9fa;
+}
+
+/* View Document Link */
+.view-document {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.view-document:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
+.no-file {
+    color: #6c757d;
+    font-style: italic;
+    font-size: 13px;
+}
+
+/* Custom Fuel Section */
+.custom-fuel-section {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding: 30px;
+}
+
+.custom-fuel-section h3 {
+    color: #2c3e50;
+    margin-bottom: 25px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.custom-fuel-input {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.custom-fuel-input input {
+    flex: 1;
+    max-width: 400px;
+    padding: 16px 20px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.custom-fuel-input input:focus {
+    outline: none;
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+.custom-fuel-input .btn {
+    padding: 16px 28px;
+    white-space: nowrap;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.custom-fuel-input .btn:hover {
+    background: #545b62;
+    transform: translateY(-1px);
+}
+
+/* Consistent Column Widths - All fields same width as date field */
+.emissions-table th,
+.emissions-table td {
+    width: 140px; /* Same width as date field */
+    min-width: 140px;
+    max-width: 140px;
+}
+
+/* Special handling for specific columns */
+.emissions-table th:nth-child(1), /* S.No */
+.emissions-table td:nth-child(1) {
+    width: 80px;
+    min-width: 80px;
+    max-width: 80px;
+    text-align: center;
+}
+
+.emissions-table th:nth-child(17), /* Actions */
+.emissions-table td:nth-child(17) {
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+    text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .stationary-emissions-container {
+        padding: 16px;
+    }
+    
+    .table-header {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+    
+    .table-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .emissions-table {
+        min-width: 1200px;
+    }
+    
+    .custom-fuel-input {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .custom-fuel-input input {
+        max-width: none;
+    }
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #28a745;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Success/Error Messages */
+.message {
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin: 15px 0;
+    font-weight: 500;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.message.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.message.info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+/* Better form field styling */
+select.form-control {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 40px;
+    appearance: none;
+}

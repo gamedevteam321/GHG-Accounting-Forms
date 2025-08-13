@@ -1,0 +1,25 @@
+# Frappe specific files and directories
+*.pyc
+*.log
+*.sqlite
+.bench/
+assets/
+patches/
+private/
+public/files/
+site_config.json
+sites/
+storage/
+tmp/
+
+# Python specific files and directories
+__pycache__/
+.env
+venv/
+env/
+
+# IDE and OS specific files
+.DS_Store
+.idea/
+.vscode/
+Thumbs.db

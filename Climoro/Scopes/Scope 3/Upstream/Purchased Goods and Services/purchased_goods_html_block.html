@@ -1,0 +1,150 @@
+<div class="purchased-goods-container">
+    <div class="header-section">
+        <h1>Purchased Goods and Services Emissions</h1>
+        <p class="description">Category 1: Upstream (cradle-to-gate) emissions from the production of goods and services purchased by the company.</p>
+    </div>
+
+    <div class="tabs-container">
+        <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="supplier-specific">
+                <i class="fa fa-handshake"></i>
+                Supplier-Specific Method
+            </button>
+            <button class="tab-btn" data-tab="hybrid">
+                Hybrid Method
+            </button>
+            <button class="tab-btn" data-tab="average-data">
+                <i class="fa fa-chart-bar"></i>
+                Average-Data Method
+            </button>
+            <button class="tab-btn" data-tab="spend-based">
+                <i class="fa fa-dollar-sign"></i>
+                Spend-Based Method
+            </button>
+        </div>
+    </div>
+
+    <div class="tab-content-container">
+        <!-- Supplier-Specific Method Tab -->
+        <div class="tab-content active" id="supplier-specific-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="purchased-goods-table" id="supplierSpecificTable">
+                        <thead>
+                            <tr>
+                                <th>S.no</th>
+                                <th>Date</th>
+                                <th>Quantity of Goods/Services Purchased (A)</th>
+                                <th>Unit Selection</th>
+                                <th>EF (Supplier-specific) (B)</th>
+                                <th>ETCO2eq</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="supplierSpecificTableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="formula-section">
+                    <h3>Supplier-Specific Method Formula:</h3>
+                    <p><strong>Total Emissions</strong> = Quantity Purchased × Supplier-Specific Emission Factor</p>
+                    <p><em>This method uses product-level cradle-to-gate GHG inventory data directly from suppliers for the most accurate results.</em></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hybrid Method Tab -->
+        <div class="tab-content" id="hybrid-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="purchased-goods-table" id="hybridTable">
+                        <thead>
+                            <tr>
+                                <th>S.no</th>
+                                <th>Date</th>
+                                <th>Invoice</th>
+                                <th>Supplier Scope 1</th>
+                                <th>Supplier Scope 2</th>
+                                <th>Unit Selection</th>
+                                <th>Material List</th>
+                                <th>Transport List</th>
+                                <th>Waste List</th>
+                                <th>ETCO2eq</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="hybridTableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="formula-section">
+                    <h3>Hybrid Method Formula:</h3>
+                    <p><strong>Total Emissions</strong> = Supplier Scope 1 & 2 + (Material Inputs × Material EF) + (Transport Distance × Transport EF) + (Waste Outputs × Waste EF) + Other Emissions</p>
+                    <p><em>This method combines supplier-specific data with secondary data to fill gaps.</em></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Average-Data Method Tab -->
+        <div class="tab-content" id="average-data-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="purchased-goods-table" id="averageDataTable">
+                        <thead>
+                            <tr>
+                                <th>S.no</th>
+                                <th>Date</th>
+                                <th>Good/Service Description</th>
+                                <th>Quantity of Goods/Services Purchased (A)</th>
+                                <th>Unit Selection</th>
+                                <th>average EF per mass (B)</th>
+                                <th>ETCO2eq</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="averageDataTableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="formula-section">
+                    <h3>Average-Data Method Formula:</h3>
+                    <p><strong>Total Emissions</strong> = Mass/Quantity Purchased × Industry Average Emission Factor</p>
+                    <p><em>This method uses secondary industry-average cradle-to-gate emission factors.</em></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spend-Based Method Tab -->
+        <div class="tab-content" id="spend-based-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="purchased-goods-table" id="spendBasedTable">
+                        <thead>
+                            <tr>
+                                <th>S.no</th>
+                                <th>Date</th>
+                                <th>Good/Service Description</th>
+                                <th>Value of purchased goods/Services (A)</th>
+                                <th>Unit Selection</th>
+                                <th>EEIO EF (B)</th>
+                                <th>ETCO2eq</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="spendBasedTableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="formula-section">
+                    <h3>Spend-Based Method Formula:</h3>
+                    <p><strong>Total Emissions</strong> = Amount Spent × EEIO Emission Factor</p>
+                    <p><em>This method uses environmentally-extended input-output emission factors based on economic value.</em></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

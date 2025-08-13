@@ -1,0 +1,664 @@
+.refrigeration-fugitives-container {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 24px;
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* Header */
+.header-section {
+    margin-bottom: 24px;
+}
+
+.header-section h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+    text-align: center;
+}
+
+/* Tabs Styling */
+.tabs-container {
+    margin-bottom: 0;
+}
+
+.tabs-nav {
+    display: flex;
+    background: white;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 20px 24px;
+    border: none;
+    background: white;
+    color: #6c757d;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-btn:hover {
+    background: #f8f9fa;
+    color: #495057;
+}
+
+/* Scale Base Approach - Green */
+.tab-btn[data-tab="scale-base"].active {
+    background: white;
+    color: #28a745;
+    border-bottom-color: #28a745;
+    font-weight: 600;
+}
+
+/* Screening Method - Orange */
+.tab-btn[data-tab="screening"].active {
+    background: white;
+    color: #f39c12;
+    border-bottom-color: #f39c12;
+    font-weight: 600;
+}
+
+/* Simple Method - Blue */
+.tab-btn[data-tab="simple"].active {
+    background: white;
+    color: #007bff;
+    border-bottom-color: #007bff;
+    font-weight: 600;
+}
+
+.tab-btn i {
+    font-size: 18px;
+}
+
+/* Tab Content */
+.tab-content-container {
+    position: relative;
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Table Section */
+.table-section {
+    background: white;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 32px;
+    border-bottom: 1px solid #e9ecef;
+    color: white;
+}
+
+/* Scale Base Approach Header - Green */
+#scale-base-tab .table-header {
+    background: linear-gradient(135deg, #28a745 0%, #20963d 100%);
+}
+
+/* Screening Method Header - Orange */
+#screening-tab .table-header {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+}
+
+/* Simple Method Header - Blue */
+#simple-tab .table-header {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+}
+
+.table-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+    color: white;
+}
+
+.table-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.sort-dropdown {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.sort-dropdown:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.add-entry-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.add-entry-btn:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+/* Scale Base Approach Entry Button - Green */
+#scale-base-tab .add-entry-btn {
+    background: #28a745;
+}
+
+#scale-base-tab .add-entry-btn:hover {
+    background: #218838;
+}
+
+/* Screening Method Entry Button - Orange */
+#screening-tab .add-entry-btn {
+    background: #f39c12;
+}
+
+#screening-tab .add-entry-btn:hover {
+    background: #e67e22;
+}
+
+/* Simple Method Entry Button - Blue */
+#simple-tab .add-entry-btn {
+    background: #007bff;
+}
+
+#simple-tab .add-entry-btn:hover {
+    background: #0056b3;
+}
+
+/* Table Container */
+.table-container {
+    overflow-x: auto;
+}
+
+.refrigeration-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 2000px;
+}
+
+.refrigeration-table th,
+.refrigeration-table td {
+    padding: 16px 8px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+    font-size: 13px;
+}
+
+.refrigeration-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+    font-size: 14px;
+    padding: 20px 8px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.refrigeration-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.refrigeration-table tbody tr.data-entry-row {
+    background: #f8f9fa;
+    border-left: 4px solid #6c757d;
+}
+
+/* Scale Base Approach Entry Row - Green */
+#scale-base-tab .refrigeration-table tbody tr.data-entry-row {
+    background: #e8f5e8;
+    border-left: 4px solid #28a745;
+}
+
+#scale-base-tab .refrigeration-table tbody tr.data-entry-row:hover {
+    background: #d4edda;
+}
+
+/* Screening Method Entry Row - Orange */
+#screening-tab .refrigeration-table tbody tr.data-entry-row {
+    background: #fff3cd;
+    border-left: 4px solid #f39c12;
+}
+
+#screening-tab .refrigeration-table tbody tr.data-entry-row:hover {
+    background: #ffeaa7;
+}
+
+/* Simple Method Entry Row - Blue */
+#simple-tab .refrigeration-table tbody tr.data-entry-row {
+    background: #e3f2fd;
+    border-left: 4px solid #007bff;
+}
+
+#simple-tab .refrigeration-table tbody tr.data-entry-row:hover {
+    background: #bbdefb;
+}
+
+/* Form Controls */
+.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 13px;
+    transition: all 0.3s ease;
+    background: white;
+    min-height: 38px;
+    box-sizing: border-box;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #6c757d;
+    box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.1);
+}
+
+/* Scale Base Approach Form Focus - Green */
+#scale-base-tab .form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+/* Screening Method Form Focus - Orange */
+#screening-tab .form-control:focus {
+    border-color: #f39c12;
+    box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.1);
+}
+
+/* Simple Method Form Focus - Blue */
+#simple-tab .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.form-control.readonly {
+    background: #f8f9fa;
+    border-color: #dee2e6;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+.form-control::placeholder {
+    color: #adb5bd;
+    font-style: italic;
+}
+
+/* Action Buttons */
+.action-btn {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.delete-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+/* Add Button Styling */
+.add-btn {
+    background: #6c757d !important;
+    color: white !important;
+    padding: 8px 12px !important;
+    border: none !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    font-size: 12px !important;
+    transition: all 0.3s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    font-weight: 500 !important;
+}
+
+.add-btn:hover {
+    background: #5a6268 !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Scale Base Approach Add Button - Green */
+#scale-base-tab .add-btn {
+    background: #28a745 !important;
+}
+
+#scale-base-tab .add-btn:hover {
+    background: #218838 !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Screening Method Add Button - Orange */
+#screening-tab .add-btn {
+    background: #f39c12 !important;
+}
+
+#screening-tab .add-btn:hover {
+    background: #e67e22 !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Simple Method Add Button - Blue */
+#simple-tab .add-btn {
+    background: #007bff !important;
+}
+
+#simple-tab .add-btn:hover {
+    background: #0056b3 !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Display Row Styling */
+.data-display-row {
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.data-display-row:hover {
+    background: #f8f9fa;
+}
+
+/* Formula Section */
+.formula-section {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 20px 24px;
+    margin: 20px 32px;
+    border-radius: 8px;
+}
+
+/* Scale Base Approach Formula - Green */
+#scale-base-tab .formula-section {
+    background: #e8f5e8;
+    border-left: 4px solid #28a745;
+}
+
+#scale-base-tab .formula-section h3,
+#scale-base-tab .formula-section p {
+    color: #1e7e34;
+}
+
+/* Screening Method Formula - Orange */
+#screening-tab .formula-section {
+    background: #fff3cd;
+    border-left: 4px solid #f39c12;
+}
+
+#screening-tab .formula-section h3,
+#screening-tab .formula-section p {
+    color: #b8860b;
+}
+
+/* Simple Method Formula - Blue */
+#simple-tab .formula-section {
+    background: #e3f2fd;
+    border-left: 4px solid #007bff;
+}
+
+#simple-tab .formula-section h3,
+#simple-tab .formula-section p {
+    color: #004085;
+}
+
+.formula-section h3 {
+    margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.formula-section p {
+    margin: 8px 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.formula-section strong {
+    font-weight: 700;
+}
+
+/* Column Widths - Compact for many columns */
+.refrigeration-table th,
+.refrigeration-table td {
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+}
+
+/* Special handling for specific columns */
+.refrigeration-table th:nth-child(1), /* S.No */
+.refrigeration-table td:nth-child(1) {
+    width: 60px;
+    min-width: 60px;
+    max-width: 60px;
+    text-align: center;
+}
+
+.refrigeration-table th:last-child, /* Actions */
+.refrigeration-table td:last-child {
+    width: 80px;
+    min-width: 80px;
+    max-width: 80px;
+    text-align: center;
+}
+
+/* File Upload Button */
+.upload-btn {
+    background: #17a2b8;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.upload-btn:hover {
+    background: #138496;
+}
+
+.file-name {
+    display: none;
+    font-size: 11px;
+    color: #28a745;
+    margin-left: 8px;
+}
+
+.view-doc-btn {
+    background: #17a2b8;
+    color: white;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 11px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.view-doc-btn:hover {
+    background: #138496;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .refrigeration-fugitives-container {
+        padding: 16px;
+    }
+    
+    .tabs-nav {
+        flex-direction: column;
+    }
+    
+    .tab-btn {
+        border-radius: 0;
+        border-bottom: 1px solid #e9ecef;
+        border-right: none;
+    }
+    
+    .tab-btn:last-child {
+        border-bottom: none;
+    }
+    
+    .table-header {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+    
+    .table-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .refrigeration-table {
+        min-width: 1800px;
+    }
+    
+    .formula-section {
+        margin: 20px 16px;
+    }
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #6c757d;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Scale Base Approach Loading - Green */
+#scale-base-tab .loading::after {
+    border-top: 2px solid #28a745;
+}
+
+/* Screening Method Loading - Orange */
+#screening-tab .loading::after {
+    border-top: 2px solid #f39c12;
+}
+
+/* Simple Method Loading - Blue */
+#simple-tab .loading::after {
+    border-top: 2px solid #007bff;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Success/Error Messages */
+.message {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 12px 0;
+    font-weight: 500;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.message.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.message.info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+/* Better form field styling */
+select.form-control {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 8px center;
+    background-repeat: no-repeat;
+    background-size: 14px;
+    padding-right: 30px;
+    appearance: none;
+}
