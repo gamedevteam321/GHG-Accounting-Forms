@@ -1,70 +1,104 @@
-# Usage: bench --site <yoursite> console
-# In console: exec(open(r"/Users/shobhit/Documents/Projects/Frappe/climoro-project/bench-dev/scope_code/Scope 3/End-of-Life Treatment of Sold Products/doctype_console.py").read())
-# Then run: create_doctypes()
-
 import frappe
 
-CATEGORY = "End-of-Life Treatment of Sold Products"
-MODULE = "Climoro Onboarding"
+print("🚀 Creating End-of-Life Treatment of Sold Products DocTypes...")
 
-# If the PDF defines multiple logical tabs for this category, add them here.
-# Each entry creates a child table doctype referenced in the parent.
-TAB_CHILDREN = [
-    ("Activity Data", f"{CATEGORY} Activity Data Item"),
-    ("Emission Factors", f"{CATEGORY} Emission Factor Item"),
-    ("Results", f"{CATEGORY} Result Item"),
+required_doctypes = [
+    {
+        "name": "Downstream EOL Supplier Specific Item",
+        "title_field": "product",
+        "search_fields": "date,product,handler",
+        "field_order": ["s_no","date","product","handler","mass","unit","ef","ef_unit","co2e"],
+        "fields": [
+            {"fieldname":"s_no","label":"S No","fieldtype":"Int","in_list_view":1},
+            {"fieldname":"date","label":"Date","fieldtype":"Date","in_list_view":1},
+            {"fieldname":"product","label":"Product & Packaging","fieldtype":"Data","in_list_view":1},
+            {"fieldname":"handler","label":"Waste Handler","fieldtype":"Data"},
+            {"fieldname":"mass","label":"Total Mass Sold","fieldtype":"Float"},
+            {"fieldname":"unit","label":"Unit","fieldtype":"Data","default":"tonne"},
+            {"fieldname":"ef","label":"Handler-Specific EF","fieldtype":"Float"},
+            {"fieldname":"ef_unit","label":"EF Unit","fieldtype":"Data","default":"kg CO2e/tonne"},
+            {"fieldname":"co2e","label":"Calculated Emissions (CO2e)","fieldtype":"Float","in_list_view":1,"read_only":1},
+        ],
+    },
+    {
+        "name": "Downstream EOL Waste Type Specific Item",
+        "title_field": "product",
+        "search_fields": "date,product,material,method",
+        "field_order": ["s_no","date","product","material","mass","method","pct","ef","ef_unit","co2e"],
+        "fields": [
+            {"fieldname":"s_no","label":"S No","fieldtype":"Int","in_list_view":1},
+            {"fieldname":"date","label":"Date","fieldtype":"Date","in_list_view":1},
+            {"fieldname":"product","label":"Product & Packaging","fieldtype":"Data","in_list_view":1},
+            {"fieldname":"material","label":"Material Type","fieldtype":"Data"},
+            {"fieldname":"mass","label":"Total Mass Sold","fieldtype":"Float"},
+            {"fieldname":"method","label":"Treatment Method","fieldtype":"Data"},
+            {"fieldname":"pct","label":"% Sent to Treatment","fieldtype":"Float"},
+            {"fieldname":"ef","label":"Waste Treatment EF","fieldtype":"Float"},
+            {"fieldname":"ef_unit","label":"EF Unit","fieldtype":"Data","default":"kg CO2e/tonne"},
+            {"fieldname":"co2e","label":"Calculated Emissions (CO2e)","fieldtype":"Float","in_list_view":1,"read_only":1},
+        ],
+    },
+    {
+        "name": "Downstream EOL Average Data Item",
+        "title_field": "product",
+        "search_fields": "date,product,method",
+        "field_order": ["s_no","date","product","mass","unit","method","pct","ef","ef_unit","co2e"],
+        "fields": [
+            {"fieldname":"s_no","label":"S No","fieldtype":"Int","in_list_view":1},
+            {"fieldname":"date","label":"Date","fieldtype":"Date","in_list_view":1},
+            {"fieldname":"product","label":"Product & Packaging","fieldtype":"Data","in_list_view":1},
+            {"fieldname":"mass","label":"Total Mass Sold","fieldtype":"Float"},
+            {"fieldname":"unit","label":"Unit","fieldtype":"Data","default":"tonne"},
+            {"fieldname":"method","label":"Treatment Method","fieldtype":"Data"},
+            {"fieldname":"pct","label":"% Sent to Treatment","fieldtype":"Float"},
+            {"fieldname":"ef","label":"Average Waste Treatment EF","fieldtype":"Float"},
+            {"fieldname":"ef_unit","label":"EF Unit","fieldtype":"Data","default":"kg CO2e/tonne"},
+            {"fieldname":"co2e","label":"Calculated Emissions (CO2e)","fieldtype":"Float","in_list_view":1,"read_only":1},
+        ],
+    },
 ]
 
-PARENT_DOCTYPE = f"Scope 3 - {CATEGORY}"
-
-
-def _ensure_child_doctype(name: str):
+def create_doctype(cfg):
+    name = cfg["name"]
     if frappe.db.exists("DocType", name):
-        return
-    d = frappe.new_doc("DocType")
-    d.name = name
-    d.module = MODULE
-    d.istable = 1
-    d.custom = 1
-    d.fields = [
-        {"fieldname": "parameter", "label": "Parameter", "fieldtype": "Data", "in_list_view": 1},
-        {"fieldname": "value", "label": "Value", "fieldtype": "Float", "in_list_view": 1},
-        {"fieldname": "unit", "label": "Unit", "fieldtype": "Data"},
-        {"fieldname": "note", "label": "Note", "fieldtype": "Small Text"},
+        print(f"⚠️  DocType '{name}' already exists. Skipping...")
+        return False
+    doc = frappe.new_doc("DocType")
+    doc.name = name
+    doc.module = "Climoro Onboarding"
+    doc.custom = 1
+    doc.istable = 0
+    doc.issingle = 0
+    doc.quick_entry = 1
+    doc.track_changes = 1
+    doc.allow_rename = 1
+    doc.allow_import = 1
+    doc.allow_export = 1
+    doc.allow_print = 1
+    doc.allow_email = 1
+    doc.allow_copy = 1
+    doc.editable_grid = 1
+    doc.engine = "InnoDB"
+    doc.title_field = cfg["title_field"]
+    doc.search_fields = cfg["search_fields"]
+    doc.field_order = cfg["field_order"]
+    for f in cfg["fields"]:
+        doc.append("fields", f)
+    perms = [
+        {"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1, "report": 1, "export": 1, "share": 1, "print": 1, "email": 1},
+        {"role": "All", "read": 1, "write": 1, "create": 1, "delete": 1, "report": 1, "export": 1, "share": 1, "print": 1, "email": 1},
     ]
-    d.permissions = [{"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1}]
-    d.save(ignore_permissions=True)
+    for p in perms:
+        doc.append("permissions", p)
+    doc.save(ignore_permissions=True)
+    print(f"✅ Created: {name}")
+    return True
 
+created = 0
+for cfg in required_doctypes:
+    if create_doctype(cfg):
+        created += 1
 
-def _ensure_parent_doctype():
-    if frappe.db.exists("DocType", PARENT_DOCTYPE):
-        return
-    d = frappe.new_doc("DocType")
-    d.name = PARENT_DOCTYPE
-    d.module = MODULE
-    d.custom = 1
-
-    fields = [
-        {"fieldname": "title", "label": "Title", "fieldtype": "Data"},
-        {"fieldname": "period_start", "label": "Period Start", "fieldtype": "Date"},
-        {"fieldname": "period_end", "label": "Period End", "fieldtype": "Date"},
-    ]
-
-    # Add a section and table for each tab
-    for section_label, child_name in TAB_CHILDREN:
-        fields.extend([
-            {"fieldname": frappe.scrub(section_label) + "_sb", "label": section_label, "fieldtype": "Section Break"},
-            {"fieldname": frappe.scrub(section_label), "label": section_label, "fieldtype": "Table", "options": child_name},
-        ])
-
-    d.fields = fields
-    d.permissions = [{"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1}]
-    d.save(ignore_permissions=True)
-
-
-def create_doctypes():
-    for _, child_dt in TAB_CHILDREN:
-        _ensure_child_doctype(child_dt)
-    _ensure_parent_doctype()
-    frappe.db.commit()
-    print(f"Created/updated DocTypes for: {CATEGORY}")
+frappe.clear_cache()
+frappe.db.commit()
+print(f"🎉 Done. Created {created} EOL DocTypes (others already existed).")
