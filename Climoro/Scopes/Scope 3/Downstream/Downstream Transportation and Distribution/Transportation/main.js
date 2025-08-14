@@ -3,6 +3,18 @@
   const tbDistance = root_element.querySelector('#trans-tb-distance');
   const tbSpend = root_element.querySelector('#trans-tb-spend');
 
+  function saveRow(doctypeName, data){
+    return new Promise((resolve, reject)=>{
+      const doc = Object.assign({}, data, { doctype: doctypeName });
+      frappe.call({
+        method: 'frappe.client.insert',
+        args: { doc },
+        callback: r => resolve(r.message),
+        error: err => reject(err)
+      });
+    });
+  }
+
   function hookFuel(row){
     if(!row || row.dataset.hooked==='1') return;
     const litres = row.querySelector('input[name="fuel_litres"]');
@@ -50,26 +62,86 @@
     row.dataset.hooked='1';
   }
 
-  function addFromEntry(entry){
-    const cells = Array.from(entry.querySelectorAll('td'));
-    const values = cells.slice(0,-1).map(td=>{
-      const inp = td.querySelector('input,select');
-      return inp ? (inp.type==='number' ? (inp.value||'0') : (inp.value||'-')) : td.textContent;
-    });
-    const sNo = entry.querySelector('input[name="s_no"]');
-    if (sNo) sNo.value = String((parseInt(sNo.value||'1',10)||1)+1);
+  function appendDisplayRow(tbody, entry, values, doctypeName, docname){
     const tr = document.createElement('tr');
     tr.className='data-row';
+    if (docname) tr.dataset.docname = docname;
     tr.innerHTML = values.map(v=>`<td>${v}</td>`).join('') + '<td class="actions"><button type="button" class="delete-row">Delete</button></td>';
-    tr.querySelector('.delete-row')?.addEventListener('click', ()=> tr.remove());
-    const tbody = entry.parentElement;
+    tr.querySelector('.delete-row')?.addEventListener('click', ()=> {
+      if (!docname){ tr.remove(); return; }
+      frappe.call({
+        method: 'frappe.client.delete',
+        args: { doctype: doctypeName, name: docname },
+        callback: ()=> tr.remove(),
+        error: ()=> frappe.show_alert({message:'Delete failed', indicator:'red'})
+      });
+    });
     if (entry.nextSibling) tbody.insertBefore(tr, entry.nextSibling); else tbody.appendChild(tr);
-    entry.querySelectorAll('input[type="number"]').forEach(i=>{ if(i.name!=='s_no') i.value=''; });
+  }
+
+  function addFromEntry(entry){
+    const btn = entry.querySelector('.add-btn');
+    const tbody = entry.parentElement;
+    const tId = tbody.getAttribute('id');
+    let map;
+    if (tId === 'trans-tb-fuel') map = { doctype: 'Downstream Transportation Fuel Based Item' };
+    else if (tId === 'trans-tb-distance') map = { doctype: 'Downstream Transportation Distance Based Item' };
+    else if (tId === 'trans-tb-spend') map = { doctype: 'Downstream Transportation Spend Based Item' };
+    if (!map) return;
+
+    const data = {};
+    entry.querySelectorAll('input,select').forEach(inp=>{
+      const key = inp.name === 'desc' ? 'description' : inp.name;
+      data[key] = inp.value;
+    });
+
+    btn && (btn.disabled = true, btn.textContent = 'Saving...');
+    saveRow(map.doctype, data).then((doc)=>{
+      const cells = Array.from(entry.querySelectorAll('td'));
+      const values = cells.slice(0,-1).map(td=>{
+        const inp = td.querySelector('input,select');
+        return inp ? (inp.type==='number' ? (inp.value||'0') : (inp.value||'-')) : td.textContent;
+      });
+      const sNo = entry.querySelector('input[name="s_no"]');
+      if (sNo) sNo.value = String((parseInt(sNo.value||'1',10)||1)+1);
+      appendDisplayRow(tbody, entry, values, map.doctype, doc?.name);
+      entry.querySelectorAll('input[type="number"]').forEach(i=>{ if(i.name!=='s_no') i.value=''; });
+      frappe.show_alert({message: 'Saved', indicator: 'green'});
+    }).catch(err=>{
+      console.error('Save failed', err);
+      frappe.show_alert({message: 'Save failed', indicator: 'red'});
+    }).finally(()=>{
+      if (btn){ btn.disabled = false; btn.textContent = '+ Add'; }
+    });
   }
 
   hookFuel(tbFuel?.querySelector('.entry-row'));
   hookDistance(tbDistance?.querySelector('.entry-row'));
   hookSpend(tbSpend?.querySelector('.entry-row'));
+
+  function loadExisting(){
+    const specs = [
+      { tbody: tbFuel, doctype: 'Downstream Transportation Fuel Based Item', fields: ['name','s_no','date','description','fuel_litres','unit','ef','ef_unit','co2e'] },
+      { tbody: tbDistance, doctype: 'Downstream Transportation Distance Based Item', fields: ['name','s_no','date','description','mass','distance','mode','unit','ef','ef_unit','co2e'] },
+      { tbody: tbSpend, doctype: 'Downstream Transportation Spend Based Item', fields: ['name','s_no','date','description','amount','unit','ef','ef_unit','co2e'] },
+    ];
+    specs.forEach(spec =>{
+      if (!spec.tbody) return;
+      frappe.call({
+        method: 'frappe.client.get_list',
+        args: { doctype: spec.doctype, fields: spec.fields, limit_page_length: 500, order_by: 'creation asc' },
+        callback: r => {
+          const entry = spec.tbody.querySelector('.entry-row');
+          (r.message||[]).forEach(doc =>{
+            const values = spec.fields.filter(f=> f!=='name').map(f=> doc[f] ?? '-');
+            appendDisplayRow(spec.tbody, entry, values, spec.doctype, doc.name);
+          });
+        }
+      });
+    });
+  }
+
+  loadExisting();
 
   // tabs
   root_element.addEventListener('click', function(e){
