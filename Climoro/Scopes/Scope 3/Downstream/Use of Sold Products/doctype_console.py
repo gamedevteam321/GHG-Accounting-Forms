@@ -1,70 +1,51 @@
-# Usage: bench --site <yoursite> console
-# In console: exec(open(r"/Users/shobhit/Documents/Projects/Frappe/climoro-project/bench-dev/scope_code/Scope 3/Use of Sold Products/doctype_console.py").read())
-# Then run: create_doctypes()
-
 import frappe
 
-CATEGORY = "Use of Sold Products"
-MODULE = "Climoro Onboarding"
+print("🚀 Creating Use of Sold Products DocType...")
 
-# If the PDF defines multiple logical tabs for this category, add them here.
-# Each entry creates a child table doctype referenced in the parent.
-TAB_CHILDREN = [
-    ("Activity Data", f"{CATEGORY} Activity Data Item"),
-    ("Emission Factors", f"{CATEGORY} Emission Factor Item"),
-    ("Results", f"{CATEGORY} Result Item"),
-]
+name = "Downstream Use of Sold Products Item"
 
-PARENT_DOCTYPE = f"Scope 3 - {CATEGORY}"
-
-
-def _ensure_child_doctype(name: str):
-    if frappe.db.exists("DocType", name):
-        return
+if not frappe.db.exists("DocType", name):
     d = frappe.new_doc("DocType")
     d.name = name
-    d.module = MODULE
-    d.istable = 1
+    d.module = "Climoro Onboarding"
     d.custom = 1
-    d.fields = [
-        {"fieldname": "parameter", "label": "Parameter", "fieldtype": "Data", "in_list_view": 1},
-        {"fieldname": "value", "label": "Value", "fieldtype": "Float", "in_list_view": 1},
-        {"fieldname": "unit", "label": "Unit", "fieldtype": "Data"},
-        {"fieldname": "note", "label": "Note", "fieldtype": "Small Text"},
-    ]
-    d.permissions = [{"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1}]
+    d.istable = 0
+    d.issingle = 0
+    d.quick_entry = 1
+    d.track_changes = 1
+    d.allow_rename = 1
+    d.allow_import = 1
+    d.allow_export = 1
+    d.allow_print = 1
+    d.allow_email = 1
+    d.allow_copy = 1
+    d.editable_grid = 1
+    d.engine = "InnoDB"
+    d.title_field = "product_type"
+    d.search_fields = "date,product_type"
+    d.field_order = ["s_no","date","product_type","sold","activity_data","unit","ef","ef_unit","co2e"]
+    for f in [
+        {"fieldname":"s_no","label":"S No","fieldtype":"Int","in_list_view":1},
+        {"fieldname":"date","label":"Date","fieldtype":"Date","in_list_view":1},
+        {"fieldname":"product_type","label":"Product Type","fieldtype":"Data","in_list_view":1},
+        {"fieldname":"sold","label":"# Sold This Year","fieldtype":"Float"},
+        {"fieldname":"activity_data","label":"Activity Data","fieldtype":"Data"},
+        {"fieldname":"unit","label":"Unit","fieldtype":"Data"},
+        {"fieldname":"ef","label":"Emission Factor","fieldtype":"Float"},
+        {"fieldname":"ef_unit","label":"EF Unit","fieldtype":"Data"},
+        {"fieldname":"co2e","label":"Calculated Emissions (CO2e)","fieldtype":"Float","in_list_view":1,"read_only":1},
+    ]:
+        d.append("fields", f)
+    for p in (
+        {"role":"System Manager","read":1,"write":1,"create":1,"delete":1,"report":1,"export":1,"share":1,"print":1,"email":1},
+        {"role":"All","read":1,"write":1,"create":1,"delete":1,"report":1,"export":1,"share":1,"print":1,"email":1},
+    ):
+        d.append("permissions", p)
     d.save(ignore_permissions=True)
+    print(f"✅ Created: {name}")
+else:
+    print(f"⚠️  DocType '{name}' already exists. Skipping...")
 
-
-def _ensure_parent_doctype():
-    if frappe.db.exists("DocType", PARENT_DOCTYPE):
-        return
-    d = frappe.new_doc("DocType")
-    d.name = PARENT_DOCTYPE
-    d.module = MODULE
-    d.custom = 1
-
-    fields = [
-        {"fieldname": "title", "label": "Title", "fieldtype": "Data"},
-        {"fieldname": "period_start", "label": "Period Start", "fieldtype": "Date"},
-        {"fieldname": "period_end", "label": "Period End", "fieldtype": "Date"},
-    ]
-
-    # Add a section and table for each tab
-    for section_label, child_name in TAB_CHILDREN:
-        fields.extend([
-            {"fieldname": frappe.scrub(section_label) + "_sb", "label": section_label, "fieldtype": "Section Break"},
-            {"fieldname": frappe.scrub(section_label), "label": section_label, "fieldtype": "Table", "options": child_name},
-        ])
-
-    d.fields = fields
-    d.permissions = [{"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1}]
-    d.save(ignore_permissions=True)
-
-
-def create_doctypes():
-    for _, child_dt in TAB_CHILDREN:
-        _ensure_child_doctype(child_dt)
-    _ensure_parent_doctype()
-    frappe.db.commit()
-    print(f"Created/updated DocTypes for: {CATEGORY}")
+frappe.clear_cache()
+frappe.db.commit()
+print("🎉 Done. Use of Sold Products DocType is ready.")

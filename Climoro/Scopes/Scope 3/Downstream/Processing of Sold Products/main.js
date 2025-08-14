@@ -10,9 +10,8 @@
   let tbodyAvg = root_element.querySelector('#posp-tbody-avg');
   let tabsHooked = false;
 
-  const PARENT_DOCTYPE = 'Scope 3 - Processing of Sold Products';
-  const CHILD_DTYPE_ACTIVITY = 'Processing of Sold Products Activity Data Item';
-  const CHILD_DTYPE_EF = 'Processing of Sold Products Emission Factor Item';
+  const DT_SITE = 'Downstream Processing of Sold Products Site Specific Item';
+  const DT_AVG = 'Downstream Processing of Sold Products Average Data Item';
 
   function todayISO() {
     const d = new Date();
@@ -94,35 +93,19 @@
     }
   }
 
-  function addFromEntryRow(entryTr) {
-    const data = {
-      s_no: parseInt(entryTr.querySelector('input[name="s_no"]').value, 10) || sNoCounter,
-      date: entryTr.querySelector('input[name="date"]').value || todayISO(),
-      method: entryTr.querySelector('input[name="method"]').value,
-      sold_product: entryTr.querySelector('input[name="sold_product"]').value,
-      mass: parseFloat(entryTr.querySelector('input[name="mass"]').value || '0') || 0,
-      unit: entryTr.querySelector('input[name="unit"]').value || 'tonne',
-      processing_ef_note: entryTr.querySelector('input[name="processing_ef_note"]').value,
-      ef_value: parseFloat(entryTr.querySelector('input[name="ef_value"]').value || '0') || 0,
-      calc_emissions: parseFloat(entryTr.querySelector('input[name="calc_emissions"]').value || '0') || 0
-    };
-    // Minimal validation: require product and mass
-    if (!data.sold_product || data.mass <= 0) return;
-    const tbody = entryTr.parentElement;
-    createDisplayRow(tbody, data);
-    // clear inputs and increment S.No
-    sNoCounter += 1;
-    entryTr.querySelector('input[name="s_no"]').value = String(sNoCounter);
-    entryTr.querySelector('input[name="sold_product"]').value = '';
-    entryTr.querySelector('input[name="mass"]').value = '';
-    entryTr.querySelector('input[name="processing_ef_note"]').value = '';
-    entryTr.querySelector('input[name="ef_value"]').value = '';
-    entryTr.querySelector('input[name="calc_emissions"]').value = '';
+  function saveRow(doctypeName, data){
+    return new Promise((resolve, reject)=>{
+      const doc = Object.assign({}, data, { doctype: doctypeName });
+      //console.log('[POSP] saveRow call', { doctypeName, doc });
+      frappe.call({ method: 'frappe.client.insert', args: { doc }, callback: r => resolve(r.message), error: err => reject(err) });
+    });
   }
 
-  function createDisplayRow(tbody, data) {
+  function appendDisplayRow(tbody, data, doctypeName, docname){
+    //console.log('[POSP] appendDisplayRow', { doctypeName, docname, data });
     const tr = document.createElement('tr');
     tr.className = 'data-row';
+    if (docname) tr.dataset.docname = docname;
     tr.innerHTML = `
       <td>${data.s_no}</td>
       <td>${data.date}</td>
@@ -132,13 +115,80 @@
       <td>${data.unit}</td>
       <td>${data.processing_ef_note || '-'}</td>
       <td>${data.ef_value}</td>
-      <td>${data.calc_emissions}</td>
+      <td>${data.co2e}</td>
       <td class="actions"><button type="button" class="delete-row">Delete</button></td>
     `;
-    tr.querySelector('.delete-row')?.addEventListener('click', () => tr.remove());
+    tr.querySelector('.delete-row')?.addEventListener('click', ()=>{
+      if (!docname){ tr.remove(); return; }
+      frappe.call({ method: 'frappe.client.delete', args: { doctype: doctypeName, name: docname }, callback: ()=> tr.remove(), error: ()=> frappe.show_alert({message:'Delete failed', indicator:'red'}) });
+    });
     const entryRow = tbody.querySelector('tr.entry-row');
-    if (entryRow && entryRow.nextSibling) tbody.insertBefore(tr, entryRow.nextSibling);
-    else tbody.appendChild(tr);
+    if (entryRow && entryRow.nextSibling) tbody.insertBefore(tr, entryRow.nextSibling); else tbody.appendChild(tr);
+  }
+
+  function addFromEntryRow(entryTr) {
+    console.log('[POSP] addFromEntryRow: start');
+    const data = {
+      s_no: parseInt(entryTr.querySelector('input[name="s_no"]').value, 10) || sNoCounter,
+      date: entryTr.querySelector('input[name="date"]').value || todayISO(),
+      method: entryTr.querySelector('input[name="method"]').value,
+      sold_product: entryTr.querySelector('input[name="sold_product"]').value,
+      mass: parseFloat(entryTr.querySelector('input[name="mass"]').value || '0') || 0,
+      unit: entryTr.querySelector('input[name="unit"]').value || 'tonne',
+      processing_ef_note: entryTr.querySelector('input[name="processing_ef_note"]').value,
+      ef_value: parseFloat(entryTr.querySelector('input[name="ef_value"]').value || '0') || 0,
+      co2e: parseFloat(entryTr.querySelector('input[name="calc_emissions"]').value || '0') || 0
+    };
+    console.log('[POSP] addFromEntryRow: collected', data);
+    // Minimal validation: require product and mass
+    if (!data.sold_product || data.mass <= 0) {
+      console.warn('[POSP] addFromEntryRow: validation failed (need sold_product and mass)');
+      return;
+    }
+    const tbody = entryTr.parentElement;
+    const doctypeName = data.method === 'Site-Specific' ? DT_SITE : DT_AVG;
+    console.log('[POSP] addFromEntryRow: target doctype', doctypeName);
+    const btn = entryTr.querySelector('.add-btn-row');
+    btn && (btn.disabled = true, btn.textContent = 'Saving...');
+    saveRow(doctypeName, data).then((doc)=>{
+      console.log('[POSP] save success', { name: doc?.name, doctype: doctypeName });
+      appendDisplayRow(tbody, data, doctypeName, doc?.name);
+      // clear inputs and increment S.No
+      sNoCounter += 1;
+      entryTr.querySelector('input[name="s_no"]').value = String(sNoCounter);
+      entryTr.querySelector('input[name="sold_product"]').value = '';
+      entryTr.querySelector('input[name="mass"]').value = '';
+      entryTr.querySelector('input[name="processing_ef_note"]').value = '';
+      entryTr.querySelector('input[name="ef_value"]').value = '';
+      entryTr.querySelector('input[name="calc_emissions"]').value = '';
+      frappe.show_alert({message: 'Saved', indicator: 'green'});
+    }).catch(err=>{
+      console.error('[POSP] save failed', err);
+      frappe.show_alert({message:'Save failed', indicator:'red'});
+    }).finally(()=>{
+      if (btn){ btn.disabled = false; btn.textContent = '+ Add'; }
+    });
+  }
+
+  function loadExisting(){
+    const specs = [
+      { tbody: tbodySite, doctype: DT_SITE, fields: ['name','s_no','date','method','sold_product','mass','unit','processing_ef_note','ef_value','co2e'] },
+      { tbody: tbodyAvg, doctype: DT_AVG, fields: ['name','s_no','date','method','sold_product','mass','unit','processing_ef_note','ef_value','co2e'] },
+    ];
+    specs.forEach(spec =>{
+      if (!spec.tbody) return;
+      frappe.call({ method:'frappe.client.get_list', args:{ doctype: spec.doctype, fields: spec.fields, limit_page_length: 500, order_by: 'creation asc' }, callback: r => {
+        const entry = spec.tbody.querySelector('.entry-row');
+        (r.message||[]).forEach(doc =>{
+          const row = {
+            s_no: doc.s_no, date: doc.date, method: doc.method, sold_product: doc.sold_product,
+            mass: doc.mass, unit: doc.unit, processing_ef_note: doc.processing_ef_note, ef_value: doc.ef_value,
+            co2e: doc.co2e
+          };
+          appendDisplayRow(spec.tbody, row, spec.doctype, doc.name);
+        });
+      }});
+    });
   }
 
   function addRow() {
@@ -243,6 +293,7 @@
     // safety
     setTimeout(ensureEntryRowForActiveTab, 0);
     startEntryRowWatcher();
+    loadExisting();
 
     // expose test switch for debugging
     window.switchPospTab = switchToTab;
@@ -304,6 +355,15 @@
       console.log('[POSP] tab click', { targetTab });
       switchToTab(targetTab);
     }, true);
+    // Delegated add button handler for robustness
+    root_element.addEventListener('click', function(e){
+      const add = e.target.closest && e.target.closest('.add-btn-row');
+      if (!add) return;
+      e.preventDefault();
+      console.log('[POSP] delegated add click');
+      const entry = add.closest('tr.entry-row');
+      if (entry) addFromEntryRow(entry);
+    });
     // Initialize based on current active button
     const activeBtn = root_element.querySelector('.tab-button.active');
     const initial = activeBtn ? activeBtn.getAttribute('data-tab') : 'tab-site';
