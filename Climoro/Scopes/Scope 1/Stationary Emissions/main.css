@@ -7,6 +7,33 @@
     min-height: 100vh;
 }
 
+/* Header Section */
+.stationary-emissions-container .header-section {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e8f4fd;
+}
+
+.stationary-emissions-container .header-section h1 {
+    color: #1a365d;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #1a365d 0%, #2d5a87 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stationary-emissions-container .header-section .description {
+    color: #64748b;
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin: 0;
+    line-height: 1.6;
+}
+
 /* Table Section */
 .table-section {
     background: white;
@@ -55,7 +82,7 @@
 }
 
 .add-emission-btn {
-    background: #28a745;
+    background: #007bff;
     color: white;
     border: none;
     padding: 12px 24px;
@@ -70,7 +97,7 @@
 }
 
 .add-emission-btn:hover {
-    background: #218838;
+    background: #0056b3;
     transform: translateY(-1px);
 }
 
@@ -109,12 +136,12 @@
 }
 
 .emissions-table tbody tr.data-entry-row {
-    background: #e8f5e8;
-    border-left: 4px solid #28a745;
+    background: #f0f9ff;
+    border-left: 4px solid #0ea5e9;
 }
 
 .emissions-table tbody tr.data-entry-row:hover {
-    background: #d4edda;
+    background: #e0f2fe;
 }
 
 /* Form Controls */
@@ -132,8 +159,8 @@
 
 .form-control:focus {
     outline: none;
-    border-color: #28a745;
-    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .form-control.readonly {
@@ -210,7 +237,7 @@
 
 /* Add Button Styling */
 .add-btn {
-    background: #28a745 !important;
+    background: #007bff !important;
     color: white !important;
     padding: 10px 16px !important;
     border: none !important;
@@ -225,7 +252,7 @@
 }
 
 .add-btn:hover {
-    background: #218838 !important;
+    background: #0056b3 !important;
     transform: translateY(-1px) !important;
 }
 
@@ -291,8 +318,8 @@
 
 .custom-fuel-input input:focus {
     outline: none;
-    border-color: #28a745;
-    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .custom-fuel-input .btn {
@@ -385,7 +412,7 @@
     height: 24px;
     margin: -12px 0 0 -12px;
     border: 3px solid #f3f3f3;
-    border-top: 3px solid #28a745;
+    border-top: 3px solid #3b82f6;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
