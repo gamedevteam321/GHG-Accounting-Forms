@@ -1,0 +1,640 @@
+/* GHG Reports Viewer - Frappe Custom HTML Block Styles */
+
+/* Block Container */
+.ghg-reports-viewer-block {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #f5f5f6;
+    color: #36414c;
+    line-height: 1.6;
+    max-width: 100%;
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+/* Header Styles */
+.ghg-reports-viewer-block .header {
+    background: linear-gradient(135deg, #8d99ae 0%, #495057 100%);
+    color: white;
+    padding: 20px;
+    margin-bottom: 24px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d1d8dd;
+}
+
+.ghg-reports-viewer-block .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ghg-reports-viewer-block .header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+}
+
+.ghg-reports-viewer-block .header h1 i {
+    font-size: 1.6rem;
+    color: #ffd700;
+}
+
+.ghg-reports-viewer-block .user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* Filter Section */
+.ghg-reports-viewer-block .filters-section {
+    background: #fafbfc;
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d1d8dd;
+    margin-bottom: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: end;
+}
+
+.ghg-reports-viewer-block .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 180px;
+}
+
+.ghg-reports-viewer-block .filter-group label {
+    font-weight: 600;
+    color: #6c7680;
+    font-size: 0.9rem;
+}
+
+.ghg-reports-viewer-block .filter-select,
+.ghg-reports-viewer-block .filter-input {
+    padding: 8px 12px;
+    border: 1px solid #d1d8dd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    background: white;
+    color: #36414c;
+}
+
+.ghg-reports-viewer-block .filter-select:focus,
+.ghg-reports-viewer-block .filter-input:focus {
+    outline: none;
+    border-color: #8d99ae;
+    box-shadow: 0 0 0 2px rgba(141, 153, 174, 0.2);
+}
+
+/* Button Styles */
+.ghg-reports-viewer-block .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    min-height: 42px;
+}
+
+.ghg-reports-viewer-block .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.ghg-reports-viewer-block .btn-primary {
+    background: #8d99ae;
+    color: white;
+    border: 1px solid #8d99ae;
+}
+
+.ghg-reports-viewer-block .btn-primary:hover {
+    background: #7d8994;
+    border-color: #7d8994;
+}
+
+.ghg-reports-viewer-block .btn-secondary {
+    background: #adb5bd;
+    color: white;
+    border: 1px solid #adb5bd;
+}
+
+.ghg-reports-viewer-block .btn-secondary:hover {
+    background: #9ca4ab;
+    border-color: #9ca4ab;
+}
+
+.ghg-reports-viewer-block .btn-success {
+    background: #28a745;
+    color: white;
+    border: 1px solid #28a745;
+}
+
+.ghg-reports-viewer-block .btn-success:hover {
+    background: #218838;
+    border-color: #218838;
+}
+
+.ghg-reports-viewer-block .btn-outline {
+    background: transparent;
+    color: #8d99ae;
+    border: 1px solid #8d99ae;
+}
+
+.ghg-reports-viewer-block .btn-outline:hover {
+    background: #8d99ae;
+    color: white;
+}
+
+.ghg-reports-viewer-block .btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.ghg-reports-viewer-block .btn-danger:hover {
+    background: #c82333;
+}
+
+.ghg-reports-viewer-block .btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    min-height: 32px;
+}
+
+/* Reports Section */
+.ghg-reports-viewer-block .reports-section {
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d1d8dd;
+    overflow: hidden;
+}
+
+.ghg-reports-viewer-block .section-header {
+    padding: 20px;
+    border-bottom: 1px solid #d1d8dd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fafbfc;
+}
+
+.ghg-reports-viewer-block .section-header h2 {
+    color: #36414c;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.ghg-reports-viewer-block .section-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* Table Styles */
+.ghg-reports-viewer-block .table-container {
+    position: relative;
+    min-height: 200px;
+    overflow-x: auto;
+}
+
+.ghg-reports-viewer-block .reports-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.ghg-reports-viewer-block .reports-table th {
+    background: #fafbfc;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #6c7680;
+    border-bottom: 1px solid #d1d8dd;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ghg-reports-viewer-block .reports-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ebeff2;
+    vertical-align: middle;
+    color: #36414c;
+}
+
+.ghg-reports-viewer-block .reports-table tbody tr:hover {
+    background-color: #fafbfc;
+    transition: background-color 0.2s ease;
+}
+
+.ghg-reports-viewer-block .reports-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Status Badge */
+.ghg-reports-viewer-block .status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ghg-reports-viewer-block .status-draft {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.ghg-reports-viewer-block .status-submitted {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.ghg-reports-viewer-block .status-approved {
+    background: #d4edda;
+    color: #155724;
+}
+
+/* Loading States */
+.ghg-reports-viewer-block .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: #666;
+    gap: 16px;
+}
+
+.ghg-reports-viewer-block .loading.hidden {
+    display: none;
+}
+
+.ghg-reports-viewer-block .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #e1e5e9;
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    animation: ghg-spin 1s linear infinite;
+}
+
+.ghg-reports-viewer-block .spinner.large {
+    width: 48px;
+    height: 48px;
+    border-width: 4px;
+}
+
+@keyframes ghg-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.ghg-reports-viewer-block .no-reports {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    color: #666;
+    gap: 16px;
+    text-align: center;
+}
+
+.ghg-reports-viewer-block .no-reports.hidden {
+    display: none;
+}
+
+.ghg-reports-viewer-block .no-reports i {
+    font-size: 3rem;
+    color: #ccc;
+}
+
+/* Modal Styles */
+.ghg-reports-viewer-block .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.ghg-reports-viewer-block .modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.ghg-reports-viewer-block .modal.hidden {
+    display: none;
+}
+
+.ghg-reports-viewer-block .modal-content {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.ghg-reports-viewer-block .modal.show .modal-content {
+    transform: scale(1);
+}
+
+.ghg-reports-viewer-block .modal-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid #e1e5e9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+}
+
+.ghg-reports-viewer-block .modal-header h3 {
+    color: #333;
+    font-size: 1.3rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+
+.ghg-reports-viewer-block .modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.ghg-reports-viewer-block .modal-close:hover {
+    background: #e1e5e9;
+    color: #333;
+}
+
+.ghg-reports-viewer-block .modal-body {
+    padding: 25px;
+}
+
+.ghg-reports-viewer-block .modal-footer {
+    padding: 20px 25px;
+    border-top: 1px solid #e1e5e9;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    background: #f8f9fa;
+}
+
+/* Form Styles */
+.ghg-reports-viewer-block .form-group {
+    margin-bottom: 20px;
+}
+
+.ghg-reports-viewer-block .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+}
+
+.ghg-reports-viewer-block .form-input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.ghg-reports-viewer-block .form-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Loading Overlay */
+.ghg-reports-viewer-block .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.ghg-reports-viewer-block .loading-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.ghg-reports-viewer-block .loading-overlay.hidden {
+    display: none;
+}
+
+.ghg-reports-viewer-block .loading-content {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.ghg-reports-viewer-block .loading-content h3 {
+    margin-bottom: 16px;
+    color: #333;
+}
+
+.ghg-reports-viewer-block .loading-content p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Message Container */
+.ghg-reports-viewer-block .message-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 3000;
+    max-width: 400px;
+}
+
+.ghg-reports-viewer-block .message {
+    background: white;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-left: 4px solid;
+    animation: ghg-slideIn 0.3s ease;
+}
+
+.ghg-reports-viewer-block .message.success {
+    border-left-color: #28a745;
+}
+
+.ghg-reports-viewer-block .message.error {
+    border-left-color: #dc3545;
+}
+
+.ghg-reports-viewer-block .message.info {
+    border-left-color: #17a2b8;
+}
+
+@keyframes ghg-slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ghg-reports-viewer-block {
+        padding: 15px;
+        margin: 10px 0;
+    }
+    
+    .ghg-reports-viewer-block .header-content {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .ghg-reports-viewer-block .header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .ghg-reports-viewer-block .filters-section {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .ghg-reports-viewer-block .filter-group {
+        min-width: 100%;
+    }
+    
+    .ghg-reports-viewer-block .section-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .ghg-reports-viewer-block .section-actions {
+        justify-content: center;
+    }
+    
+    .ghg-reports-viewer-block .reports-table {
+        font-size: 0.8rem;
+    }
+    
+    .ghg-reports-viewer-block .reports-table th,
+    .ghg-reports-viewer-block .reports-table td {
+        padding: 8px 6px;
+    }
+    
+    .ghg-reports-viewer-block .btn {
+        padding: 8px 16px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .ghg-reports-viewer-block .modal-content {
+        width: 95%;
+        margin: 10px;
+    }
+    
+    .ghg-reports-viewer-block .modal-header,
+    .ghg-reports-viewer-block .modal-body,
+    .ghg-reports-viewer-block .modal-footer {
+        padding: 15px;
+    }
+}
+
+/* Override any conflicting Frappe styles */
+.ghg-reports-viewer-block * {
+    box-sizing: border-box;
+}
+
+.ghg-reports-viewer-block select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 40px;
+    appearance: none;
+}
+
+/* PDF Status Indicator */
+.ghg-reports-viewer-block .pdf-status {
+    margin-left: 8px;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.ghg-reports-viewer-block .pdf-status i {
+    transition: transform 0.2s ease;
+}
+
+.ghg-reports-viewer-block .pdf-status:hover i {
+    transform: scale(1.2);
+}
+
+.ghg-reports-viewer-block .pdf-status[title] {
+    cursor: help;
+}
