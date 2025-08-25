@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Distribution (Customer Warehousing/Storage)</title>
+  <link rel="stylesheet" href="./main.css" />
+</head>
+<body>
+  <header class="page-header">
+    <h1>Distribution (Customer Warehousing/Storage)</h1>
+  </header>
+  <main>
+    <section class="card tab-section">
+      <div class="tab-nav">
+        <button type="button" class="tab-button active" data-tab="dist-site">Method 1: Site-Specific</button>
+        <button type="button" class="tab-button" data-tab="dist-average">Method 2: Average-Data</button>
+      </div>
+
+      <div class="tab-content active" id="dist-site">
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>S No</th>
+                <th>Date</th>
+                <th>Description (Customer Warehouse)</th>
+                <th>Activity Data</th>
+                <th>Unit</th>
+                <th>Emission Factor</th>
+                <th>EF Unit</th>
+                <th>Calculated Emissions (CO2e)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="dist-tb-site">
+              <tr class="data-entry-row entry-row">
+                <td><input type="number" name="s_no" value="1" readonly /></td>
+                <td><input type="date" name="date" /></td>
+                <td><input type="text" name="desc" placeholder="e.g., Customer Warehouse Z" /></td>
+                <td><input type="number" name="activity" step="any" placeholder="Allocated from total facility use" /></td>
+                <td><input type="text" name="unit" value="kg CO2e" /></td>
+                <td><input type="text" name="ef" value="Calculated" readonly /></td>
+                <td><input type="text" name="ef_unit" value="N/A" readonly /></td>
+                <td><input type="number" name="co2e" step="any" placeholder="Auto" readonly /></td>
+                <td class="actions"><button type="button" class="btn-add add-btn">+ Add</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-content" id="dist-average">
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>S No</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Activity Data (Volume: Days Stored)</th>
+                <th>Unit</th>
+                <th>Emission Factor</th>
+                <th>EF Unit</th>
+                <th>Calculated Emissions (CO2e)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="dist-tb-average">
+              <tr class="data-entry-row entry-row">
+                <td><input type="number" name="s_no" value="1" readonly /></td>
+                <td><input type="date" name="date" /></td>
+                <td><input type="text" name="desc" placeholder="e.g., Product Storage" /></td>
+                <td><input type="number" name="volume_days" step="any" /></td>
+                <td><input type="text" name="unit" value="pallet days" /></td>
+                <td><input type="number" name="ef" step="any" placeholder="Storage EF" /></td>
+                <td><input type="text" name="ef_unit" value="kg CO2e/pallet-day" /></td>
+                <td><input type="number" name="co2e" step="any" placeholder="Auto" readonly /></td>
+                <td class="actions"><button type="button" class="btn-add add-btn">+ Add</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./main.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Use of Sold Products</title>
+  <link rel="stylesheet" href="./main.css" />
+</head>
+<body>
+  <header class="page-header">
+    <h1>Use of Sold Products</h1>
+    <!-- <p class="subtitle">Scope 3 – Downstream calculator</p> -->
+  </header>
+  <main>
+    <section class="card">
+      <div class="table-container">
+        <table class="table" id="uosp-table">
+          <thead>
+            <tr>
+              <th>S No</th>
+              <th>Date</th>
+              <th>Product Type</th>
+              <th># Sold This Year</th>
+              <th>Activity Data (per product)</th>
+              <th>Unit</th>
+              <th>Emission Factor</th>
+              <th>EF Unit</th>
+              <th>Calculated Emissions (CO2e)</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="uosp-tbody">
+            <tr class="data-entry-row entry-row">
+              <td><input type="number" name="s_no" value="1" readonly /></td>
+              <td><input type="date" name="date" /></td>
+              <td>
+                <select name="product_type">
+                  <option value="Energy Consuming">Energy Consuming</option>
+                  <option value="Fuels Sold">Fuels Sold</option>
+                  <option value="GHG-Containing">GHG-Containing</option>
+                </select>
+              </td>
+              <td><input type="number" name="sold" placeholder="Numeric" /></td>
+              <td><input type="text" name="activity_data" placeholder="e.g., kWh per use" /></td>
+              <td><input type="text" name="unit" placeholder="kWh / litres / m3" /></td>
+              <td><input type="number" step="any" name="ef" placeholder="EF value" /></td>
+              <td><input type="text" name="ef_unit" placeholder="kg CO2e/kWh" /></td>
+              <td><input type="number" step="any" name="co2e" placeholder="Auto" readonly /></td>
+              <td class="actions"><button type="button" class="btn-add add-btn-row">+ Add</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="formula-info">
+        <strong>Note:</strong> This is a simplified layout. CO2e will auto-calc as <em># Sold × Emission Factor</em> for quick entry.
+      </div>
+    </section>
+  </main>
+
+  <script src="./main.js"></script>
+</body>
+</html>
