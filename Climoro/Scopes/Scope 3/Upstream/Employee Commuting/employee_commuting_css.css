@@ -3,8 +3,8 @@
 .header-section h1 { color:#1a365d; font-size:2.2rem; font-weight:700; margin-bottom:10px; }
 .header-section .description { color:#64748b; font-size:1rem; }
 .tabs-container { margin-bottom: 30px; }
-.tabs-nav { display:flex; gap:8px; background:#f8fafc; padding:8px; border-radius:12px; border:1px solid #e2e8f0; overflow-x:auto; }
-.tab-btn { display:flex; align-items:center; gap:8px; padding:12px 20px; background:transparent; border:none; border-radius:8px; color:#64748b; font-weight:500; font-size:.95rem; cursor:pointer; transition:all .3s ease; white-space:nowrap; }
+.tabs-nav { display:flex; background:#f8fafc; padding:8px; border-radius:12px; border:1px solid #e2e8f0; overflow-x:auto; }
+.tab-btn { flex: 1; display:flex; align-items:center; justify-content:center; gap:8px; padding:12px 20px; background:transparent; border:none; border-radius:8px; color:#64748b; font-weight:500; font-size:.95rem; cursor:pointer; transition:all .3s ease; white-space:nowrap; min-width: 0; }
 .tab-btn:hover { background:#e2e8f0; color:#475569; transform: translateY(-1px); }
 .tab-btn.active { background: linear-gradient(135deg,#3b82f6 0%,#1d4ed8 100%); color:#fff; box-shadow:0 4px 12px rgba(59,130,246,.3); }
 .tab-content { display:none; animation: fadeIn .3s ease-in-out; }
