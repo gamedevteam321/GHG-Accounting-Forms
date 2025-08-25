@@ -1,0 +1,151 @@
+<div class="capital-goods-container">
+    <div class="header-section">
+        <h1>Capital Goods Emissions</h1>
+        <p class="description">Category 2: Upstream (cradle-to-gate) emissions from producing capital goods (machinery, buildings, equipment, vehicles, IT assets, etc.) purchased by the company.</p>
+    </div>
+
+    <div class="tabs-container">
+        <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="supplier-specific">
+                <i class="fa fa-handshake"></i>
+                Supplier-Specific Method
+            </button>
+            <button class="tab-btn" data-tab="hybrid">
+                Hybrid Method
+            </button>
+            <button class="tab-btn" data-tab="average-data">
+                <i class="fa fa-chart-bar"></i>
+                Average-Data Method
+            </button>
+            <button class="tab-btn" data-tab="spend-based">
+                <i class="fa fa-dollar-sign"></i>
+                Spend-Based Method
+            </button>
+        </div>
+    </div>
+
+    <div class="tab-content-container">
+        <!-- Supplier-Specific Method Tab -->
+        <div class="tab-content active" id="supplier-specific-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="capital-goods-table" id="capitalSupplierSpecificTable">
+                        <thead>
+                            <tr>
+                                <th>S.no</th>
+                                <th>Date</th>
+                                <th>Quantity of Capital Goods Purchased (A)</th>
+                                <th>Unit Selection</th>
+                                <th>EF (Supplier-specific) (B)</th>
+                                <th>ETCO2eq</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="capitalSupplierSpecificTableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="formula-section">
+                    <h3>Supplier-Specific Method Formula:</h3>
+                    <p><strong>Total Emissions</strong> = Quantity Purchased × Supplier-Specific Emission Factor</p>
+                    <p><em>Use product-level cradle-to-gate GHG inventory data directly from the supplier of the capital good.</em></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hybrid Method Tab -->
+        <div class="tab-content" id="hybrid-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="capital-goods-table" id="capitalHybridTable">
+                        <thead>
+                            <tr>
+                                <th>S.no</th>
+                                <th>Date</th>
+                                <th>Invoice</th>
+                                <th>Supplier Scope 1</th>
+                                <th>Supplier Scope 2</th>
+                                <th>Unit Selection</th>
+                                <th>Material List</th>
+                                <th>Transport List</th>
+                                <th>Waste List</th>
+                                <th>ETCO2eq</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="capitalHybridTableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="formula-section">
+                    <h3>Hybrid Method Formula:</h3>
+                    <p><strong>Total Emissions</strong> = Supplier Scope 1 & 2 + (Material Inputs × Material EF) + (Transport Distance × Transport EF) + (Waste Outputs × Waste EF) + Other Emissions</p>
+                    <p><em>Combine supplier-specific data with secondary data to fill gaps for capital goods production.</em></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Average-Data Method Tab -->
+        <div class="tab-content" id="average-data-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="capital-goods-table" id="capitalAverageDataTable">
+                        <thead>
+                            <tr>
+                                <th>S.no</th>
+                                <th>Date</th>
+                                <th>Capital Good Description</th>
+                                <th>Quantity Purchased (A)</th>
+                                <th>Unit Selection</th>
+                                <th>average EF per mass (B)</th>
+                                <th>ETCO2eq</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="capitalAverageDataTableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="formula-section">
+                    <h3>Average-Data Method Formula:</h3>
+                    <p><strong>Total Emissions</strong> = Mass/Quantity Purchased × Industry Average Emission Factor</p>
+                    <p><em>Use secondary industry-average cradle-to-gate emission factors for the capital good’s material or product class.</em></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spend-Based Method Tab -->
+        <div class="tab-content" id="spend-based-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="capital-goods-table" id="capitalSpendBasedTable">
+                        <thead>
+                            <tr>
+                                <th>S.no</th>
+                                <th>Date</th>
+                                <th>Capital Good Description</th>
+                                <th>Value of Capital Good (A)</th>
+                                <th>Unit Selection</th>
+                                <th>EEIO EF (B)</th>
+                                <th>ETCO2eq</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="capitalSpendBasedTableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="formula-section">
+                    <h3>Spend-Based Method Formula:</h3>
+                    <p><strong>Total Emissions</strong> = Amount Spent × EEIO Emission Factor</p>
+                    <p><em>Use environmentally-extended input-output emission factors mapped to the capital good’s economic sector.</em></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

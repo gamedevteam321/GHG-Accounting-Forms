@@ -1,0 +1,118 @@
+<div class="fuel-energy-container">
+    <div class="header-section">
+        <h1>Fuel and Energy Related Activities</h1>
+        <p class="description">Category 3: Fuel- and Energy-Related Activities (Upstream).</p>
+    </div>
+
+    <div class="tabs-container">
+        <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="upstream-fuels">A. Upstream emissions of purchased fuels</button>
+            <button class="tab-btn" data-tab="upstream-electricity">B. Upstream emissions of purchased electricity</button>
+            <button class="tab-btn" data-tab="tnd-losses">C. Transmission and Distribution (T&D) losses</button>
+            <button class="tab-btn" data-tab="generation">D. Generation of purchased electricity (utilities only)</button>
+        </div>
+    </div>
+
+    <div class="tab-content-container">
+        <!-- Tab A: Upstream emissions of purchased fuels -->
+        <div class="tab-content active" id="upstream-fuels-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="fuel-energy-table" id="upstreamFuelsTable">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>Energy Type</th>
+                                <th>Sub-Energy</th>
+                                <th>Quantity Consumed (from Scope 1/2)</th>
+                                <th>Unit</th>
+                                <th>Upstream Emission Factor</th>
+                                <th>EF Unit</th>
+                                <th>Calculated Emissions (CO2e)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="upstreamFuelsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab B: Upstream emissions of purchased electricity -->
+        <div class="tab-content" id="upstream-electricity-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="fuel-energy-table" id="upstreamElectricityTable">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>Energy Type</th>
+                                <th>Sub-Energy</th>
+                                <th>Quantity Consumed</th>
+                                <th>Unit</th>
+                                <th>Upstream Emission Factor</th>
+                                <th>EF Unit</th>
+                                <th>Calculated Emissions (CO2e)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="upstreamElectricityTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab C: Transmission and Distribution (T&D) Losses -->
+        <div class="tab-content" id="tnd-losses-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="fuel-energy-table" id="tndLossesTable">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>Energy Type</th>
+                                <th>Sub-Energy</th>
+                                <th>Quantity Consumed (from Scope 2)</th>
+                                <th>Unit (kWh)</th>
+                                <th>Grid Life Cycle EF</th>
+                                <th>T&D Loss Rate (%)</th>
+                                <th>Calculated Emissions (CO2e)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tndLossesTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab D: Generation of purchased electricity (utilities only) -->
+        <div class="tab-content" id="generation-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="fuel-energy-table" id="generationTable">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>Source of Purchased Power</th>
+                                <th>Electricity Purchased for Resale</th>
+                                <th>Unit (kWh)</th>
+                                <th>Life Cycle Emission Factor</th>
+                                <th>EF Unit</th>
+                                <th>Calculated Emissions (CO2e)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="generationTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

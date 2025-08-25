@@ -7,12 +7,39 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .mobile-combustion-container {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             max-width: 100%;
             margin: 0 auto;
             padding: 24px;
             background: #f8f9fa;
             min-height: 100vh;
+        }
+
+        /* Header Section (match Purchased Goods and Services) */
+        .mobile-combustion-container .header-section {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e8f4fd;
+        }
+
+        .mobile-combustion-container .header-section h1 {
+            color: #1a365d;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #1a365d 0%, #2d5a87 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .mobile-combustion-container .header-section .description {
+            color: #64748b;
+            font-size: 1.1rem;
+            font-weight: 400;
+            margin: 0;
+            line-height: 1.6;
         }
 
         /* Tab Section */
@@ -42,36 +69,41 @@
         /* Tab Navigation */
         .tab-nav {
             display: flex;
-            border-bottom: 2px solid #e9ecef;
-            background: #f8f9fa;
+            gap: 0;
+            background: #f8fafc;
+            padding: 8px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
         }
 
         .tab-button {
-            flex: 1;
-            padding: 16px 24px;
-            background: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: transparent;
             border: none;
-            font-size: 16px;
+            border-radius: 8px;
+            color: #64748b;
             font-weight: 500;
-            color: #6c757d;
+            font-size: 0.95rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            min-width: 0;
+            flex: 1 1 0;
+            justify-content: center;
         }
 
         .tab-button.active {
-            color: #28a745;
-            background: white;
-            border-bottom-color: #28a745;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
-        .tab-button:hover {
-            background: #e9ecef;
-        }
+        /* Hover intentionally disabled for tab buttons */
 
-        .tab-button.active:hover {
-            background: white;
-        }
+        /* Active hover state disabled */
 
         /* Tab Content */
         .tab-content {
@@ -95,7 +127,7 @@
         }
 
         .add-emission-btn {
-            background: #28a745;
+            background: #007bff;
             color: white;
             border: none;
             padding: 12px 24px;
@@ -110,7 +142,7 @@
         }
 
         .add-emission-btn:hover {
-            background: #218838;
+            background: #0056b3;
             transform: translateY(-1px);
         }
 
@@ -153,12 +185,12 @@
         }
 
         .emissions-table tbody tr.data-entry-row {
-            background: #e8f5e8;
-            border-left: 4px solid #28a745;
+            background: #f0f9ff;
+            border-left: 4px solid #0ea5e9;
         }
 
         .emissions-table tbody tr.data-entry-row:hover {
-            background: #d4edda;
+            background: #e0f2fe;
         }
 
         /* Special column widths */
@@ -193,8 +225,8 @@
 
         .form-control:focus {
             outline: none;
-            border-color: #28a745;
-            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
         .form-control[readonly] {
@@ -233,12 +265,12 @@
         }
 
         .btn-success {
-            background: #28a745;
+            background: #007bff;
             color: white;
         }
 
         .btn-success:hover {
-            background: #218838;
+            background: #0056b3;
             transform: translateY(-1px);
         }
 
@@ -293,11 +325,13 @@
 </head>
 <body>
     <div class="mobile-combustion-container">
+        <div class="header-section">
+            <h1>Mobile Combustion</h1>
+            <p class="description">Scope 1: Direct GHG emissions from fuel combustion in company-owned or controlled mobile sources (e.g., cars, trucks, vans).</p>
+        </div>
         <!-- Tab Section -->
         <div class="tab-section">
-            <div class="tab-header">
-                <h2>Mobile Combustion</h2>
-            </div>
+            <div class="tab-header"></div>
 
             <!-- Tab Navigation -->
             <div class="tab-nav">
@@ -863,7 +897,7 @@
             `;
             
             if (type === 'success') {
-                notification.style.background = '#28a745';
+                notification.style.background = '#007bff';
             } else {
                 notification.style.background = '#dc3545';
             }

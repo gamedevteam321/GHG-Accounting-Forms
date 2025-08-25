@@ -1,0 +1,91 @@
+<div class="ula-container">
+    <div class="header-section">
+        <h1>Upstream Leased Assets</h1>
+        <p class="description">Category 8: Emissions from assets you lease from others.</p>
+    </div>
+
+    <div class="tabs-container">
+        <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="asset-specific">Asset-Specific</button>
+            <button class="tab-btn" data-tab="lessor-specific">Lessor-Specific</button>
+            <button class="tab-btn" data-tab="average-data">Average-Data</button>
+        </div>
+    </div>
+
+    <div class="tab-content-container">
+        <!-- Asset-Specific -->
+        <div class="tab-content active" id="asset-specific-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="ula-table" id="assetSpecificTable">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>Leased Asset ID</th>
+                                <th>Emission Source</th>
+                                <th>Activity Data</th>
+                                <th>Unit</th>
+                                <th>Emission Factor</th>
+                                <th>EF Unit</th>
+                                <th>Calculated Emissions (CO2e)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assetSpecificTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lessor-Specific -->
+        <div class="tab-content" id="lessor-specific-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="ula-table" id="lessorSpecificTable">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>Leased Asset ID</th>
+                                <th>Lessor-Provided Emissions</th>
+                                <th>Unit (kg CO2e)</th>
+                                <th>Your Share (%)</th>
+                                <th>Calculated Emissions (CO2e)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lessorSpecificTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Average-Data -->
+        <div class="tab-content" id="average-data-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="ula-table" id="averageDataTable">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>Asset Type</th>
+                                <th>Description (e.g., Location, Model)</th>
+                                <th>Activity Data</th>
+                                <th>Unit (e.g., m², # assets)</th>
+                                <th>Average Emission Factor</th>
+                                <th>EF Unit</th>
+                                <th>Calculated Emissions (CO2e)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="averageDataTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
