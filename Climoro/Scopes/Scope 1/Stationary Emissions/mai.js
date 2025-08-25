@@ -97,7 +97,7 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
                 emissionFactorData[record.fuel_type][record.fuel_name] = {
                     efco2_energy: record.efco2_energy,
                     efch4_energy: record.efch4_energy,
-                    efn20_energy: record.ef20_energy,
+                    efn20_energy: record.efn20_energy,
                     efco2_mass: record.efco2_mass,
                     efch4_mass: record.efch4_mass,
                     efn20_mass: record.efn20_mass,
@@ -432,41 +432,79 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
             updateUnitOptionsForFuel(selectedFuelType, selectedFuel, unitSelectionSelect);
             
             if (selectedFuelType && selectedFuel) {
-                // Get emission factors from loaded data (default to energy-based)
-                const factors = getEmissionFactors(selectedFuelType, selectedFuel);
-                
-                // Populate emission factor fields
-                efco2Input.value = factors.efco2;
-                efch4Input.value = factors.efch4;
-                ef_n2oInput.value = factors.ef_n2o;
-                
-                console.log(`Auto-populated emission factors for ${selectedFuel}:`, factors);
-                
-                // Apply appropriate styling
-                if (factors.notFound) {
-                    // Mark as manual entry required
-                    efco2Input.classList.remove('auto-populated');
-                    efch4Input.classList.remove('auto-populated');
-                    ef_n2oInput.classList.remove('auto-populated');
-                    efco2Input.classList.add('manual-entry');
-                    efch4Input.classList.add('manual-entry');
-                    ef_n2oInput.classList.add('manual-entry');
-                    
-                    showNotification(`No emission factors found for ${selectedFuel}. Please enter manually.`, 'warning');
+                // First attempt from local DB preload
+                let factors = getEmissionFactors(selectedFuelType, selectedFuel);
+
+                const applyFactors = (f) => {
+                    efco2Input.value = f.efco2 || 0;
+                    efch4Input.value = f.efch4 || 0;
+                    ef_n2oInput.value = f.ef_n2o || 0;
+
+                    if (f.notFound) {
+                        efco2Input.classList.remove('auto-populated');
+                        efch4Input.classList.remove('auto-populated');
+                        ef_n2oInput.classList.remove('auto-populated');
+                        efco2Input.classList.add('manual-entry');
+                        efch4Input.classList.add('manual-entry');
+                        ef_n2oInput.classList.add('manual-entry');
+                    } else {
+                        efco2Input.classList.remove('manual-entry');
+                        efch4Input.classList.remove('manual-entry');
+                        ef_n2oInput.classList.remove('manual-entry');
+                        efco2Input.classList.add('auto-populated');
+                        efch4Input.classList.add('auto-populated');
+                        ef_n2oInput.classList.add('auto-populated');
+                    }
+                    calculateEmissions();
+                };
+
+                if (!factors || factors.notFound) {
+                    // Fetch from server (Climatiq + EF Master cache) as fallback
+                    frappe.call({
+                        method: 'climoro_get_stationary_fuel_efs',
+                        args: {
+                            fuel_type: selectedFuelType,
+                            fuel_name: selectedFuel,
+                            unit_preference: unitSelectionSelect.value || null,
+                            region: 'IN'
+                        },
+                        callback: function(r) {
+                            if (r.message && !r.message.not_found) {
+                                const rec = r.message;
+                                // Map returned record to our expected factor set based on unit selection
+                                const unit = unitSelectionSelect.value;
+                                let f = { efco2: 0, efch4: 0, ef_n2o: 0 };
+                                if (unit === 'kg' || unit === 'Tonnes') {
+                                    f.efco2 = rec.efco2_mass || 0;
+                                    f.efch4 = rec.efch4_mass || 0;
+                                    f.ef_n2o = rec.efn20_mass || 0;
+                                } else if (unit === 'Litre') {
+                                    f.efco2 = rec.efco2_liquid || 0;
+                                    f.efch4 = rec.efch4_liquid || 0;
+                                    f.ef_n2o = rec.efn20_liquid || 0;
+                                } else if (unit === 'm³') {
+                                    f.efco2 = rec.efco2_gas || 0;
+                                    f.efch4 = rec.efch4_gas || 0;
+                                    f.ef_n2o = rec.efn20_gas || 0;
+                                }
+                                // Fallback to energy if specific basis missing
+                                if (!(f.efco2 || f.efch4 || f.ef_n2o)) {
+                                    f.efco2 = rec.efco2_energy || 0;
+                                    f.efch4 = rec.efch4_energy || 0;
+                                    f.ef_n2o = rec.efn20_energy || 0;
+                                }
+                                applyFactors(f);
+                                showNotification(`Emission factors loaded for ${selectedFuel} (${rec.source})`, 'success');
+                            } else {
+                                showNotification(`No emission factors found for ${selectedFuel}. Please enter manually.`, 'warning');
+                                applyFactors({ efco2: 0, efch4: 0, ef_n2o: 0, notFound: true });
+                            }
+                        }
+                    });
                 } else {
-                    // Mark as auto-populated
-                    efco2Input.classList.remove('manual-entry');
-                    efch4Input.classList.remove('manual-entry');
-                    ef_n2oInput.classList.remove('manual-entry');
-                    efco2Input.classList.add('auto-populated');
-                    efch4Input.classList.add('auto-populated');
-                    ef_n2oInput.classList.add('auto-populated');
-                    
+                    applyFactors(factors);
                     showNotification(`Emission factors loaded for ${selectedFuel}`, 'success');
                 }
-                
-                // Trigger calculation if activity data is already entered
-                calculateEmissions();
             } else {
                 clearEmissionFactors(row);
             }
