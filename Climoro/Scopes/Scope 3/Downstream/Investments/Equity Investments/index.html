@@ -9,8 +9,9 @@
 <body>
   <header class="page-header">
     <h1>Equity Investments</h1>
+    <p class="subtitle">Scope 3 – Downstream calculator</p>
   </header>
-  <main>
+  <main class="equity-investments-container">
     <section class="card tab-section">
       <div class="tab-nav">
         <button type="button" class="tab-button active" data-tab="ei-specific">Method 1: Investment-Specific</button>
@@ -88,96 +89,3 @@
   <script src="./main.js"></script>
 </body>
 </html>
-
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Equity Investments</title>
-  <link rel="stylesheet" href="./main.css" />
-</head>
-<body>
-  <header class="page-header">
-    <h1>Equity Investments</h1>
-  </header>
-  <main>
-    <section class="card tab-section">
-      <div class="tab-nav">
-        <button type="button" class="tab-button active" data-tab="ei-specific">Method 1: Investment-Specific</button>
-        <button type="button" class="tab-button" data-tab="ei-average">Method 2: Average-Data</button>
-      </div>
-
-      <div class="tab-content active" id="ei-specific">
-        <div class="table-container">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>S No</th>
-                <th>Date</th>
-                <th>Investee Company</th>
-                <th>Your Equity Share (%)</th>
-                <th>Investee Scope 1 Emissions</th>
-                <th>Investee Scope 2 Emissions</th>
-                <th>Calculated Emissions (CO2e)</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="ei-tb-specific">
-              <tr class="data-entry-row entry-row">
-                <td><input type="number" name="s_no" value="1" readonly /></td>
-                <td><input type="date" name="date" /></td>
-                <td><input type="text" name="company" placeholder="e.g., Company A" /></td>
-                <td><input type="number" name="share" step="any" placeholder="%" /></td>
-                <td><input type="number" name="scope1" step="any" placeholder="kg CO2e" /></td>
-                <td><input type="number" name="scope2" step="any" placeholder="kg CO2e" /></td>
-                <td><input type="number" name="co2e" step="any" placeholder="Auto" readonly /></td>
-                <td class="actions"><button type="button" class="btn-add add-btn">+ Add</button></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="tab-content" id="ei-average">
-        <div class="table-container">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>S No</th>
-                <th>Date</th>
-                <th>Investee Company</th>
-                <th>Your Equity Share (%)</th>
-                <th>Investee Revenue</th>
-                <th>Currency</th>
-                <th>EEIO Sector EF</th>
-                <th>EF Unit (kg CO2e/$)</th>
-                <th>Calculated Emissions (CO2e)</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="ei-tb-average">
-              <tr class="data-entry-row entry-row">
-                <td><input type="number" name="s_no" value="1" readonly /></td>
-                <td><input type="date" name="date" /></td>
-                <td><input type="text" name="company" placeholder="e.g., Company C" /></td>
-                <td><input type="number" name="share" step="any" placeholder="%" /></td>
-                <td><input type="number" name="revenue" step="any" placeholder="Revenue" /></td>
-                <td><input type="text" name="currency" value="$" /></td>
-                <td><input type="number" name="eeio_ef" step="any" placeholder="EF" /></td>
-                <td><input type="text" name="ef_unit" value="kg CO2e/$" /></td>
-                <td><input type="number" name="co2e" step="any" placeholder="Auto" readonly /></td>
-                <td class="actions"><button type="button" class="btn-add add-btn">+ Add</button></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <script src="./main.js"></script>
-</body>
-</html>
-
-
