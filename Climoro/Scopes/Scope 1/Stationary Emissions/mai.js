@@ -7,6 +7,8 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
     let customFuels = [];
     let isInitialized = false;
     let emissionFactorData = {}; // Store emission factor data
+    let selectedCompany = null;
+    let selectedUnit = null;
 
     // Fuel type mappings (static as requested)
     const fuelTypeMappings = {
@@ -39,17 +41,15 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
         
         // Load emission factor data first
         loadEmissionFactorData(() => {
-            // Create data entry row after emission factors are loaded
-            createDataEntryRow();
-            
-            // Load existing data from doctype
-            loadExistingData();
-            
-            // Add event listeners
-            addEventListeners();
-            
-            isInitialized = true;
-            console.log('Stationary emissions initialized successfully');
+            // Build filters, then entry row and data
+            buildFilterBar(async () => {
+                await initializeFiltersFromContext();
+                createDataEntryRow();
+                loadExistingData();
+                addEventListeners();
+                isInitialized = true;
+                console.log('Stationary emissions initialized successfully');
+            });
         });
     }
 
@@ -118,6 +118,113 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
             // This ensures the rest of your table initialization runs
             // whether the fetch succeeded or failed.
             callback();
+        }
+    }
+
+    // Helper: fetch current user company and units
+    async function getUserContext() {
+        try {
+            const r = await frappe.call({
+                method: 'climoro_onboarding.climoro_onboarding.api.get_current_user_company_units'
+            });
+            return r.message || { company: null, units: [], is_super: false };
+        } catch (e) {
+            console.error('Failed to fetch user context', e);
+            return { company: null, units: [], is_super: false };
+        }
+    }
+
+    function buildFilterBar(done) {
+        const container = root_element.querySelector('.stationary-emissions-container');
+        const header = container.querySelector('.header-section');
+        if (!header) { done && done(); return; }
+        const bar = document.createElement('div');
+        bar.className = 'filter-bar';
+        bar.innerHTML = `
+            <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin:8px 0;">
+                <div class="company-filter" style="min-width:220px;">
+                    <label style="font-size:12px; display:block;">Company</label>
+                    <select class="form-control filter-company-select"></select>
+                </div>
+                <div class="unit-filter" style="min-width:220px;">
+                    <label style="font-size:12px; display:block;">Unit</label>
+                    <select class="form-control filter-unit-select"></select>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-secondary btn-sm filter-apply-btn">Apply</button>
+                </div>
+            </div>
+        `;
+        header.insertAdjacentElement('afterend', bar);
+        bar.querySelector('.filter-apply-btn').addEventListener('click', () => {
+            const csel = bar.querySelector('.filter-company-select');
+            const usel = bar.querySelector('.filter-unit-select');
+            selectedCompany = csel.value || null;
+            selectedUnit = usel.value || null;
+            loadExistingData();
+        });
+        done && done();
+    }
+
+    async function fetchCompanies() {
+        const r = await frappe.call({
+            method: 'frappe.client.get_list',
+            args: { doctype: 'Company', fields: ['name'], limit: 500 }
+        });
+        return (r.message || []).map(r => r.name);
+    }
+
+    async function fetchUnits(company) {
+        const filters = company ? { company } : {};
+        const r = await frappe.call({
+            method: 'frappe.client.get_list',
+            args: { doctype: 'Units', fields: ['name'], filters, limit: 500 }
+        });
+        return (r.message || []).map(r => r.name);
+    }
+
+    async function initializeFiltersFromContext() {
+        const ctx = await getUserContext();
+        const bar = root_element.querySelector('.filter-bar');
+        if (!bar) return;
+        const companySelect = bar.querySelector('.filter-company-select');
+        const unitSelect = bar.querySelector('.filter-unit-select');
+
+        companySelect.innerHTML = '';
+        unitSelect.innerHTML = '';
+
+        if (ctx.is_super) {
+            const companies = await fetchCompanies();
+            companySelect.innerHTML = `<option value="">All Companies</option>` + companies.map(c => `<option value="${c}">${c}</option>`).join('');
+            companySelect.addEventListener('change', async () => {
+                selectedCompany = companySelect.value || null;
+                const units = await fetchUnits(selectedCompany);
+                unitSelect.innerHTML = `<option value="">All Units</option>` + units.map(u => `<option value="${u}">${u}</option>`).join('');
+                selectedUnit = null;
+            });
+            const initialUnits = await fetchUnits(null);
+            unitSelect.innerHTML = `<option value="">All Units</option>` + initialUnits.map(u => `<option value="${u}">${u}</option>`).join('');
+            selectedCompany = null;
+            selectedUnit = null;
+        } else {
+            selectedCompany = ctx.company || null;
+            companySelect.innerHTML = `<option value="${selectedCompany || ''}">${selectedCompany || '-'}</option>`;
+            companySelect.disabled = true;
+
+            let units = [];
+            if (ctx.units && ctx.units.length) {
+                units = ctx.units;
+            } else if (selectedCompany) {
+                units = await fetchUnits(selectedCompany);
+            }
+            if (!units || !units.length) {
+                unitSelect.innerHTML = `<option value="">All Units</option>`;
+                selectedUnit = null;
+            } else {
+                unitSelect.innerHTML = units.map(u => `<option value="${u}">${u}</option>`).join('');
+                selectedUnit = units.length === 1 ? units[0] : units[0];
+            }
+            unitSelect.disabled = !(ctx.units && ctx.units.length > 1);
         }
     }
 
@@ -684,24 +791,21 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
 
     // Save to doctype
     function saveToDoctype(data, callback) {
-        // Create Stationary Emissions doctype if it doesn't exist
-        createStationaryEmissionsDoctype(() => {
-            // First upload file if exists
-            if (data.upload_invoice) {
-                uploadFile(data.upload_invoice, (fileUrl) => {
-                    if (fileUrl) {
-                        data.upload_invoice = fileUrl;
-                        createDoctypeRecord(data, callback);
-                    } else {
-                        // Continue without file if upload fails
-                        data.upload_invoice = null;
-                        createDoctypeRecord(data, callback);
-                    }
-                });
-            } else {
-                createDoctypeRecord(data, callback);
-            }
-        });
+        // First upload file if exists
+        if (data.upload_invoice) {
+            uploadFile(data.upload_invoice, (fileUrl) => {
+                if (fileUrl) {
+                    data.upload_invoice = fileUrl;
+                    createDoctypeRecord(data, callback);
+                } else {
+                    // Continue without file if upload fails
+                    data.upload_invoice = null;
+                    createDoctypeRecord(data, callback);
+                }
+            });
+        } else {
+            createDoctypeRecord(data, callback);
+        }
     }
 
     // Create Stationary Emissions doctype if it doesn't exist
@@ -801,38 +905,51 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
 
     // Create doctype record
     function createDoctypeRecord(data, callback) {
-        frappe.call({
-            method: 'frappe.client.insert',
-            args: {
-                doc: {
-                    doctype: 'Stationary Emissions',
-                    s_no: data.s_no,
-                    date: data.date,
-                    invoice_no: data.invoice_no,
-                    upload_invoice: data.upload_invoice,
-                    fuel_type: data.fuel_type,
-                    fuel_selection: data.fuel_selection,
-                    activity_types: data.activity_types,
-                    activity_data: data.activity_data,
-                    unit_selection: data.unit_selection,
-                    efco2: data.efco2,
-                    efch4: data.efch4,
-                    efn20: data.ef_n2o, // Map to old field name for existing doctype
-                    eco2: data.eco2,
-                    ech4: data.ech4,
-                    en20: data.en2o, // Map to old field name for existing doctype
-                    etco2eq: data.etco2eq
-                }
-            },
-            callback: function(r) {
-                if (r.exc) {
-                    console.error('Error creating record:', r.exc);
-                    callback(false);
-                } else {
-                    callback(true, r.message.name);
+        (async () => {
+            const ctx = await getUserContext();
+            const doc = {
+                doctype: 'Stationary Emissions',
+                s_no: data.s_no,
+                date: data.date,
+                invoice_no: data.invoice_no,
+                upload_invoice: data.upload_invoice,
+                fuel_type: data.fuel_type,
+                fuel_selection: data.fuel_selection,
+                activity_types: data.activity_types,
+                activity_data: data.activity_data,
+                unit_selection: data.unit_selection,
+                efco2: data.efco2,
+                efch4: data.efch4,
+                efn20: data.ef_n2o,
+                eco2: data.eco2,
+                ech4: data.ech4,
+                en20: data.en2o,
+                etco2eq: data.etco2eq
+            };
+            if (ctx.is_super) {
+                if (selectedCompany) doc.company = selectedCompany;
+                if (selectedUnit) doc.unit = selectedUnit;
+            } else if (ctx.company) {
+                doc.company = ctx.company;
+                if (selectedUnit) {
+                    doc.unit = selectedUnit;
+                } else if (ctx.units && ctx.units.length === 1) {
+                    doc.unit = ctx.units[0];
                 }
             }
-        });
+            frappe.call({
+                method: 'frappe.client.insert',
+                args: { doc },
+                callback: function(r) {
+                    if (r.exc) {
+                        console.error('Error creating record:', r.exc);
+                        callback(false);
+                    } else {
+                        callback(true, r.message.name);
+                    }
+                }
+            });
+        })();
     }
 
     // Create display row - FIXED to show below form filler
@@ -994,32 +1111,42 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
 
     // Load existing data from doctype - FIXED to show below form filler
     function loadExistingData() {
-        // Since the existing doctype likely has old field names, try old field names first
-        frappe.call({
-            method: 'frappe.client.get_list',
-            args: {
-                doctype: 'Stationary Emissions',
-                fields: ['name', 's_no', 'date', 'invoice_no', 'upload_invoice', 'fuel_type', 
-                        'fuel_selection', 'activity_types', 'activity_data', 'unit_selection',
-                        'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq'],
-                order_by: 'creation desc',
-                limit: 20
-            },
-            callback: function(r) {
-                if (r.message) {
-                    console.log('Loaded existing data with old field names:', r.message);
-                    // Map old field names to new ones
-                    const mappedData = r.message.map(record => ({
-                        ...record,
-                        ef_n2o: record.efn20,
-                        en2o: record.en20
-                    }));
-                    processExistingData(mappedData);
-                } else {
-                    console.log('No existing data found');
-                }
+        (async () => {
+            const ctx = await getUserContext();
+            const filters = {};
+            if (ctx.is_super) {
+                if (selectedCompany) filters.company = selectedCompany;
+                if (selectedUnit) filters.unit = selectedUnit;
+            } else if (ctx.company) {
+                filters.company = ctx.company;
+                if (selectedUnit) filters.unit = selectedUnit;
             }
-        });
+            frappe.call({
+                method: 'frappe.client.get_list',
+                args: {
+                    doctype: 'Stationary Emissions',
+                    fields: ['name', 's_no', 'date', 'invoice_no', 'upload_invoice', 'fuel_type', 
+                            'fuel_selection', 'activity_types', 'activity_data', 'unit_selection',
+                            'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq'],
+                    order_by: 'creation desc',
+                    limit: 20,
+                    filters
+                },
+                callback: function(r) {
+                    if (r.message) {
+                        console.log('Loaded existing data with old field names:', r.message);
+                        const mappedData = r.message.map(record => ({
+                            ...record,
+                            ef_n2o: record.efn20,
+                            en2o: record.en20
+                        }));
+                        processExistingData(mappedData);
+                    } else {
+                        console.log('No existing data found');
+                    }
+                }
+            });
+        })();
     }
 
     // Process existing data
