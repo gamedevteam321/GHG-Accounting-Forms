@@ -532,16 +532,21 @@
         }
     }
 
+    // Lightweight DocType metadata lookup that works without DocType read permission
     const metaCacheMC = {};
-    async function hasFieldMC(doctype, fieldname){
+    async function hasFieldMC(doctype, fieldname) {
         try {
-            if (!metaCacheMC[doctype]){
-                const r = await frappe.call({ method: 'frappe.client.get', args: { doctype: 'DocType', name: doctype } });
-                metaCacheMC[doctype] = r.message || {};
+            if (!metaCacheMC[doctype]) {
+                const r = await frappe.call({ method: 'frappe.desk.form.load.getdoctype', args: { doctype } });
+                const docs = (r.message && r.message.docs) || [];
+                const meta = docs.find(d => d.doctype === 'DocType' && d.name === doctype) || {};
+                metaCacheMC[doctype] = (meta.fields || []).map(f => f.fieldname);
             }
-            const fields = metaCacheMC[doctype].fields || [];
-            return fields.some(f=> f.fieldname === fieldname);
-        } catch(e){ return false; }
+            return metaCacheMC[doctype].includes(fieldname);
+        } catch (e) {
+            console.warn('Meta lookup failed for', doctype, e);
+            return false;
+        }
     }
 
     function buildFilterBar(done) {
@@ -1099,7 +1104,8 @@
                 frappe.show_alert({ message: 'Please select a Company in the filter.', indicator: 'red' });
                 callback(false); return;
             }
-            // Set both common field names to be safe
+            // Set company and, if available, unit selection
+            // Always set company and unit values on insert; server will validate/ignore unknowns
             doc.company = companyVal;
             if (unitVal) { doc.unit = unitVal; doc.company_unit = unitVal; }
 
@@ -1264,93 +1270,121 @@
     }
 
     // Load existing data from separate doctypes
-    function loadExistingData() {
-        (async () => {
+    async function loadExistingData() {
         const ctx = await getUserContextMobile();
-        // Load fuel method data
-        const dtFuel = 'Mobile Combustion Fuel Method';
-        const filtersFuel = {};
-        if (await hasFieldMC(dtFuel, 'company')) {
-            filtersFuel.company = ctx.is_super ? (selectedCompany || ctx.company || undefined) : (ctx.company || undefined);
-        }
-        if (await hasFieldMC(dtFuel, 'company_unit')) {
-            if (selectedUnit) filtersFuel.company_unit = selectedUnit;
-        }
-        frappe.call({
-            method: 'frappe.client.get_list',
-            args: {
-                doctype: dtFuel,
-                fields: ['name', 's_no', 'date', 'vehicle_no', 'fuel_selection', 'fuel_used', 
-                        'unit_selection', 'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq'],
-                order_by: 'creation desc',
-                limit: 20,
-                filters: filtersFuel
-            },
-            callback: function(r) {
-                if (r.message) {
-                    console.log('Loaded fuel method data:', r.message);
-                    const tbody = root_element.querySelector('#fuelMethodTableBody');
-                    const existingRows = tbody.querySelectorAll('.data-display-row');
-                    existingRows.forEach(row => row.remove());
-                    
-                    // Add existing records below the entry row (reverse order to show newest first)
-                    r.message.reverse().forEach(record => {
-                        createFuelDisplayRow(record, record.name);
-                        if (record.s_no >= currentFuelRowId) {
-                            currentFuelRowId = record.s_no + 1;
-                        }
-                    });
-                    
-                    const entryRow = tbody.querySelector('.data-entry-row');
-                    if (entryRow) {
-                        entryRow.querySelector('.s-no-input').value = currentFuelRowId;
-                    }
-                }
-            }
-        });
 
-        // Load transportation method data
-        const dtTrans = 'Mobile Combustion Transportation Method';
-        const filtersTrans = {};
-        if (await hasFieldMC(dtTrans, 'company')) {
-            filtersTrans.company = ctx.is_super ? (selectedCompany || ctx.company || undefined) : (ctx.company || undefined);
-        }
-        if (await hasFieldMC(dtTrans, 'company_unit')) {
-            if (selectedUnit) filtersTrans.company_unit = selectedUnit;
-        }
-        frappe.call({
-            method: 'frappe.client.get_list',
-            args: {
-                doctype: dtTrans,
-                fields: ['name', 's_no', 'date', 'vehicle_no', 'transportation_type', 'distance_traveled', 
-                        'unit_selection', 'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq'],
-                order_by: 'creation desc',
-                limit: 20,
-                filters: filtersTrans
-            },
-            callback: function(r) {
-                if (r.message) {
-                    console.log('Loaded transportation method data:', r.message);
-                    const tbody = root_element.querySelector('#transportationMethodTableBody');
-                    const existingRows = tbody.querySelectorAll('.data-display-row');
-                    existingRows.forEach(row => row.remove());
-                    
-                    // Add existing records below the entry row (reverse order to show newest first)
-                    r.message.reverse().forEach(record => {
-                        createTransportationDisplayRow(record, record.name);
-                        if (record.s_no >= currentTransportRowId) {
-                            currentTransportRowId = record.s_no + 1;
-                        }
-                    });
-                    
-                    const entryRow = tbody.querySelector('.data-entry-row');
-                    if (entryRow) {
-                        entryRow.querySelector('.s-no-input').value = currentTransportRowId;
-                    }
+        // Helper to render fuel rows
+        function renderFuelRows(records) {
+            const tbody = root_element.querySelector('#fuelMethodTableBody');
+            const existingRows = tbody.querySelectorAll('.data-display-row');
+            existingRows.forEach(row => row.remove());
+            records.slice().reverse().forEach(record => {
+                createFuelDisplayRow(record, record.name);
+                if (record.s_no >= currentFuelRowId) {
+                    currentFuelRowId = record.s_no + 1;
                 }
+            });
+            const entryRow = tbody.querySelector('.data-entry-row');
+            if (entryRow) {
+                entryRow.querySelector('.s-no-input').value = currentFuelRowId;
             }
-        });
-        })();
+        }
+
+        // Helper to render transportation rows
+        function renderTransRows(records) {
+            const tbody = root_element.querySelector('#transportationMethodTableBody');
+            const existingRows = tbody.querySelectorAll('.data-display-row');
+            existingRows.forEach(row => row.remove());
+            records.slice().reverse().forEach(record => {
+                createTransportationDisplayRow(record, record.name);
+                if (record.s_no >= currentTransportRowId) {
+                    currentTransportRowId = record.s_no + 1;
+                }
+            });
+            const entryRow = tbody.querySelector('.data-entry-row');
+            if (entryRow) {
+                entryRow.querySelector('.s-no-input').value = currentTransportRowId;
+            }
+        }
+
+        // Load fuel method data with resilient filters
+        try {
+            const dtFuel = 'Mobile Combustion Fuel Method';
+            const companyVal = ctx.is_super ? (selectedCompany || ctx.company || undefined) : (ctx.company || undefined);
+            const filtersFuel = {};
+            if (companyVal && await hasFieldMC(dtFuel, 'company')) filtersFuel.company = companyVal;
+            if (selectedUnit) {
+                if (await hasFieldMC(dtFuel, 'unit')) filtersFuel.unit = selectedUnit;
+                else if (await hasFieldMC(dtFuel, 'company_unit')) filtersFuel.company_unit = selectedUnit;
+            }
+
+            try {
+                const r = await frappe.call({
+                    method: 'frappe.client.get_list',
+                    args: {
+                        doctype: dtFuel,
+                        fields: ['name', 's_no', 'date', 'vehicle_no', 'fuel_selection', 'fuel_used',
+                                'unit_selection', 'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq'],
+                        order_by: 'creation desc',
+                        limit: 20,
+                        filters: filtersFuel
+                    }
+                });
+                renderFuelRows(r.message || []);
+            } catch (e) {
+                console.warn('Fuel data filtered query failed, retrying without filters', e);
+                const r2 = await frappe.call({
+                    method: 'frappe.client.get_list',
+                    args: {
+                        doctype: dtFuel,
+                        fields: ['name', 's_no', 'date', 'vehicle_no', 'fuel_selection', 'fuel_used',
+                                'unit_selection', 'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq'],
+                        order_by: 'creation desc',
+                        limit: 20
+                    }
+                });
+                renderFuelRows(r2.message || []);
+            }
+
+            // Load transportation method data
+            const dtTrans = 'Mobile Combustion Transportation Method';
+            const filtersTrans = {};
+            if (companyVal && await hasFieldMC(dtTrans, 'company')) filtersTrans.company = companyVal;
+            if (selectedUnit) {
+                if (await hasFieldMC(dtTrans, 'unit')) filtersTrans.unit = selectedUnit;
+                else if (await hasFieldMC(dtTrans, 'company_unit')) filtersTrans.company_unit = selectedUnit;
+            }
+
+            try {
+                const r = await frappe.call({
+                    method: 'frappe.client.get_list',
+                    args: {
+                        doctype: dtTrans,
+                        fields: ['name', 's_no', 'date', 'vehicle_no', 'transportation_type', 'distance_traveled',
+                                'unit_selection', 'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq'],
+                        order_by: 'creation desc',
+                        limit: 20,
+                        filters: filtersTrans
+                    }
+                });
+                renderTransRows(r.message || []);
+            } catch (e) {
+                console.warn('Transportation data filtered query failed, retrying without filters', e);
+                const r2 = await frappe.call({
+                    method: 'frappe.client.get_list',
+                    args: {
+                        doctype: dtTrans,
+                        fields: ['name', 's_no', 'date', 'vehicle_no', 'transportation_type', 'distance_traveled',
+                                'unit_selection', 'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq'],
+                        order_by: 'creation desc',
+                        limit: 20
+                    }
+                });
+                renderTransRows(r2.message || []);
+            }
+        } catch (err) {
+            console.error('Failed loading existing data', err);
+        }
     }
 
     // Add event listeners and disable global shortcuts for letter input

@@ -167,13 +167,17 @@
             };
             try {
                 const ctx = await getUserContext();
-                if (await hasField(doctypeName, 'company')) {
-                    doc.company = ctx.is_super ? (selectedCompany || ctx.company || null) : (ctx.company || null);
+                const companyVal = ctx.is_super ? (selectedCompany || ctx.company || null) : (ctx.company || null);
+                const unitVal = selectedUnit || (ctx.units && ctx.units.length === 1 ? ctx.units[0] : null);
+
+                if (!companyVal) {
+                    frappe.show_alert({ message: 'Please select a Company in the filter.', indicator: 'red' });
+                    callback(false); return;
                 }
-                if (await hasField(doctypeName, 'company_unit')) {
-                    const chosenUnit = selectedUnit || (ctx.units && ctx.units.length === 1 ? ctx.units[0] : null);
-                    if (chosenUnit) doc.company_unit = chosenUnit;
-                }
+
+                // Always set company and company_unit
+                doc.company = companyVal;
+                if (unitVal) { doc.company_unit = unitVal; }
             } catch(e) {}
             frappe.call({
                 method: 'frappe.client.insert',
@@ -225,7 +229,77 @@
         row.querySelector('.etco2eq-input').value = '';
     }
 
-    function loadExistingData() { /* same as before */ }
+    async function loadExistingData() {
+        try {
+            const ctx = await getUserContext();
+            const doctypeName = 'Electricity Purchased';
+            const tbody = root_element.querySelector('#electricityTableBody');
+            if (!tbody) return;
+
+            // Build filters safely by checking meta
+            const filters = {};
+            const companyVal = ctx.is_super ? (selectedCompany || ctx.company || undefined) : (ctx.company || undefined);
+            const wantCompanyFilter = !!companyVal;
+            const wantUnitFilter = !!selectedUnit;
+            if (wantCompanyFilter && await hasField(doctypeName, 'company')) filters.company = companyVal;
+
+            if (selectedUnit && await hasField(doctypeName, 'company_unit')) {
+                filters.company_unit = selectedUnit;
+            }
+
+            // Helper to render list
+            const render = (records) => {
+                // Client-side filtering as a fallback safety net
+                let list = Array.isArray(records) ? records : [];
+                if (wantCompanyFilter) {
+                    list = list.filter(r => String(r.company || '').trim() === String(companyVal || '').trim());
+                }
+                if (wantUnitFilter) {
+                    const unitV = String(selectedUnit || '').trim();
+                    list = list.filter(r => String(r.company_unit || '').trim() === unitV);
+                }
+                const existingRows = tbody.querySelectorAll('.data-display-row');
+                existingRows.forEach(r => r.remove());
+                let maxSerial = currentRowId;
+                list.slice().reverse().forEach(rec => {
+                    createDisplayRow(rec, rec.name);
+                    if (rec.s_no && rec.s_no >= maxSerial) maxSerial = rec.s_no + 1;
+                });
+                const entryRow = tbody.querySelector('.data-entry-row');
+                if (entryRow) entryRow.querySelector('.s-no-input').value = maxSerial;
+                currentRowId = maxSerial;
+            };
+
+            // Try filtered first, then unfiltered
+            try {
+                const r = await frappe.call({
+                    method: 'frappe.client.get_list',
+                    args: {
+                        doctype: doctypeName,
+                        fields: ['name','s_no','date','invoice_no','upload_invoice','activity_types','activity_data','no_of_units','unit_selection','ef','etco2eq','company','company_unit'],
+                        order_by: 'creation desc',
+                        limit: 20,
+                        filters
+                    }
+                });
+                render(r.message || []);
+            } catch (err) {
+                console.warn('Electricity list filtered query failed, retrying without filters', err);
+                const r2 = await frappe.call({
+                    method: 'frappe.client.get_list',
+                    args: {
+                        doctype: doctypeName,
+                        fields: ['name','s_no','date','invoice_no','upload_invoice','activity_types','activity_data','no_of_units','unit_selection','ef','etco2eq','company','company_unit'],
+                        order_by: 'creation desc',
+                        limit: 20
+                    }
+                });
+                render(r2.message || []);
+            }
+        } catch (e) {
+            console.error('Failed to load electricity records', e);
+        }
+    }
     
     function formatDate(dateString) { if (!dateString) return '-'; return new Date(dateString).toLocaleDateString(); }
     function showNotification(message, type) { frappe.show_alert({message: message, indicator: type === 'success' ? 'green' : 'red'}); }
@@ -244,11 +318,13 @@
         try {
             if (!metaCache[doctype]){
                 const r = await frappe.call({ method: 'frappe.desk.form.load.getdoctype', args: { doctype } });
-                metaCache[doctype] = (r.message && r.message.docs && r.message.docs[0]) || {};
+                const docs = (r.message && r.message.docs) || [];
+                const meta = docs.find(d => d.doctype === 'DocType' && d.name === doctype) || {};
+                metaCache[doctype] = meta.fields || [];
             }
-            const fields = metaCache[doctype].fields || [];
+            const fields = metaCache[doctype] || [];
             return fields.some(f=> f.fieldname === fieldname);
-        } catch(e){ return false; }
+        } catch(e){ console.warn('hasField failed for', doctype, e); return false; }
     }
     function buildFilterBar(done){
         const container = root_element.querySelector('.electricity-purchased-container');
