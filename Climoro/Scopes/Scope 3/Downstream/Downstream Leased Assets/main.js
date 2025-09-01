@@ -2,16 +2,12 @@
   const tbAsset = root_element.querySelector('#dla-tb-asset');
   const tbLessee = root_element.querySelector('#dla-tb-lessee');
   const tbAvg = root_element.querySelector('#dla-tb-average');
+  let selectedCompany = null;
+  let selectedUnit = null;
 
   function saveRow(doctypeName, data){
     return new Promise((resolve, reject)=>{
-      const doc = Object.assign({}, data, { doctype: doctypeName });
-      frappe.call({
-        method: 'frappe.client.insert',
-        args: { doc },
-        callback: r => resolve(r.message),
-        error: err => reject(err)
-      });
+      (async ()=>{ const doc = Object.assign({}, data, { doctype: doctypeName }); try { const ctx = await getUserContext(); if (ctx.is_super) { if (selectedCompany) doc.company = selectedCompany; if (selectedUnit) doc.unit = selectedUnit; } else if (ctx.company) { doc.company = ctx.company; if (selectedUnit) doc.unit = selectedUnit; else if (ctx.units && ctx.units.length === 1) doc.unit = ctx.units[0]; } } catch(e){} frappe.call({ method: 'frappe.client.insert', args: { doc }, callback: r => resolve(r.message), error: err => reject(err) }); })();
     });
   }
 
@@ -102,11 +98,15 @@
       { tbody: tbLessee, doctype: 'Downstream Leased Assets Lessee Specific Item', fields: ['name','s_no','date','asset_id','lessee_emission','unit','share','co2e'] },
       { tbody: tbAvg, doctype: 'Downstream Leased Assets Average Data Item', fields: ['name','s_no','date','asset_type','desc','activity','unit','avg_ef','ef_unit','co2e'] },
     ];
-    specs.forEach(spec =>{
+    specs.forEach(async spec =>{
       if (!spec.tbody) return;
+      const ctx = await getUserContext();
+      const filters = {};
+      if (ctx.is_super) { if (selectedCompany) filters.company = selectedCompany; if (selectedUnit) filters.unit = selectedUnit; }
+      else if (ctx.company) { filters.company = ctx.company; if (selectedUnit) filters.unit = selectedUnit; }
       frappe.call({
         method: 'frappe.client.get_list',
-        args: { doctype: spec.doctype, fields: spec.fields, limit_page_length: 500, order_by: 'creation asc' },
+        args: { doctype: spec.doctype, fields: spec.fields, limit_page_length: 500, order_by: 'creation asc', filters },
         callback: r => {
           const entry = spec.tbody.querySelector('.entry-row');
           (r.message||[]).forEach(doc =>{
@@ -118,7 +118,7 @@
     });
   }
 
-  loadExisting();
+  buildFilterBar(async ()=>{ await initializeFiltersFromContext(); loadExisting(); });
 
   // Tabs
   root_element.addEventListener('click', function(e){
@@ -131,4 +131,24 @@
     btn.classList.add('active');
     root_element.querySelector(`#${id}`)?.classList.add('active');
   }, true);
+
+  // ============ Company/Unit Filter Helpers ============
+  async function getUserContext(){ try { const r = await frappe.call({ method: 'climoro_onboarding.climoro_onboarding.api.get_current_user_company_units' }); return r.message || { company: null, units: [], is_super: false }; } catch(e){ return { company: null, units: [], is_super: false }; } }
+  function buildFilterBar(done){ if (root_element.querySelector('.filter-bar')) { done && done(); return; } const bar = document.createElement('div'); bar.className='filter-bar'; (async ()=>{ try{ const ctx = await getUserContext(); const roles = (frappe && frappe.get_roles)? frappe.get_roles(): []; const canShow = ctx.is_super || roles.includes('System Manager') || roles.includes('Super Admin'); if(!canShow){ done&&done(); return; } }catch(e){ done&&done(); return; } })(); bar.innerHTML = `
+    <div style="display:flex; gap:12px; align-items:center; flex-wrap:nowrap; margin:8px 0;">
+      <div class="company-filter" style="min-width:220px; display:flex; align-items:center; gap:8px;">
+        <label style="font-size:12px; margin:0; white-space:nowrap;">Company</label>
+        <select class="form-control filter-company-select" style="width:260px;"></select>
+      </div>
+      <div class="unit-filter" style="min-width:220px; display:flex; align-items:center; gap:8px;">
+        <label style="font-size:12px; margin:0; white-space:nowrap;">Unit</label>
+        <select class="form-control filter-unit-select" style="width:260px;"></select>
+      </div>
+      <div>
+        <button type="button" class="btn btn-secondary filter-apply-btn">Apply</button>
+      </div>
+    </div>`; const header = root_element.querySelector('.page-header') || root_element.querySelector('.header-section'); if (header) header.insertAdjacentElement('afterend', bar); else root_element.prepend(bar); bar.querySelector('.filter-apply-btn')?.addEventListener('click', ()=>{ const csel = bar.querySelector('.filter-company-select'); const usel = bar.querySelector('.filter-unit-select'); selectedCompany = csel.value || null; selectedUnit = usel.value || null; [tbAsset, tbLessee, tbAvg].forEach(tb => tb?.querySelectorAll('.data-row').forEach(r=>r.remove())); loadExisting(); }); done && done(); }
+  async function fetchCompanies(){ const r = await frappe.call({ method:'frappe.client.get_list', args:{ doctype:'Company', fields:['name'], limit:500 } }); return (r.message||[]).map(x=>x.name); }
+  async function fetchUnits(company){ const filters = company ? { company } : {}; const r = await frappe.call({ method:'frappe.client.get_list', args:{ doctype:'Units', fields:['name'], filters, limit:500 } }); return (r.message||[]).map(x=>x.name); }
+  async function initializeFiltersFromContext(){ const ctx = await getUserContext(); const bar = root_element.querySelector('.filter-bar'); if(!bar) return; const companySelect = bar.querySelector('.filter-company-select'); const unitSelect = bar.querySelector('.filter-unit-select'); companySelect.innerHTML=''; unitSelect.innerHTML=''; if(ctx.is_super){ const companies = await fetchCompanies(); companySelect.innerHTML = `<option value=\"\">All Companies</option>` + companies.map(c=>`<option value=\"${c}\">${c}</option>`).join(''); companySelect.addEventListener('change', async ()=>{ selectedCompany = companySelect.value || null; const units = await fetchUnits(selectedCompany); unitSelect.innerHTML = `<option value=\"\">All Units</option>` + units.map(u=>`<option value=\"${u}\">${u}</option>`).join(''); selectedUnit = null; }); const initialUnits = await fetchUnits(null); unitSelect.innerHTML = `<option value=\"\">All Units</option>` + initialUnits.map(u=>`<option value=\"${u}\">${u}</option>`).join(''); selectedCompany=null; selectedUnit=null; } else { selectedCompany = ctx.company || null; companySelect.innerHTML = `<option value=\"${selectedCompany||''}\">${selectedCompany||'-'}</option>`; companySelect.disabled = true; let units=[]; if(ctx.units && ctx.units.length) units=ctx.units; else if(selectedCompany) units = await fetchUnits(selectedCompany); if(!units || !units.length){ unitSelect.innerHTML = `<option value=\"\">All Units</option>`; selectedUnit=null; } else { unitSelect.innerHTML = units.map(u=>`<option value=\"${u}\">${u}</option>`).join(''); selectedUnit = units.length===1 ? units[0] : units[0]; } unitSelect.disabled = !(ctx.units && ctx.units.length>1); } }
 })();

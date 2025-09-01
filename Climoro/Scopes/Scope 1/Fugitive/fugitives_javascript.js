@@ -14,6 +14,10 @@
     // *** NEW: To hold dynamically fetched GWP data ***
     let gwpChemicals = {};
 
+    // *** NEW: Company/Unit filtering context ***
+    let selectedCompany = null;
+    let selectedUnit = null;
+
     // *** REMOVED: The old hardcoded gasTypes array is no longer needed.
 
     // These hardcoded arrays are still used by the other tabs
@@ -54,21 +58,27 @@
         });
     }
 
-    // *** MODIFIED: Initialization is now wrapped in the async data loader ***
+    // *** MODIFIED: Initialization is now wrapped in the async data loader and filter bar setup ***
     function initializeInterface() {
         const container = root_element.querySelector('.refrigeration-fugitives-container');
         if (!container || isInitialized) return;
 
         console.log('Initializing refrigeration fugitives...');
-        
-        loadGwpData(() => {
-            setupTabSwitching();
-            createDataEntryRow('scale-base');
-            createDataEntryRow('screening');
-            createDataEntryRow('simple');
-            loadExistingData(); // This will now work correctly
-            isInitialized = true;
-            console.log('Refrigeration fugitives initialized successfully');
+
+        // Build filter bar first, then load data and UI
+        buildFilterBar(() => {
+            (async () => {
+                await initializeFiltersFromContext();
+                loadGwpData(() => {
+                    setupTabSwitching();
+                    createDataEntryRow('scale-base');
+                    createDataEntryRow('screening');
+                    createDataEntryRow('simple');
+                    loadExistingData();
+                    isInitialized = true;
+                    console.log('Refrigeration fugitives initialized successfully');
+                });
+            })();
         });
     }
 
@@ -118,7 +128,7 @@
                     <td><input type="number" class="form-control s-no-input" placeholder="Auto" readonly></td>
                     <td><input type="date" class="form-control date-input" required></td>
                     <td><select class="form-control gas-type-select"><option value="">Select a Gas...</option>${gasOptions}<option value="Other">Other</option></select></td>
-                    <td><select class="form-control unit-selection-select"><option value="Tonnes">Tonnes</option><option value="kg">kg</option></select></td>
+                    <td><select class="form-control unit-selection-select"><option value="">Select a Unit...</option><option value="kg">kg</option></select></td>
                     <td><input type="number" class="form-control inventory-start-input" placeholder="Auto populate (First time manual)" step="0.01"></td>
                     <td><input type="number" class="form-control inventory-close-input" placeholder="Numeric" step="0.01"></td>
                     <td><input type="number" class="form-control decreased-inventory-input" placeholder="Auto (X1)" step="0.01" readonly></td>
@@ -141,11 +151,11 @@
                 return `
                     <td><input type="number" class="form-control s-no-input" placeholder="Auto" readonly></td>
                     <td><input type="date" class="form-control date-input" required></td>
-                    <td><select class="form-control equipment-selection-input"><option value="">DATA to be provided (Multiselect)</option>${refrigerationEquipment.map(eq => `<option value="${eq}">${eq}</option>`).join('')}</select></td>
-                    <td><select class="form-control type-refrigeration-input"><option value="">DATA to be provided (Drop DOWN)</option>${refrigerationTypes.map(type => `<option value="${type}">${type}</option>`).join('')}</select></td>
+                    <td><select class="form-control equipment-selection-input"><option value="">Select a Equipment...</option>${refrigerationEquipment.map(eq => `<option value="${eq}">${eq}</option>`).join('')}</select></td>
+                    <td><select class="form-control type-refrigeration-input"><option value="">Select a Type of Refrigeration...</option>${refrigerationTypes.map(type => `<option value="${type}">${type}</option>`).join('')}</select></td>
                     <td><input type="number" class="form-control gwp-refrigeration-input" placeholder="Constant (10)" step="1" value="10"></td>
                     <td><input type="number" class="form-control no-units-input" placeholder="Numeric" step="1"></td>
-                    <td><select class="form-control unit-selection-select"><option value="">Tonnes</option><option value="Tonnes">Tonnes</option><option value="kg">kg</option></select></td>
+                    <td><select class="form-control unit-selection-select"><option value="">Select a Unit...</option><option value="Tonnes">Tonnes</option><option value="kg">kg</option></select></td>
                     <td><input type="number" class="form-control original-charge-input" placeholder="Numeric" step="0.01"></td>
                     <td><input type="number" class="form-control assembly-ef-input" placeholder="Numeric" step="0.0001"></td>
                     <td><input type="number" class="form-control etco2eq-input" placeholder="C*D*E*F" step="0.01" readonly></td>
@@ -157,10 +167,10 @@
                     <td><input type="date" class="form-control date-input" required></td>
                     <td><input type="text" class="form-control invoice-no-input" placeholder="TEXT FIELD"></td>
                     <td><input type="file" class="form-control file-input" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: none;"><button type="button" class="btn btn-outline-secondary btn-sm upload-btn"><i class="fa fa-upload"></i> Upload docs</button><span class="file-name"></span></td>
-                    <td><select class="form-control type-refrigeration-input"><option value="">DATA to be provided (Drop DOWN)</option>${refrigerationTypes.map(type => `<option value="${type}">${type}</option>`).join('')}</select></td>
+                    <td><select class="form-control type-refrigeration-input"><option value="">Select a Type of Refrigeration...</option>${refrigerationTypes.map(type => `<option value="${type}">${type}</option>`).join('')}</select></td>
                     <td><input type="number" class="form-control amount-purchased-input" placeholder="Numeric" step="0.01"></td>
                     <td><input type="number" class="form-control no-units-input" placeholder="Numeric" step="1"></td>
-                    <td><select class="form-control unit-selection-select"><option value="">Tonnes</option><option value="Tonnes">Tonnes</option><option value="kg">kg</option></select></td>
+                    <td><select class="form-control unit-selection-select"><option value="">Select a Unit...</option><option value="Tonnes">Tonnes</option><option value="kg">kg</option></select></td>
                     <td><input type="number" class="form-control gwp-input" placeholder="Constant (10)" step="1" value="10"></td>
                     <td><input type="number" class="form-control etco2eq-input" placeholder="A*B" step="0.01" readonly></td>
                     <td><button type="button" class="btn btn-success btn-sm add-row-btn add-btn"><i class="fa fa-plus"></i> Add</button></td>
@@ -302,11 +312,20 @@
     }
 
     function createDoctypeRecord(data, tabType, callback) {
-        frappe.call({
-            method: 'frappe.client.insert',
-            args: { doc: { doctype: getDoctypeName(tabType), ...data } },
-            callback: r => r.exc ? (console.error('Error creating record:', r.exc), callback(false)) : callback(true, r.message.name)
-        });
+        (async () => {
+            const ctx = await getUserContext();
+            const doc = { doctype: getDoctypeName(tabType), ...data };
+            const companyVal = ctx.is_super ? (selectedCompany || ctx.company || null) : (ctx.company || null);
+            const unitVal = selectedUnit || (ctx.units && ctx.units.length === 1 ? ctx.units[0] : null);
+            if (!companyVal) { showNotification('Please select a Company in the filter.', 'error'); callback(false); return; }
+            doc.company = companyVal;
+            if (unitVal) { doc.unit = unitVal; }
+            frappe.call({
+                method: 'frappe.client.insert',
+                args: { doc },
+                callback: r => r.exc ? (console.error('Error creating record:', r.exc), callback(false)) : callback(true, r.message.name)
+            });
+        })();
     }
 
     function getDoctypeName(tabType) { return { 'scale-base': 'Fugitive Scale Base', 'screening': 'Fugitive Screening', 'simple': 'Fugitive Simple' }[tabType]; }
@@ -387,23 +406,37 @@
     }
 
     function loadTabData(tabType) {
-        frappe.call({
-            method: 'frappe.client.get_list',
-            args: { doctype: getDoctypeName(tabType), fields: ['*'], order_by: 'creation desc', limit: 20 },
-            callback: function(r) {
-                if (r.message) {
-                    const tbody = root_element.querySelector('#' + getTableId(tabType) + 'Body');
-                    tbody.querySelectorAll('.data-display-row').forEach(row => row.remove());
-                    r.message.reverse().forEach(record => {
-                        createDisplayRow(record, record.name, tabType);
-                        if (record.s_no > currentRowIds[tabType]) currentRowIds[tabType] = record.s_no;
-                    });
-                    currentRowIds[tabType]++;
-                    const entryRow = tbody.querySelector('.data-entry-row');
-                    if (entryRow) entryRow.querySelector('.s-no-input').value = currentRowIds[tabType];
-                }
+        (async () => {
+            const ctx = await getUserContext();
+            const maybeCompany = ctx.is_super ? (selectedCompany || ctx.company || null) : (ctx.company || null);
+            const maybeUnit = selectedUnit || null;
+            const tryFetch = (filters) => new Promise((resolve)=>{
+                frappe.call({
+                    method: 'frappe.client.get_list',
+                    args: { doctype: getDoctypeName(tabType), fields: ['*'], order_by: 'creation desc', limit: 20, filters },
+                    callback: r => resolve({ ok: true, res: r }),
+                    error: () => resolve({ ok: false })
+                });
+            });
+            // First attempt with filters, fallback to none on permission errors
+            const filters = {};
+            if (maybeCompany) filters.company = maybeCompany;
+            if (maybeUnit) { filters.unit = maybeUnit; }
+            let result = await tryFetch(filters);
+            if (!result.ok) result = await tryFetch({});
+            const r = result.res;
+            if (r && r.message) {
+                const tbody = root_element.querySelector('#' + getTableId(tabType) + 'Body');
+                tbody.querySelectorAll('.data-display-row').forEach(row => row.remove());
+                r.message.reverse().forEach(record => {
+                    createDisplayRow(record, record.name, tabType);
+                    if (record.s_no > currentRowIds[tabType]) currentRowIds[tabType] = record.s_no;
+                });
+                currentRowIds[tabType]++;
+                const entryRow = tbody.querySelector('.data-entry-row');
+                if (entryRow) entryRow.querySelector('.s-no-input').value = currentRowIds[tabType];
             }
-        });
+        })();
     }
 
     function formatDate(dateString) { if (!dateString) return '-'; return new Date(dateString).toLocaleDateString(); }
@@ -415,4 +448,112 @@
     if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initializeInterface); }
     else { initializeInterface(); }
     document.addEventListener('frappe:workspace:shown', () => { if (!isInitialized) initializeInterface(); else loadExistingData(); });
+    
+    // =================================================================
+    // Company/Unit Filter Helpers (reused from stationary emissions)
+    // =================================================================
+    async function getUserContext() {
+        try {
+            const r = await frappe.call({ method: 'climoro_onboarding.climoro_onboarding.api.get_current_user_company_units' });
+            return r.message || { company: null, units: [], is_super: false };
+        } catch (e) {
+            console.error('Failed to fetch user context', e);
+            return { company: null, units: [], is_super: false };
+        }
+    }
+
+    function buildFilterBar(done) {
+        const container = root_element.querySelector('.refrigeration-fugitives-container');
+        const header = container ? container.querySelector('.header-section') : null;
+        if (!header) { done && done(); return; }
+        if (container.querySelector('.filter-bar')) { done && done(); return; }
+        // Only show filter for System Manager or Super Admin
+        (async () => {
+            try {
+                const ctx = await getUserContext();
+                const roles = (frappe && frappe.get_roles) ? frappe.get_roles() : [];
+                const canShow = ctx.is_super || roles.includes('System Manager') || roles.includes('Super Admin');
+                if (!canShow) { done && done(); return; }
+            } catch (e) { done && done(); return; }
+        })();
+        const bar = document.createElement('div');
+        bar.className = 'filter-bar';
+        bar.innerHTML = `
+            <div style="display:flex; gap:12px; align-items:center; flex-wrap:nowrap; margin:8px 0;">
+                <div class="company-filter" style="min-width:220px; display:flex; align-items:center; gap:8px;">
+                    <label style="font-size:12px; margin:0; white-space:nowrap;">Company</label>
+                    <select class="form-control filter-company-select" style="width:260px;"></select>
+                </div>
+                <div class="unit-filter" style="min-width:220px; display:flex; align-items:center; gap:8px;">
+                    <label style="font-size:12px; margin:0; white-space:nowrap;">Unit</label>
+                    <select class="form-control filter-unit-select" style="width:260px;"></select>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-secondary filter-apply-btn">Apply</button>
+                </div>
+            </div>
+        `;
+        header.insertAdjacentElement('afterend', bar);
+        bar.querySelector('.filter-apply-btn').addEventListener('click', () => {
+            const csel = bar.querySelector('.filter-company-select');
+            const usel = bar.querySelector('.filter-unit-select');
+            selectedCompany = csel.value || null;
+            selectedUnit = usel.value || null;
+            loadExistingData();
+        });
+        done && done();
+    }
+
+    async function fetchCompanies() {
+        const r = await frappe.call({ method: 'frappe.client.get_list', args: { doctype: 'Company', fields: ['name'], limit: 500 } });
+        return (r.message || []).map(r => r.name);
+    }
+
+    async function fetchUnits(company) {
+        const filters = company ? { company } : {};
+        const r = await frappe.call({ method: 'frappe.client.get_list', args: { doctype: 'Units', fields: ['name'], filters, limit: 500 } });
+        return (r.message || []).map(r => r.name);
+    }
+
+    async function initializeFiltersFromContext() {
+        const ctx = await getUserContext();
+        const bar = root_element.querySelector('.filter-bar');
+        if (!bar) return;
+        const companySelect = bar.querySelector('.filter-company-select');
+        const unitSelect = bar.querySelector('.filter-unit-select');
+
+        companySelect.innerHTML = '';
+        unitSelect.innerHTML = '';
+
+        if (ctx.is_super) {
+            const companies = await fetchCompanies();
+            companySelect.innerHTML = `<option value="">All Companies</option>` + companies.map(c => `<option value="${c}">${c}</option>`).join('');
+            companySelect.addEventListener('change', async () => {
+                selectedCompany = companySelect.value || null;
+                const units = await fetchUnits(selectedCompany);
+                unitSelect.innerHTML = `<option value="">All Units</option>` + units.map(u => `<option value="${u}">${u}</option>`).join('');
+                selectedUnit = null;
+            });
+            const initialUnits = await fetchUnits(null);
+            unitSelect.innerHTML = `<option value="">All Units</option>` + initialUnits.map(u => `<option value="${u}">${u}</option>`).join('');
+            selectedCompany = null;
+            selectedUnit = null;
+        } else {
+            selectedCompany = ctx.company || null;
+            companySelect.innerHTML = `<option value="${selectedCompany || ''}">${selectedCompany || '-'}</option>`;
+            companySelect.disabled = true;
+
+            let units = [];
+            if (ctx.units && ctx.units.length) units = ctx.units;
+            else if (selectedCompany) units = await fetchUnits(selectedCompany);
+            if (!units || !units.length) {
+                unitSelect.innerHTML = `<option value="">All Units</option>`;
+                selectedUnit = null;
+            } else {
+                unitSelect.innerHTML = units.map(u => `<option value="${u}">${u}</option>`).join('');
+                selectedUnit = units.length === 1 ? units[0] : units[0];
+            }
+            unitSelect.disabled = !(ctx.units && ctx.units.length > 1);
+        }
+    }
 })();

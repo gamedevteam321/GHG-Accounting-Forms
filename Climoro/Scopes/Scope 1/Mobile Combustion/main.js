@@ -18,6 +18,10 @@
     const fuelUnitOptions = ['KG', 'Tonnes'];
     const transportUnitOptions = ['KM', 'Miles', 'Nautical Miles', 'ETC'];
 
+    // Company/Unit filtering context
+    let selectedCompany = null;
+    let selectedUnit = null;
+
     // Country to region mapping for emission factors
     const countryRegionMapping = {
         'United States': 'US',
@@ -487,6 +491,9 @@
 
         console.log('Initializing mobile combustion...');
         
+        // Build filter bar first
+        buildFilterBar(async () => {
+        await initializeFiltersFromContext();
         // Get user's region and load fuel/transportation types first
         Promise.all([getUserRegion(), loadFuelTypes(), loadTransportationTypes()]).then(() => {
             // Check available emission factors data
@@ -511,6 +518,125 @@
             isInitialized = true;
             console.log('Mobile combustion initialized successfully with region:', userRegion, 'and fuel types:', fuelSelections);
         });
+        });
+    }
+
+    // Company/Unit Filter Helpers (aligned with fugitives)
+    async function getUserContextMobile() {
+        try {
+            const r = await frappe.call({ method: 'climoro_onboarding.climoro_onboarding.api.get_current_user_company_units' });
+            return r.message || { company: null, units: [], is_super: false };
+        } catch (e) {
+            console.error('Failed to fetch user context', e);
+            return { company: null, units: [], is_super: false };
+        }
+    }
+
+    const metaCacheMC = {};
+    async function hasFieldMC(doctype, fieldname){
+        try {
+            if (!metaCacheMC[doctype]){
+                const r = await frappe.call({ method: 'frappe.client.get', args: { doctype: 'DocType', name: doctype } });
+                metaCacheMC[doctype] = r.message || {};
+            }
+            const fields = metaCacheMC[doctype].fields || [];
+            return fields.some(f=> f.fieldname === fieldname);
+        } catch(e){ return false; }
+    }
+
+    function buildFilterBar(done) {
+        const container = root_element.querySelector('.mobile-combustion-container');
+        const header = container ? container.querySelector('.header-section') : null;
+        if (!header) { done && done(); return; }
+        if (container.querySelector('.filter-bar')) { done && done(); return; }
+        // Only show for System Manager or Super Admin
+        (async () => {
+            try {
+                const ctx = await getUserContextMobile();
+                const roles = (frappe && frappe.get_roles) ? frappe.get_roles() : [];
+                const canShow = ctx.is_super || roles.includes('System Manager') || roles.includes('Super Admin');
+                if (!canShow) { done && done(); return; }
+            } catch (e) { done && done(); return; }
+        })();
+        const bar = document.createElement('div');
+        bar.className = 'filter-bar';
+        bar.innerHTML = `
+            <div style="display:flex; gap:12px; align-items:center; flex-wrap:nowrap; margin:8px 0;">
+                <div class="company-filter" style="min-width:220px; display:flex; align-items:center; gap:8px;">
+                    <label style="font-size:12px; margin:0; white-space:nowrap;">Company</label>
+                    <select class="form-control filter-company-select" style="width:260px;"></select>
+                </div>
+                <div class="unit-filter" style="min-width:220px; display:flex; align-items:center; gap:8px;">
+                    <label style="font-size:12px; margin:0; white-space:nowrap;">Unit</label>
+                    <select class="form-control filter-unit-select" style="width:260px;"></select>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-secondary filter-apply-btn">Apply</button>
+                </div>
+            </div>
+        `;
+        header.insertAdjacentElement('afterend', bar);
+        bar.querySelector('.filter-apply-btn').addEventListener('click', () => {
+            const csel = bar.querySelector('.filter-company-select');
+            const usel = bar.querySelector('.filter-unit-select');
+            selectedCompany = csel.value || null;
+            selectedUnit = usel.value || null;
+            loadExistingData();
+        });
+        done && done();
+    }
+
+    async function fetchCompanies() {
+        const r = await frappe.call({ method: 'frappe.client.get_list', args: { doctype: 'Company', fields: ['name'], limit: 500 } });
+        return (r.message || []).map(r => r.name);
+    }
+
+    async function fetchUnits(company) {
+        const filters = company ? { company } : {};
+        const r = await frappe.call({ method: 'frappe.client.get_list', args: { doctype: 'Units', fields: ['name'], filters, limit: 500 } });
+        return (r.message || []).map(r => r.name);
+    }
+
+    async function initializeFiltersFromContext() {
+        const ctx = await getUserContextMobile();
+        const bar = root_element.querySelector('.filter-bar');
+        if (!bar) return;
+        const companySelect = bar.querySelector('.filter-company-select');
+        const unitSelect = bar.querySelector('.filter-unit-select');
+
+        companySelect.innerHTML = '';
+        unitSelect.innerHTML = '';
+
+        if (ctx.is_super) {
+            const companies = await fetchCompanies();
+            companySelect.innerHTML = `<option value="">All Companies</option>` + companies.map(c => `<option value="${c}">${c}</option>`).join('');
+            companySelect.addEventListener('change', async () => {
+                selectedCompany = companySelect.value || null;
+                const units = await fetchUnits(selectedCompany);
+                unitSelect.innerHTML = `<option value="">All Units</option>` + units.map(u => `<option value="${u}">${u}</option>`).join('');
+                selectedUnit = null;
+            });
+            const initialUnits = await fetchUnits(null);
+            unitSelect.innerHTML = `<option value="">All Units</option>` + initialUnits.map(u => `<option value="${u}">${u}</option>`).join('');
+            selectedCompany = null;
+            selectedUnit = null;
+        } else {
+            selectedCompany = ctx.company || null;
+            companySelect.innerHTML = `<option value="${selectedCompany || ''}">${selectedCompany || '-'}</option>`;
+            companySelect.disabled = true;
+
+            let units = [];
+            if (ctx.units && ctx.units.length) units = ctx.units;
+            else if (selectedCompany) units = await fetchUnits(selectedCompany);
+            if (!units || !units.length) {
+                unitSelect.innerHTML = `<option value="">All Units</option>`;
+                selectedUnit = null;
+            } else {
+                unitSelect.innerHTML = units.map(u => `<option value="${u}">${u}</option>`).join('');
+                selectedUnit = units.length === 1 ? units[0] : units[0];
+            }
+            unitSelect.disabled = !(ctx.units && ctx.units.length > 1);
+        }
     }
 
     // Setup tab functionality
@@ -962,25 +1088,35 @@
         return true;
     }
 
-    // Save to doctype (for separate doctypes)
+    // Save to doctype (for separate doctypes) with company/unit context
     function saveToDoctype(doctypeName, data, callback) {
-        frappe.call({
-            method: 'frappe.client.insert',
-            args: {
-                doc: {
-                    doctype: doctypeName,
-                    ...data
-                }
-            },
-            callback: function(r) {
-                if (r.exc) {
-                    console.error('Error creating record:', r.exc);
-                    callback(false);
-                } else {
-                    callback(true, r.message.name);
-                }
+        (async () => {
+            const ctx = await getUserContextMobile();
+            const doc = { doctype: doctypeName, ...data };
+            const companyVal = ctx.is_super ? (selectedCompany || ctx.company || null) : (ctx.company || null);
+            const unitVal = selectedUnit || (ctx.units && ctx.units.length === 1 ? ctx.units[0] : null);
+            if (!companyVal) {
+                frappe.show_alert({ message: 'Please select a Company in the filter.', indicator: 'red' });
+                callback(false); return;
             }
-        });
+            // Set both common field names to be safe
+            doc.company = companyVal;
+            if (unitVal) { doc.unit = unitVal; doc.company_unit = unitVal; }
+
+            frappe.call({
+                method: 'frappe.client.insert',
+                args: { doc },
+                callback: function(r) {
+                    if (r.exc) {
+                        // If unit is mandatory under a different field, try toggling
+                        if (!unitVal) { frappe.show_alert({ message: 'Please select a Unit in the filter.', indicator: 'red' }); }
+                        callback(false);
+                    } else {
+                        callback(true, r.message && r.message.name);
+                    }
+                }
+            });
+        })();
     }
 
     // Create fuel display row
@@ -1129,15 +1265,26 @@
 
     // Load existing data from separate doctypes
     function loadExistingData() {
+        (async () => {
+        const ctx = await getUserContextMobile();
         // Load fuel method data
+        const dtFuel = 'Mobile Combustion Fuel Method';
+        const filtersFuel = {};
+        if (await hasFieldMC(dtFuel, 'company')) {
+            filtersFuel.company = ctx.is_super ? (selectedCompany || ctx.company || undefined) : (ctx.company || undefined);
+        }
+        if (await hasFieldMC(dtFuel, 'company_unit')) {
+            if (selectedUnit) filtersFuel.company_unit = selectedUnit;
+        }
         frappe.call({
             method: 'frappe.client.get_list',
             args: {
-                doctype: 'Mobile Combustion Fuel Method',
+                doctype: dtFuel,
                 fields: ['name', 's_no', 'date', 'vehicle_no', 'fuel_selection', 'fuel_used', 
                         'unit_selection', 'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq'],
                 order_by: 'creation desc',
-                limit: 20
+                limit: 20,
+                filters: filtersFuel
             },
             callback: function(r) {
                 if (r.message) {
@@ -1163,14 +1310,23 @@
         });
 
         // Load transportation method data
+        const dtTrans = 'Mobile Combustion Transportation Method';
+        const filtersTrans = {};
+        if (await hasFieldMC(dtTrans, 'company')) {
+            filtersTrans.company = ctx.is_super ? (selectedCompany || ctx.company || undefined) : (ctx.company || undefined);
+        }
+        if (await hasFieldMC(dtTrans, 'company_unit')) {
+            if (selectedUnit) filtersTrans.company_unit = selectedUnit;
+        }
         frappe.call({
             method: 'frappe.client.get_list',
             args: {
-                doctype: 'Mobile Combustion Transportation Method',
+                doctype: dtTrans,
                 fields: ['name', 's_no', 'date', 'vehicle_no', 'transportation_type', 'distance_traveled', 
                         'unit_selection', 'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq'],
                 order_by: 'creation desc',
-                limit: 20
+                limit: 20,
+                filters: filtersTrans
             },
             callback: function(r) {
                 if (r.message) {
@@ -1194,6 +1350,7 @@
                 }
             }
         });
+        })();
     }
 
     // Add event listeners and disable global shortcuts for letter input

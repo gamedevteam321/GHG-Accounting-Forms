@@ -140,18 +140,27 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
         if (!header) { done && done(); return; }
         const bar = document.createElement('div');
         bar.className = 'filter-bar';
+        // Only show filter for System Manager or Super Admin
+        (async () => {
+            try {
+                const ctx = await getUserContext();
+                const roles = (frappe && frappe.get_roles) ? frappe.get_roles() : [];
+                const canShow = ctx.is_super || roles.includes('System Manager') || roles.includes('Super Admin');
+                if (!canShow) { done && done(); return; }
+            } catch (e) { done && done(); return; }
+        })();
         bar.innerHTML = `
-            <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin:8px 0;">
-                <div class="company-filter" style="min-width:220px;">
-                    <label style="font-size:12px; display:block;">Company</label>
-                    <select class="form-control filter-company-select"></select>
+            <div style="display:flex; gap:12px; align-items:center; flex-wrap:nowrap; margin:8px 0;">
+                <div class="company-filter" style="min-width:220px; display:flex; align-items:center; gap:8px;">
+                    <label style="font-size:12px; margin:0; white-space:nowrap;">Company</label>
+                    <select class="form-control filter-company-select" style="width:260px;"></select>
                 </div>
-                <div class="unit-filter" style="min-width:220px;">
-                    <label style="font-size:12px; display:block;">Unit</label>
-                    <select class="form-control filter-unit-select"></select>
+                <div class="unit-filter" style="min-width:220px; display:flex; align-items:center; gap:8px;">
+                    <label style="font-size:12px; margin:0; white-space:nowrap;">Unit</label>
+                    <select class="form-control filter-unit-select" style="width:260px;"></select>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-secondary btn-sm filter-apply-btn">Apply</button>
+                    <button type="button" class="btn btn-secondary filter-apply-btn">Apply</button>
                 </div>
             </div>
         `;
