@@ -7,7 +7,7 @@
 
   function saveRow(doctypeName, data){
     return new Promise((resolve, reject)=>{
-      (async ()=>{ const doc = Object.assign({}, data, { doctype: doctypeName }); try { const ctx = await getUserContext(); if (ctx.is_super) { if (selectedCompany) doc.company = selectedCompany; if (selectedUnit) doc.unit = selectedUnit; } else if (ctx.company) { doc.company = ctx.company; if (selectedUnit) doc.unit = selectedUnit; else if (ctx.units && ctx.units.length === 1) doc.unit = ctx.units[0]; } } catch(e){} frappe.call({ method: 'frappe.client.insert', args: { doc }, callback: r => resolve(r.message), error: err => reject(err) }); })();
+      (async ()=>{ const doc = Object.assign({}, data, { doctype: doctypeName }); try { const ctx = await getUserContext(); if (ctx.is_super) { if (selectedCompany) doc.company = selectedCompany; if (selectedUnit) { doc.company_unit = selectedUnit; doc.unit = selectedUnit; } } else if (ctx.company) { doc.company = ctx.company; if (selectedUnit) { doc.company_unit = selectedUnit; doc.unit = selectedUnit; } else if (ctx.units && ctx.units.length === 1) { doc.company_unit = ctx.units[0]; doc.unit = ctx.units[0]; } } } catch(e){} frappe.call({ method: 'frappe.client.insert', args: { doc }, callback: r => resolve(r.message), error: err => reject(err) }); })();
     });
   }
 
@@ -125,8 +125,8 @@
       if (!spec.tbody) return;
       const ctx = await getUserContext();
       const filters = {};
-      if (ctx.is_super) { if (selectedCompany) filters.company = selectedCompany; if (selectedUnit) filters.unit = selectedUnit; }
-      else if (ctx.company) { filters.company = ctx.company; if (selectedUnit) filters.unit = selectedUnit; }
+      if (ctx.is_super) { if (selectedCompany) filters.company = selectedCompany; if (selectedUnit) filters.company_unit = selectedUnit; }
+      else if (ctx.company) { filters.company = ctx.company; if (selectedUnit) filters.company_unit = selectedUnit; }
       frappe.call({
         method: 'frappe.client.get_list',
         args: { doctype: spec.doctype, fields: spec.fields, limit_page_length: 500, order_by: 'creation asc', filters },

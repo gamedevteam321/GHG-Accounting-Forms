@@ -43,13 +43,28 @@
             <tbody id="dla-tb-asset">
               <tr class="data-entry-row entry-row">
                 <td><input type="number" name="s_no" value="1" readonly /></td>
-                <td><input type="date" name="date" /></td>
+                <td><input type="date" name="date" required /></td>
                 <td><input type="text" name="asset_id" placeholder="e.g., Leased Building A" /></td>
                 <td><input type="text" name="source" placeholder="Electricity / Gas" /></td>
                 <td><input type="number" name="activity" step="any" placeholder="Numeric" /></td>
-                <td><input type="text" name="unit" placeholder="kWh / m3 / litres" /></td>
+                <td>
+                  <select name="unit" required>
+                    <option value="" disabled selected>kWh / m3 / litres</option>
+                    <option value="kWh">kWh</option>
+                    <option value="m3">m3</option>
+                    <option value="litres">litres</option>
+                  </select>
+                </td>
                 <td><input type="number" name="ef" step="any" placeholder="EF" /></td>
-                <td><input type="text" name="ef_unit" placeholder="kg CO2e/kWh" /></td>
+                <td>
+                  <select name="ef_unit" required>
+                    <option value="" disabled selected>Select EF Unit</option>
+                    <option value="kg CO2e/kWh">kg CO2e/kWh</option>
+                    <option value="kg CO2e/m3">kg CO2e/m3</option>
+                    <option value="kg CO2e/litre">kg CO2e/litre</option>
+                    <option value="kg CO2e/unit">kg CO2e/unit</option>
+                  </select>
+                </td>
                 <td><input type="number" name="co2e" step="any" placeholder="Auto" readonly /></td>
                 <td class="actions"><button type="button" class="btn-add add-btn">+ Add</button></td>
               </tr>
@@ -76,7 +91,7 @@
             <tbody id="dla-tb-lessee">
               <tr class="data-entry-row entry-row">
                 <td><input type="number" name="s_no" value="1" readonly /></td>
-                <td><input type="date" name="date" /></td>
+                <td><input type="date" name="date" required /></td>
                 <td><input type="text" name="asset_id" placeholder="e.g., Leased Property C" /></td>
                 <td><input type="number" name="lessee_emission" step="any" placeholder="Numeric" /></td>
                 <td><input type="text" name="unit" value="kg CO2e" /></td>
@@ -109,7 +124,7 @@
             <tbody id="dla-tb-average">
               <tr class="data-entry-row entry-row">
                 <td><input type="number" name="s_no" value="1" readonly /></td>
-                <td><input type="date" name="date" /></td>
+                <td><input type="date" name="date" required /></td>
                 <td><input type="text" name="asset_type" placeholder="e.g., Building / Vehicle" /></td>
                 <td><input type="text" name="desc" placeholder="Commercial Space / Fleet" /></td>
                 <td><input type="number" name="activity" step="any" placeholder="Numeric" /></td>

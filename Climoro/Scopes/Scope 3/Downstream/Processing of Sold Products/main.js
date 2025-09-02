@@ -215,7 +215,7 @@
         (r.message||[]).forEach(doc =>{
           const row = {
             s_no: doc.s_no, date: doc.date, method: doc.method, sold_product: doc.sold_product,
-            mass: doc.mass, unit: doc.unit, processing_ef_note: doc.processing_ef_note, ef_value: doc.ef_value,
+            mass: doc.mass, unit: (doc.company_unit || doc.unit), processing_ef_note: doc.processing_ef_note, ef_value: doc.ef_value,
             co2e: doc.co2e
           };
           appendDisplayRow(spec.tbody, row, spec.doctype, doc.name);

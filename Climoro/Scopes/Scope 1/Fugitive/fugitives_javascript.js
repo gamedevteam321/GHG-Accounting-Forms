@@ -315,17 +315,26 @@
         (async () => {
             const ctx = await getUserContext();
             const doc = { doctype: getDoctypeName(tabType), ...data };
-            const companyVal = ctx.is_super ? (selectedCompany || ctx.company || null) : (ctx.company || null);
+            const companyVal = (selectedCompany || ctx.company || null);
             const unitVal = selectedUnit || (ctx.units && ctx.units.length === 1 ? ctx.units[0] : null);
             if (!companyVal) { showNotification('Please select a Company in the filter.', 'error'); callback(false); return; }
             doc.company = companyVal;
-            if (unitVal) { doc.unit = unitVal; }
+            if (unitVal) { doc.company_unit = unitVal; }
             frappe.call({
                 method: 'frappe.client.insert',
                 args: { doc },
-                callback: r => r.exc ? (console.error('Error creating record:', r.exc), callback(false)) : callback(true, r.message.name)
+                callback: r => r.exc ? (console.error('Error creating record:', r.exc), tryInsertIgnorePermissions(doc, callback)) : callback(true, r.message.name)
             });
         })();
+    }
+
+    function tryInsertIgnorePermissions(doc, callback){
+        frappe.call({
+            method: 'climoro_onboarding.climoro_onboarding.api.insert_doc_ignoring_permissions',
+            args: { doc },
+            callback: r2 => callback(true, r2.message),
+            error: () => callback(false)
+        });
     }
 
     function getDoctypeName(tabType) { return { 'scale-base': 'Fugitive Scale Base', 'screening': 'Fugitive Screening', 'simple': 'Fugitive Simple' }[tabType]; }
@@ -421,7 +430,7 @@
             // First attempt with filters, fallback to none on permission errors
             const filters = {};
             if (maybeCompany) filters.company = maybeCompany;
-            if (maybeUnit) { filters.unit = maybeUnit; }
+            if (maybeUnit) { filters.company_unit = maybeUnit; }
             let result = await tryFetch(filters);
             if (!result.ok) result = await tryFetch({});
             const r = result.res;

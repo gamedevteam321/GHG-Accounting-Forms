@@ -23,11 +23,13 @@ if not frappe.db.exists("DocType", name):
     d.engine = "InnoDB"
     d.title_field = "product_type"
     d.search_fields = "date,product_type"
-    d.field_order = ["s_no","date","product_type","sold","activity_data","unit","ef","ef_unit","co2e"]
+    d.field_order = ["s_no","date","company","company_unit","product_type","sold","activity_data","unit","ef","ef_unit","co2e"]
     for f in [
         {"fieldname":"s_no","label":"S No","fieldtype":"Int","in_list_view":1},
         {"fieldname":"date","label":"Date","fieldtype":"Date","in_list_view":1},
         {"fieldname":"product_type","label":"Product Type","fieldtype":"Data","in_list_view":1},
+        {"fieldname":"company","label":"Company","fieldtype":"Data","in_list_view":1,"in_standard_filter":1},
+        {"fieldname":"company_unit","label":"Company Unit","fieldtype":"Data","in_list_view":1,"in_standard_filter":1},
         {"fieldname":"sold","label":"# Sold This Year","fieldtype":"Float"},
         {"fieldname":"activity_data","label":"Activity Data","fieldtype":"Data"},
         {"fieldname":"unit","label":"Unit","fieldtype":"Data"},

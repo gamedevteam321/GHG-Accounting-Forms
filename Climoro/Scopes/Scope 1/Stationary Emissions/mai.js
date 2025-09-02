@@ -937,14 +937,11 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
             };
             if (ctx.is_super) {
                 if (selectedCompany) doc.company = selectedCompany;
-                if (selectedUnit) doc.unit = selectedUnit;
+                if (selectedUnit) { doc.company_unit = selectedUnit; }
             } else if (ctx.company) {
                 doc.company = ctx.company;
-                if (selectedUnit) {
-                    doc.unit = selectedUnit;
-                } else if (ctx.units && ctx.units.length === 1) {
-                    doc.unit = ctx.units[0];
-                }
+                if (selectedUnit) { doc.company_unit = selectedUnit; }
+                else if (ctx.units && ctx.units.length === 1) { doc.company_unit = ctx.units[0]; }
             }
             frappe.call({
                 method: 'frappe.client.insert',
@@ -1125,10 +1122,10 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
             const filters = {};
             if (ctx.is_super) {
                 if (selectedCompany) filters.company = selectedCompany;
-                if (selectedUnit) filters.unit = selectedUnit;
+                if (selectedUnit) filters.company_unit = selectedUnit;
             } else if (ctx.company) {
                 filters.company = ctx.company;
-                if (selectedUnit) filters.unit = selectedUnit;
+                if (selectedUnit) filters.company_unit = selectedUnit;
             }
             frappe.call({
                 method: 'frappe.client.get_list',

@@ -1098,7 +1098,7 @@
         (async () => {
             const ctx = await getUserContextMobile();
             const doc = { doctype: doctypeName, ...data };
-            const companyVal = ctx.is_super ? (selectedCompany || ctx.company || null) : (ctx.company || null);
+            const companyVal = (selectedCompany || ctx.company || null);
             const unitVal = selectedUnit || (ctx.units && ctx.units.length === 1 ? ctx.units[0] : null);
             if (!companyVal) {
                 frappe.show_alert({ message: 'Please select a Company in the filter.', indicator: 'red' });
@@ -1107,7 +1107,7 @@
             // Set company and, if available, unit selection
             // Always set company and unit values on insert; server will validate/ignore unknowns
             doc.company = companyVal;
-            if (unitVal) { doc.unit = unitVal; doc.company_unit = unitVal; }
+            if (unitVal) { doc.company_unit = unitVal; }
 
             frappe.call({
                 method: 'frappe.client.insert',
@@ -1310,13 +1310,10 @@
         // Load fuel method data with resilient filters
         try {
             const dtFuel = 'Mobile Combustion Fuel Method';
-            const companyVal = ctx.is_super ? (selectedCompany || ctx.company || undefined) : (ctx.company || undefined);
+            const companyVal = (selectedCompany || ctx.company || undefined);
             const filtersFuel = {};
-            if (companyVal && await hasFieldMC(dtFuel, 'company')) filtersFuel.company = companyVal;
-            if (selectedUnit) {
-                if (await hasFieldMC(dtFuel, 'unit')) filtersFuel.unit = selectedUnit;
-                else if (await hasFieldMC(dtFuel, 'company_unit')) filtersFuel.company_unit = selectedUnit;
-            }
+            if (companyVal) filtersFuel.company = companyVal;
+            if (selectedUnit) filtersFuel.company_unit = selectedUnit;
 
             try {
                 const r = await frappe.call({
@@ -1324,7 +1321,7 @@
                     args: {
                         doctype: dtFuel,
                         fields: ['name', 's_no', 'date', 'vehicle_no', 'fuel_selection', 'fuel_used',
-                                'unit_selection', 'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq'],
+                                'unit_selection', 'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq', 'company', 'company_unit'],
                         order_by: 'creation desc',
                         limit: 20,
                         filters: filtersFuel
@@ -1338,7 +1335,7 @@
                     args: {
                         doctype: dtFuel,
                         fields: ['name', 's_no', 'date', 'vehicle_no', 'fuel_selection', 'fuel_used',
-                                'unit_selection', 'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq'],
+                                'unit_selection', 'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq', 'company', 'company_unit'],
                         order_by: 'creation desc',
                         limit: 20
                     }
@@ -1349,11 +1346,8 @@
             // Load transportation method data
             const dtTrans = 'Mobile Combustion Transportation Method';
             const filtersTrans = {};
-            if (companyVal && await hasFieldMC(dtTrans, 'company')) filtersTrans.company = companyVal;
-            if (selectedUnit) {
-                if (await hasFieldMC(dtTrans, 'unit')) filtersTrans.unit = selectedUnit;
-                else if (await hasFieldMC(dtTrans, 'company_unit')) filtersTrans.company_unit = selectedUnit;
-            }
+            if (companyVal) filtersTrans.company = companyVal;
+            if (selectedUnit) filtersTrans.company_unit = selectedUnit;
 
             try {
                 const r = await frappe.call({
@@ -1361,7 +1355,7 @@
                     args: {
                         doctype: dtTrans,
                         fields: ['name', 's_no', 'date', 'vehicle_no', 'transportation_type', 'distance_traveled',
-                                'unit_selection', 'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq'],
+                                'unit_selection', 'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq', 'company', 'company_unit'],
                         order_by: 'creation desc',
                         limit: 20,
                         filters: filtersTrans
@@ -1375,7 +1369,7 @@
                     args: {
                         doctype: dtTrans,
                         fields: ['name', 's_no', 'date', 'vehicle_no', 'transportation_type', 'distance_traveled',
-                                'unit_selection', 'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq'],
+                                'unit_selection', 'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq', 'company', 'company_unit'],
                         order_by: 'creation desc',
                         limit: 20
                     }
