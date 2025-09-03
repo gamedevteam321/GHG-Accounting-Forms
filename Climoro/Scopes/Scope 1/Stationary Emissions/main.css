@@ -81,6 +81,454 @@
     background: #e9ecef;
 }
 
+/* Filter Bar Styling */
+.filter-bar {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: relative;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.filter-bar:hover {
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+
+.filter-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, #1a365d 0%, #2d5a87 50%, #3b82f6 100%);
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 2px 4px rgba(26, 54, 93, 0.2);
+}
+
+.filter-bar::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.8) 50%, transparent 100%);
+}
+
+/* Filter Header */
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.filter-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-icon {
+    font-size: 16px;
+    opacity: 0.7;
+}
+
+.filter-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a365d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Toggle Button */
+.filter-toggle-btn {
+    background: transparent;
+    color: #64748b;
+    border: 2px solid #e2e8f0;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter-toggle-btn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #475569;
+}
+
+.filter-toggle-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.1);
+}
+
+.toggle-icon {
+    font-size: 12px;
+    transition: transform 0.3s ease;
+}
+
+/* Filter Content Layout */
+.filter-content {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    flex-wrap: wrap;
+    transition: all 0.3s ease;
+}
+
+.filter-group {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+}
+
+/* Collapsed State */
+.filter-bar.filter-collapsed {
+    padding-bottom: 16px;
+}
+
+.filter-bar.filter-collapsed .filter-header {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.filter-bar label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a365d;
+    margin: 0;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    padding-bottom: 2px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.filter-bar label::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
+    transition: width 0.3s ease;
+}
+
+.filter-bar .company-filter:hover label::after,
+.filter-bar .unit-filter:hover label::after {
+    width: 100%;
+}
+
+.filter-bar .form-control {
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1e293b;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    min-height: 40px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.filter-bar .form-control::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+.filter-bar .form-control:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 2px 4px rgba(0, 0, 0, 0.08);
+    background: #ffffff;
+}
+
+.filter-bar .form-control:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.filter-bar .btn {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-bar .btn:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+}
+
+.filter-bar .btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+.filter-bar .btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Individual Filter Elements */
+.filter-bar .company-filter,
+.filter-bar .unit-filter,
+.filter-bar .date-from-filter,
+.filter-bar .date-to-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 140px;
+    position: relative;
+}
+
+.filter-bar .company-filter::after,
+.filter-bar .unit-filter::after,
+.filter-bar .date-from-filter::after {
+    content: '';
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(180deg, transparent 0%, #e2e8f0 50%, transparent 100%);
+    opacity: 0.6;
+}
+
+.filter-bar .unit-filter::after,
+.filter-bar .date-to-filter::after {
+    display: none;
+}
+
+/* Date input specific styling */
+.filter-bar input[type="date"] {
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1e293b;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    min-height: 40px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.filter-bar input[type="date"]:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 2px 4px rgba(0, 0, 0, 0.08);
+    background: #ffffff;
+}
+
+.filter-bar input[type="date"]:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* Filter actions container */
+.filter-bar .filter-actions {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+    flex-shrink: 0;
+    margin-bottom: 0;
+}
+
+/* Clear button styling */
+.filter-bar .btn-outline {
+    background: transparent;
+    color: #64748b;
+    border: 2px solid #e2e8f0;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-bar .btn-outline:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #475569;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.filter-bar .btn-outline:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.filter-bar .btn-outline:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.1);
+}
+
+/* Responsive adjustments for filter bar */
+@media (max-width: 1024px) {
+    .filter-content {
+        gap: 16px;
+    }
+    
+    .filter-group {
+        gap: 12px;
+    }
+    
+    .filter-bar .company-filter,
+    .filter-bar .unit-filter,
+    .filter-bar .date-from-filter,
+    .filter-bar .date-to-filter {
+        min-width: 120px;
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-bar {
+        padding: 16px;
+        margin: 16px 0;
+    }
+    
+    .filter-header {
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+    }
+    
+    .filter-text {
+        font-size: 13px;
+    }
+    
+    .filter-toggle-btn {
+        padding: 5px 10px;
+        min-height: 30px;
+        font-size: 11px;
+    }
+    
+    .filter-content {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+    
+    .filter-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        align-items: flex-end;
+    }
+    
+    .filter-bar .company-filter,
+    .filter-bar .unit-filter,
+    .filter-bar .date-from-filter,
+    .filter-bar .date-to-filter {
+        min-width: 0;
+    }
+    
+    .filter-bar .company-filter::after,
+    .filter-bar .unit-filter::after,
+    .filter-bar .date-from-filter::after {
+        display: none;
+    }
+    
+    .filter-bar .filter-actions {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-bar {
+        padding: 12px;
+        margin: 12px 0;
+    }
+    
+    .filter-header {
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+    }
+    
+    .filter-text {
+        font-size: 12px;
+    }
+    
+    .filter-toggle-btn {
+        padding: 4px 8px;
+        min-height: 28px;
+        font-size: 10px;
+    }
+    
+    .filter-group {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        align-items: flex-end;
+    }
+    
+    .filter-bar .form-control,
+    .filter-bar input[type="date"] {
+        min-height: 38px;
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+    
+    .filter-bar .btn,
+    .filter-bar .btn-outline {
+        min-height: 38px;
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+    
+    .filter-bar label {
+        font-size: 11px;
+    }
+}
+
 .add-emission-btn {
     background: #007bff;
     color: white;

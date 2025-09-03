@@ -9,6 +9,9 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
     let emissionFactorData = {}; // Store emission factor data
     let selectedCompany = null;
     let selectedUnit = null;
+    let selectedDateFrom = null;
+    let selectedDateTo = null;
+    let isFilterVisible = true;
 
     // Fuel type mappings (static as requested)
     const fuelTypeMappings = {
@@ -150,17 +153,37 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
             } catch (e) { done && done(); return; }
         })();
         bar.innerHTML = `
-            <div style="display:flex; gap:12px; align-items:center; flex-wrap:nowrap; margin:8px 0;">
-                <div class="company-filter" style="min-width:220px; display:flex; align-items:center; gap:8px;">
-                    <label style="font-size:12px; margin:0; white-space:nowrap;">Company</label>
-                    <select class="form-control filter-company-select" style="width:260px;"></select>
+            <div class="filter-header">
+                <div class="filter-title">
+                    <span class="filter-icon">🔍</span>
+                    <span class="filter-text">Filters</span>
                 </div>
-                <div class="unit-filter" style="min-width:220px; display:flex; align-items:center; gap:8px;">
-                    <label style="font-size:12px; margin:0; white-space:nowrap;">Unit</label>
-                    <select class="form-control filter-unit-select" style="width:260px;"></select>
+                <button type="button" class="btn btn-toggle filter-toggle-btn">
+                    <span class="toggle-icon">−</span>
+                </button>
+            </div>
+            <div class="filter-content">
+                <div class="filter-group">
+                    <div class="company-filter">
+                        <label>Company</label>
+                        <select class="form-control filter-company-select"></select>
+                    </div>
+                    <div class="unit-filter">
+                        <label>Unit</label>
+                        <select class="form-control filter-unit-select"></select>
+                    </div>
+                    <div class="date-from-filter">
+                        <label>From Date</label>
+                        <input type="date" class="form-control filter-date-from">
+                    </div>
+                    <div class="date-to-filter">
+                        <label>To Date</label>
+                        <input type="date" class="form-control filter-date-to">
+                    </div>
                 </div>
-                <div>
-                    <button type="button" class="btn btn-secondary filter-apply-btn">Apply</button>
+                <div class="filter-actions">
+                    <button type="button" class="btn filter-apply-btn">Apply</button>
+                    <button type="button" class="btn btn-outline filter-clear-btn">Clear</button>
                 </div>
             </div>
         `;
@@ -168,10 +191,54 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
         bar.querySelector('.filter-apply-btn').addEventListener('click', () => {
             const csel = bar.querySelector('.filter-company-select');
             const usel = bar.querySelector('.filter-unit-select');
+            const dateFrom = bar.querySelector('.filter-date-from');
+            const dateTo = bar.querySelector('.filter-date-to');
+            
             selectedCompany = csel.value || null;
             selectedUnit = usel.value || null;
+            selectedDateFrom = dateFrom.value || null;
+            selectedDateTo = dateTo.value || null;
+            
             loadExistingData();
         });
+        
+        bar.querySelector('.filter-clear-btn').addEventListener('click', () => {
+            const csel = bar.querySelector('.filter-company-select');
+            const usel = bar.querySelector('.filter-unit-select');
+            const dateFrom = bar.querySelector('.filter-date-from');
+            const dateTo = bar.querySelector('.filter-date-to');
+            
+            csel.value = '';
+            usel.value = '';
+            dateFrom.value = '';
+            dateTo.value = '';
+            
+            selectedCompany = null;
+            selectedUnit = null;
+            selectedDateFrom = null;
+            selectedDateTo = null;
+            
+            loadExistingData();
+        });
+        
+        // Toggle filter visibility
+        bar.querySelector('.filter-toggle-btn').addEventListener('click', () => {
+            const content = bar.querySelector('.filter-content');
+            const toggleIcon = bar.querySelector('.toggle-icon');
+            
+            isFilterVisible = !isFilterVisible;
+            
+            if (isFilterVisible) {
+                content.style.display = 'flex';
+                toggleIcon.textContent = '−';
+                bar.classList.remove('filter-collapsed');
+            } else {
+                content.style.display = 'none';
+                toggleIcon.textContent = '+';
+                bar.classList.add('filter-collapsed');
+            }
+        });
+        
         done && done();
     }
 
@@ -1126,6 +1193,18 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
             } else if (ctx.company) {
                 filters.company = ctx.company;
                 if (selectedUnit) filters.company_unit = selectedUnit;
+            }
+            
+            // Add date filtering
+            if (selectedDateFrom) {
+                filters.date = ['>=', selectedDateFrom];
+            }
+            if (selectedDateTo) {
+                if (selectedDateFrom) {
+                    filters.date = ['between', selectedDateFrom, selectedDateTo];
+                } else {
+                    filters.date = ['<=', selectedDateTo];
+                }
             }
             frappe.call({
                 method: 'frappe.client.get_list',
