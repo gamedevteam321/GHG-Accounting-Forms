@@ -183,7 +183,7 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
                 </div>
                 <div class="filter-actions">
                     <button type="button" class="btn filter-apply-btn">Apply</button>
-                    <button type="button" class="btn btn-outline filter-clear-btn">Clear</button>
+                    <button type="button" class="btn btn-outline filter-clear-btn">Clear Dates</button>
                 </div>
             </div>
         `;
@@ -199,25 +199,48 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
             selectedDateFrom = dateFrom.value || null;
             selectedDateTo = dateTo.value || null;
             
+            console.log('Filter values:', {
+                company: selectedCompany,
+                unit: selectedUnit,
+                dateFrom: selectedDateFrom,
+                dateTo: selectedDateTo
+            });
+            
+            // Test date format
+            if (selectedDateFrom) {
+                console.log('Date From format test:', {
+                    original: selectedDateFrom,
+                    type: typeof selectedDateFrom,
+                    isValid: !isNaN(Date.parse(selectedDateFrom))
+                });
+            }
+            if (selectedDateTo) {
+                console.log('Date To format test:', {
+                    original: selectedDateTo,
+                    type: typeof selectedDateTo,
+                    isValid: !isNaN(Date.parse(selectedDateTo))
+                });
+            }
+            
             loadExistingData();
         });
         
+        // Clear only date fields
         bar.querySelector('.filter-clear-btn').addEventListener('click', () => {
-            const csel = bar.querySelector('.filter-company-select');
-            const usel = bar.querySelector('.filter-unit-select');
             const dateFrom = bar.querySelector('.filter-date-from');
             const dateTo = bar.querySelector('.filter-date-to');
             
-            csel.value = '';
-            usel.value = '';
+            // Clear only date fields
             dateFrom.value = '';
             dateTo.value = '';
             
-            selectedCompany = null;
-            selectedUnit = null;
+            // Update selected date variables
             selectedDateFrom = null;
             selectedDateTo = null;
             
+            console.log('Date fields cleared. Company:', selectedCompany, 'Unit:', selectedUnit);
+            
+            // Reload data with remaining filters
             loadExistingData();
         });
         
@@ -1195,17 +1218,14 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
                 if (selectedUnit) filters.company_unit = selectedUnit;
             }
             
-            // Add date filtering
-            if (selectedDateFrom) {
-                filters.date = ['>=', selectedDateFrom];
-            }
-            if (selectedDateTo) {
-                if (selectedDateFrom) {
-                    filters.date = ['between', selectedDateFrom, selectedDateTo];
-                } else {
-                    filters.date = ['<=', selectedDateTo];
-                }
-            }
+            // Note: We'll filter the data after loading it, not in the API call
+            console.log('Date filters will be applied after loading data - From:', selectedDateFrom, 'To:', selectedDateTo);
+            
+            console.log('Applied filters:', filters);
+            console.log('Date filters - From:', selectedDateFrom, 'To:', selectedDateTo);
+            
+            // Try a different approach - maybe the issue is with the filter syntax
+            // Let's try using a different method or approach
             frappe.call({
                 method: 'frappe.client.get_list',
                 args: {
@@ -1215,16 +1235,51 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
                             'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq'],
                     order_by: 'creation desc',
                     limit: 20,
-                    filters
+                    filters: filters
                 },
                 callback: function(r) {
                     if (r.message) {
-                        console.log('Loaded existing data with old field names:', r.message);
-                        const mappedData = r.message.map(record => ({
+                        console.log('Loaded existing data:', r.message);
+                        console.log('Number of records returned:', r.message.length);
+                        
+                        // Apply client-side date filtering
+                        let filteredData = r.message;
+                        
+                        if (selectedDateFrom || selectedDateTo) {
+                            console.log('Applying client-side date filtering...');
+                            console.log('Date filters - From:', selectedDateFrom, 'To:', selectedDateTo);
+                            
+                            filteredData = r.message.filter(record => {
+                                const recordDate = new Date(record.date);
+                                let includeRecord = true;
+                                
+                                if (selectedDateFrom) {
+                                    const fromDate = new Date(selectedDateFrom);
+                                    includeRecord = includeRecord && recordDate >= fromDate;
+                                    console.log(`Record ${record.name} date ${record.date} >= ${selectedDateFrom}:`, recordDate >= fromDate);
+                                }
+                                
+                                if (selectedDateTo) {
+                                    const toDate = new Date(selectedDateTo);
+                                    includeRecord = includeRecord && recordDate <= toDate;
+                                    console.log(`Record ${record.name} date ${record.date} <= ${selectedDateTo}:`, recordDate <= toDate);
+                                }
+                                
+                                console.log(`Record ${record.name} included:`, includeRecord);
+                                return includeRecord;
+                            });
+                            
+                            console.log('Filtered data:', filteredData);
+                            console.log('Number of records after date filtering:', filteredData.length);
+                        }
+                        
+                        const mappedData = filteredData.map(record => ({
                             ...record,
                             ef_n2o: record.efn20,
                             en2o: record.en20
                         }));
+                        
+                        console.log('Final mapped data to display:', mappedData);
                         processExistingData(mappedData);
                     } else {
                         console.log('No existing data found');

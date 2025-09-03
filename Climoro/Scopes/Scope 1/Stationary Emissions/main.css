@@ -236,7 +236,9 @@
 }
 
 .filter-bar .company-filter:hover label::after,
-.filter-bar .unit-filter:hover label::after {
+.filter-bar .unit-filter:hover label::after,
+.filter-bar .date-from-filter:hover label::after,
+.filter-bar .date-to-filter:hover label::after {
     width: 100%;
 }
 
@@ -412,6 +414,8 @@
     outline: none;
     box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.1);
 }
+
+
 
 /* Responsive adjustments for filter bar */
 @media (max-width: 1024px) {
