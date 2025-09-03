@@ -13,6 +13,9 @@
     let activeTab = 'supplier-specific';
     let selectedCompany = null;
     let selectedUnit = null;
+    let selectedDateFrom = null;
+    let selectedDateTo = null;
+    let isFilterVisible = false;
     const metaCache = {};
 
     async function hasField(doctype, fieldname){
@@ -1299,6 +1302,36 @@
         loadTabData('spend-based');
     }
 
+    // Helper to apply client-side date filtering
+    function applyDateFilter(records) {
+        if (!selectedDateFrom && !selectedDateTo) {
+            return records;
+        }
+        
+        console.log('Purchased Goods: Applying client-side date filtering...');
+        console.log('Date filters - From:', selectedDateFrom, 'To:', selectedDateTo);
+        
+        return records.filter(record => {
+            const recordDate = new Date(record.date);
+            let includeRecord = true;
+            
+            if (selectedDateFrom) {
+                const fromDate = new Date(selectedDateFrom);
+                includeRecord = includeRecord && recordDate >= fromDate;
+                console.log(`Record ${record.name} date ${record.date} >= ${selectedDateFrom}:`, recordDate >= fromDate);
+            }
+            
+            if (selectedDateTo) {
+                const toDate = new Date(selectedDateTo);
+                includeRecord = includeRecord && recordDate <= toDate;
+                console.log(`Record ${record.name} date ${record.date} <= ${selectedDateTo}:`, recordDate <= toDate);
+            }
+            
+            console.log(`Record ${record.name} included:`, includeRecord);
+            return includeRecord;
+        });
+    }
+
     function loadTabData(tabType) {
         const doctypeName = getDoctypeName(tabType);
         const methodType = getMethodType(tabType);
@@ -1349,10 +1382,15 @@
                 console.log(`Load response for ${tabType}:`, r);
                 if (r.message && r.message.length > 0) {
                     console.log(`Found ${r.message.length} records for ${tabType}`);
+                    
+                    // Apply client-side date filtering
+                    const filteredRecords = applyDateFilter(r.message);
+                    console.log(`Purchased Goods: Original records: ${r.message.length}, Filtered records: ${filteredRecords.length}`);
+                    
                     const tbody = root_element.querySelector('#' + getTableId(tabType) + 'Body');
                     const entryRow = tbody.querySelector('.data-entry-row');
                     
-                    r.message.forEach((doc, index) => {
+                    filteredRecords.forEach((doc, index) => {
                         console.log(`Loading record ${index + 1}:`, doc);
                         const displayRow = document.createElement('tr');
                         displayRow.className = 'data-display-row';
@@ -1447,27 +1485,92 @@
             } catch (e) { done && done(); return; }
         })();
         bar.innerHTML = `
-            <div style="display:flex; gap:12px; align-items:center; flex-wrap:nowrap; margin:8px 0;">
-                <div class="company-filter" style="min-width:220px; display:flex; align-items:center; gap:8px;">
-                    <label style="font-size:12px; margin:0; white-space:nowrap;">Company</label>
-                    <select class="form-control filter-company-select" style="width:260px;"></select>
-                </div>
-                <div class="unit-filter" style="min-width:220px; display:flex; align-items:center; gap:8px;">
-                    <label style="font-size:12px; margin:0; white-space:nowrap;">Unit</label>
-                    <select class="form-control filter-unit-select" style="width:260px;"></select>
-                </div>
-                <div>
-                    <button type="button" class="btn btn-secondary filter-apply-btn">Apply</button>
+            <div class="filter-header">
+                <h3>Filters</h3>
+                <button type="button" class="filter-toggle-btn">
+                    <i class="fa fa-plus"></i>
+                </button>
+            </div>
+            <div class="filter-content" style="display: none;">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label>Company</label>
+                        <select class="form-control filter-company-select">
+                            <option value="">All Companies</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Unit</label>
+                        <select class="form-control filter-unit-select">
+                            <option value="">All Units</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>From Date</label>
+                        <input type="date" class="form-control date-from-input">
+                    </div>
+                    <div class="filter-group">
+                        <label>To Date</label>
+                        <input type="date" class="form-control date-to-input">
+                    </div>
+                    <div class="filter-actions">
+                        <button type="button" class="btn filter-apply-btn">Apply</button>
+                        <button type="button" class="btn filter-clear-btn">Clear Dates</button>
+                    </div>
                 </div>
             </div>
         `;
         if (header) header.insertAdjacentElement('afterend', bar); else container.prepend(bar);
+        // Apply button event listener
         bar.querySelector('.filter-apply-btn').addEventListener('click', () => {
             const csel = bar.querySelector('.filter-company-select');
             const usel = bar.querySelector('.filter-unit-select');
+            const fromDate = bar.querySelector('.date-from-input');
+            const toDate = bar.querySelector('.date-to-input');
+            
             selectedCompany = csel.value || null;
             selectedUnit = usel.value || null;
+            selectedDateFrom = fromDate.value || null;
+            selectedDateTo = toDate.value || null;
+            
+            console.log('Purchased Goods Filter values:', {
+                company: selectedCompany,
+                unit: selectedUnit,
+                dateFrom: selectedDateFrom,
+                dateTo: selectedDateTo
+            });
+            
             loadExistingData();
+        });
+        
+        // Clear dates button event listener
+        bar.querySelector('.filter-clear-btn').addEventListener('click', () => {
+            const fromDate = bar.querySelector('.date-from-input');
+            const toDate = bar.querySelector('.date-to-input');
+            
+            fromDate.value = '';
+            toDate.value = '';
+            selectedDateFrom = null;
+            selectedDateTo = null;
+            
+            console.log('Purchased Goods Date filters cleared');
+            loadExistingData();
+        });
+        
+        // Toggle button event listener
+        bar.querySelector('.filter-toggle-btn').addEventListener('click', () => {
+            const content = bar.querySelector('.filter-content');
+            const icon = bar.querySelector('.filter-toggle-btn i');
+            
+            isFilterVisible = !isFilterVisible;
+            
+            if (isFilterVisible) {
+                content.style.display = 'block';
+                icon.className = 'fa fa-minus';
+            } else {
+                content.style.display = 'none';
+                icon.className = 'fa fa-plus';
+            }
         });
         done && done();
     }
