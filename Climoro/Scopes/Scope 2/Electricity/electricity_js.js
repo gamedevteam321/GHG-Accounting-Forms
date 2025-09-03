@@ -5,6 +5,9 @@
     let isInitialized = false;
     let selectedCompany = null;
     let selectedUnit = null;
+    let selectedDateFrom = null;
+    let selectedDateTo = null;
+    let isFilterVisible = false;
     const metaCache = {};
 
     const activityTypes = [
@@ -247,6 +250,36 @@
                 filters.company_unit = selectedUnit;
             }
 
+            // Helper to apply client-side date filtering
+            function applyDateFilter(records) {
+                if (!selectedDateFrom && !selectedDateTo) {
+                    return records;
+                }
+                
+                console.log('Electricity: Applying client-side date filtering...');
+                console.log('Date filters - From:', selectedDateFrom, 'To:', selectedDateTo);
+                
+                return records.filter(record => {
+                    const recordDate = new Date(record.date);
+                    let includeRecord = true;
+                    
+                    if (selectedDateFrom) {
+                        const fromDate = new Date(selectedDateFrom);
+                        includeRecord = includeRecord && recordDate >= fromDate;
+                        console.log(`Record ${record.name} date ${record.date} >= ${selectedDateFrom}:`, recordDate >= fromDate);
+                    }
+                    
+                    if (selectedDateTo) {
+                        const toDate = new Date(selectedDateTo);
+                        includeRecord = includeRecord && recordDate <= toDate;
+                        console.log(`Record ${record.name} date ${record.date} <= ${selectedDateTo}:`, recordDate <= toDate);
+                    }
+                    
+                    console.log(`Record ${record.name} included:`, includeRecord);
+                    return includeRecord;
+                });
+            }
+
             // Helper to render list
             const render = (records) => {
                 // Client-side filtering as a fallback safety net
@@ -258,10 +291,15 @@
                     const unitV = String(selectedUnit || '').trim();
                     list = list.filter(r => String(r.company_unit || '').trim() === unitV);
                 }
+                
+                // Apply client-side date filtering
+                const filteredList = applyDateFilter(list);
+                console.log('Electricity: Original records:', list.length, 'Filtered records:', filteredList.length);
+                
                 const existingRows = tbody.querySelectorAll('.data-display-row');
                 existingRows.forEach(r => r.remove());
                 let maxSerial = currentRowId;
-                list.slice().reverse().forEach(rec => {
+                filteredList.slice().reverse().forEach(rec => {
                     createDisplayRow(rec, rec.name);
                     if (rec.s_no && rec.s_no >= maxSerial) maxSerial = rec.s_no + 1;
                 });
@@ -334,28 +372,95 @@
         bar.className = 'filter-bar';
         (async ()=>{ try{ const ctx = await getUserContext(); const roles = (frappe && frappe.get_roles)? frappe.get_roles(): []; const canShow = ctx.is_super || roles.includes('System Manager') || roles.includes('Super Admin'); if(!canShow){ done&&done(); return; } } catch(e){ done&&done(); return; } })();
         bar.innerHTML = `
-            <div style="display:flex; gap:12px; align-items:center; flex-wrap:nowrap; margin:8px 0;">
-                <div class="company-filter" style="min-width:220px; display:flex; align-items:center; gap:8px;">
-                    <label style="font-size:12px; margin:0; white-space:nowrap;">Company</label>
-                    <select class="form-control filter-company-select" style="width:260px;"></select>
+            <div class="filter-header">
+                <h3>Filters</h3>
+                <button type="button" class="filter-toggle-btn">
+                    <i class="fa fa-plus"></i>
+                </button>
+            </div>
+            <div class="filter-content" style="display: none;">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label>Company</label>
+                        <select class="form-control filter-company-select">
+                            <option value="">All Companies</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Unit</label>
+                        <select class="form-control filter-unit-select">
+                            <option value="">All Units</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>From Date</label>
+                        <input type="date" class="form-control date-from-input">
+                    </div>
+                    <div class="filter-group">
+                        <label>To Date</label>
+                        <input type="date" class="form-control date-to-input">
+                    </div>
+                    <div class="filter-actions">
+                        <button type="button" class="btn filter-apply-btn">Apply</button>
+                        <button type="button" class="btn filter-clear-btn">Clear Dates</button>
+                    </div>
                 </div>
-                <div class="unit-filter" style="min-width:220px; display:flex; align-items:center; gap:8px;">
-                    <label style="font-size:12px; margin:0; white-space:nowrap;">Unit</label>
-                    <select class="form-control filter-unit-select" style="width:260px;"></select>
-                </div>
-                <div>
-                    <button type="button" class="btn btn-secondary filter-apply-btn">Apply</button>
-                </div>
-            </div>`;
+            </div>
+        `;
         const header = root_element.querySelector('.page-header') || root_element.querySelector('.header-section');
         if (header) header.insertAdjacentElement('afterend', bar); else container.prepend(bar);
+        // Apply button event listener
         bar.querySelector('.filter-apply-btn')?.addEventListener('click', ()=>{
             const csel = bar.querySelector('.filter-company-select');
             const usel = bar.querySelector('.filter-unit-select');
+            const fromDate = bar.querySelector('.date-from-input');
+            const toDate = bar.querySelector('.date-to-input');
+            
             selectedCompany = csel.value || null;
             selectedUnit = usel.value || null;
+            selectedDateFrom = fromDate.value || null;
+            selectedDateTo = toDate.value || null;
+            
+            console.log('Electricity Filter values:', {
+                company: selectedCompany,
+                unit: selectedUnit,
+                dateFrom: selectedDateFrom,
+                dateTo: selectedDateTo
+            });
+            
             container.querySelectorAll('.data-display-row').forEach(r=>r.remove());
             if (typeof loadExistingData === 'function') { try { loadExistingData(); } catch(e){} }
+        });
+        
+        // Clear dates button event listener
+        bar.querySelector('.filter-clear-btn')?.addEventListener('click', ()=>{
+            const fromDate = bar.querySelector('.date-from-input');
+            const toDate = bar.querySelector('.date-to-input');
+            
+            fromDate.value = '';
+            toDate.value = '';
+            selectedDateFrom = null;
+            selectedDateTo = null;
+            
+            console.log('Electricity Date filters cleared');
+            container.querySelectorAll('.data-display-row').forEach(r=>r.remove());
+            if (typeof loadExistingData === 'function') { try { loadExistingData(); } catch(e){} }
+        });
+        
+        // Toggle button event listener
+        bar.querySelector('.filter-toggle-btn')?.addEventListener('click', ()=>{
+            const content = bar.querySelector('.filter-content');
+            const icon = bar.querySelector('.filter-toggle-btn i');
+            
+            isFilterVisible = !isFilterVisible;
+            
+            if (isFilterVisible) {
+                content.style.display = 'block';
+                icon.className = 'fa fa-minus';
+            } else {
+                content.style.display = 'none';
+                icon.className = 'fa fa-plus';
+            }
         });
         done && done();
     }
