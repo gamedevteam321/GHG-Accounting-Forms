@@ -4,6 +4,9 @@
     const scopeRoot = (typeof root_element !== 'undefined' && root_element) ? root_element : document;
     let selectedCompany = null;
     let selectedUnit = null;
+    let selectedDateFrom = null;
+    let selectedDateTo = null;
+    let isFilterVisible = false;
     const metaCache = {};
 
     async function hasField(doctype, fieldname){
@@ -122,6 +125,36 @@
     function bumpIndex(entryRow, tab){ currentRowIds[tab]++; entryRow.querySelector('td:first-child').textContent = currentRowIds[tab]; }
     function isolateInputs(scope){ scope.querySelectorAll('input,select,textarea').forEach(inp=>{ inp.setAttribute('data-frappe-ignore','true'); inp.classList.add('isolated-input'); }); }
     function clearEntryRow(row){ row.querySelectorAll('input').forEach(i=>{ if(i.type==='date'){ i.value = new Date().toISOString().split('T')[0]; } else { i.value=''; } }); row.querySelector('.total-emissions').textContent='0.00'; }
+    // Helper to apply client-side date filtering
+    function applyDateFilter(records) {
+        if (!selectedDateFrom && !selectedDateTo) {
+            return records;
+        }
+        
+        console.log('Business Travel: Applying client-side date filtering...');
+        console.log('Date filters - From:', selectedDateFrom, 'To:', selectedDateTo);
+        
+        return records.filter(record => {
+            const recordDate = new Date(record.date);
+            let includeRecord = true;
+            
+            if (selectedDateFrom) {
+                const fromDate = new Date(selectedDateFrom);
+                includeRecord = includeRecord && recordDate >= fromDate;
+                console.log(`Record ${record.name} date ${record.date} >= ${selectedDateFrom}:`, recordDate >= fromDate);
+            }
+            
+            if (selectedDateTo) {
+                const toDate = new Date(selectedDateTo);
+                includeRecord = includeRecord && recordDate <= toDate;
+                console.log(`Record ${record.name} date ${record.date} <= ${selectedDateTo}:`, recordDate <= toDate);
+            }
+            
+            console.log(`Record ${record.name} included:`, includeRecord);
+            return includeRecord;
+        });
+    }
+
     function formatDate(d){ if(!d) return '-'; return new Date(d).toLocaleDateString(); }
 
     function getPayload(row, tab, dateVal){
@@ -133,13 +166,193 @@
     function getDoctypeName(tab){ return { 'fuel-based': 'Business Travel Fuel Based', 'distance-based': 'Business Travel Distance Based', 'spend-based': 'Business Travel Spend Based' }[tab]; }
     function saveToDoctype(data, tab, cb){ const doctypeName = getDoctypeName(tab); (async ()=>{ const ctx = await getUserContext(); const doc = { doctype: doctypeName, ...data }; try { if (await hasField(doctypeName, 'company')) { doc.company = ctx.is_super ? (selectedCompany || ctx.company || null) : (ctx.company || null); } if (await hasField(doctypeName, 'company_unit')) { const chosenUnit = selectedUnit || (ctx.units && ctx.units.length===1 ? ctx.units[0] : null); if (chosenUnit) doc.company_unit = chosenUnit; } } catch(e){} frappe.call({ method: 'frappe.client.insert', args: { doc }, callback: function(r){ if(cb) cb(r.message && r.message.name); }, error: function(){ if(cb) cb(null); } }); })(); }
 
-    function loadExisting(){ ['fuel-based','distance-based','spend-based'].forEach(async tab=>{ const dt = getDoctypeName(tab); const ctx = await getUserContext(); const filters = {}; if (await hasField(dt, 'company')) { filters.company = ctx.is_super ? (selectedCompany || ctx.company || undefined) : (ctx.company || undefined); } if (await hasField(dt, 'company_unit')) { if (selectedUnit) filters.company_unit = selectedUnit; } frappe.call({ method: 'frappe.client.get_list', args: { doctype: dt, fields: ['name'], limit_page_length: 100, filters }, callback: function(r){ const tbody = scopeRoot.querySelector('#' + getBodyId(tab)); const entryRow = tbody && tbody.querySelector('.data-entry-row'); if(!r.message || !tbody || !entryRow) return; const names = r.message.map(x=>x.name); let index = 1; const renderDoc = (doc)=>{ const row = document.createElement('tr'); row.className='data-display-row'; row.setAttribute('data-doc', doc.name); let html = `<td>${index++}</td><td>${formatDate(doc.date)}</td>`; if(tab==='fuel-based'){ html += `<td>${doc.description||'-'}</td><td>${doc.fuel_type||'-'}</td><td>${doc.fuel_consumed||'0.00'}</td><td>${doc.unit||'-'}</td><td>${doc.emission_factor||'0.0000'}</td><td>${doc.ef_unit||'-'}</td><td>${doc.total_emissions||'0.00'}</td>`; } else if(tab==='distance-based'){ html += `<td>${doc.description||'-'}</td><td>${doc.transport_mode||'-'}</td><td>${doc.distance_traveled||'0.00'}</td><td>${doc.unit||'-'}</td><td>${doc.emission_factor||'0.0000'}</td><td>${doc.ef_unit||'-'}</td><td>${doc.total_emissions||'0.00'}</td>`; } else { html += `<td>${doc.description||'-'}</td><td>${doc.amount_spent||'0.00'}</td><td>${doc.currency||'$'}</td><td>${doc.eeio_ef||'0.0000'}</td><td>${doc.ef_unit||'-'}</td><td>${doc.total_emissions||'0.00'}</td>`; } html += `<td><button class='btn btn-danger delete-btn'>Delete</button></td>`; row.innerHTML = html; tbody.insertBefore(row, entryRow.nextSibling); const del = row.querySelector('.delete-btn'); del.addEventListener('click', ()=>{ frappe.call({ method: 'frappe.client.delete', args: { doctype: dt, name: doc.name }, callback: function(){ row.remove(); }, error: function(){ row.remove(); } }); }); };
-        names.forEach(n=>{ frappe.call({ method: 'frappe.client.get', args: { doctype: dt, name: n }, callback: function(res){ if(res.message) renderDoc(res.message); } }); });
-        currentRowIds[tab] = (names.length||0) + 1; if(entryRow) entryRow.querySelector('td:first-child').textContent = currentRowIds[tab]; } }); }); }
+    function loadExisting(){ 
+        ['fuel-based','distance-based','spend-based'].forEach(async tab=>{ 
+            const dt = getDoctypeName(tab); 
+            const ctx = await getUserContext(); 
+            const filters = {}; 
+            if (await hasField(dt, 'company')) { 
+                filters.company = ctx.is_super ? (selectedCompany || ctx.company || undefined) : (ctx.company || undefined); 
+            } 
+            if (await hasField(dt, 'company_unit')) { 
+                if (selectedUnit) filters.company_unit = selectedUnit; 
+            } 
+            frappe.call({ 
+                method: 'frappe.client.get_list', 
+                args: { 
+                    doctype: dt, 
+                    fields: ['name', 'date', 'description', 'fuel_type', 'fuel_consumed', 'unit', 'emission_factor', 'ef_unit', 'total_emissions', 'transport_mode', 'distance_traveled', 'amount_spent', 'currency', 'eeio_ef'], 
+                    limit_page_length: 100, 
+                    filters 
+                }, 
+                callback: function(r){ 
+                    if (r.message && r.message.length > 0) {
+                        // Apply client-side date filtering
+                        const filteredRecords = applyDateFilter(r.message);
+                        console.log(`Business Travel: Original records: ${r.message.length}, Filtered records: ${filteredRecords.length}`);
+                        
+                        const tbody = scopeRoot.querySelector('#' + getBodyId(tab)); 
+                        const entryRow = tbody && tbody.querySelector('.data-entry-row'); 
+                        if(!tbody || !entryRow) return; 
+                        
+                        // Clear existing display rows
+                        tbody.querySelectorAll('.data-display-row').forEach(row => row.remove());
+                        
+                        let index = 1; 
+                        const renderDoc = (doc)=>{ 
+                            const row = document.createElement('tr'); 
+                            row.className='data-display-row'; 
+                            row.setAttribute('data-doc', doc.name); 
+                            let html = `<td>${index++}</td><td>${formatDate(doc.date)}</td>`; 
+                            if(tab==='fuel-based'){ 
+                                html += `<td>${doc.description||'-'}</td><td>${doc.fuel_type||'-'}</td><td>${doc.fuel_consumed||'0.00'}</td><td>${doc.unit||'-'}</td><td>${doc.emission_factor||'0.0000'}</td><td>${doc.ef_unit||'-'}</td><td>${doc.total_emissions||'0.00'}</td>`; 
+                            } else if(tab==='distance-based'){ 
+                                html += `<td>${doc.description||'-'}</td><td>${doc.transport_mode||'-'}</td><td>${doc.distance_traveled||'0.00'}</td><td>${doc.unit||'-'}</td><td>${doc.emission_factor||'0.0000'}</td><td>${doc.ef_unit||'-'}</td><td>${doc.total_emissions||'0.00'}</td>`; 
+                            } else { 
+                                html += `<td>${doc.description||'-'}</td><td>${doc.amount_spent||'0.00'}</td><td>${doc.currency||'$'}</td><td>${doc.eeio_ef||'0.0000'}</td><td>${doc.ef_unit||'-'}</td><td>${doc.total_emissions||'0.00'}</td>`; 
+                            } 
+                            html += `<td><button class='btn btn-danger delete-btn'>Delete</button></td>`; 
+                            row.innerHTML = html; 
+                            tbody.insertBefore(row, entryRow.nextSibling); 
+                            const del = row.querySelector('.delete-btn'); 
+                            del.addEventListener('click', ()=>{ 
+                                frappe.call({ 
+                                    method: 'frappe.client.delete', 
+                                    args: { doctype: dt, name: doc.name }, 
+                                    callback: function(){ row.remove(); }, 
+                                    error: function(){ row.remove(); } 
+                                }); 
+                            }); 
+                        };
+                        
+                        // Render all filtered records
+                        filteredRecords.forEach(doc => renderDoc(doc));
+                        
+                        currentRowIds[tab] = (filteredRecords.length||0) + 1; 
+                        if(entryRow) entryRow.querySelector('td:first-child').textContent = currentRowIds[tab]; 
+                    }
+                } 
+            }); 
+        }); 
+    }
 
     // ============ Company/Unit Filter Helpers ============
     async function getUserContext(){ try { const r = await frappe.call({ method: 'climoro_onboarding.climoro_onboarding.api.get_current_user_company_units' }); return r.message || { company: null, units: [], is_super: false }; } catch(e){ return { company: null, units: [], is_super: false }; } }
-    function buildFilterBar(done){ const container = scopeRoot.querySelector('.business-travel-container'); if(!container){ done&&done(); return; } if(container.querySelector('.filter-bar')){ done&&done(); return; } const bar = document.createElement('div'); bar.className='filter-bar'; (async ()=>{ try{ const ctx = await getUserContext(); const roles = (frappe && frappe.get_roles)? frappe.get_roles(): []; const canShow = ctx.is_super || roles.includes('System Manager') || roles.includes('Super Admin'); if(!canShow){ done&&done(); return; } }catch(e){ done&&done(); return; } })(); bar.innerHTML = `<div style="display:flex; gap:12px; align-items:center; flex-wrap:nowrap; margin:8px 0;"><div class=\"company-filter\" style=\"min-width:220px; display:flex; align-items:center; gap:8px;\"><label style=\"font-size:12px; margin:0; white-space:nowrap;\">Company</label><select class=\"form-control filter-company-select\" style=\"width:260px;\"></select></div><div class=\"unit-filter\" style=\"min-width:220px; display:flex; align-items:center; gap:8px;\"><label style=\"font-size:12px; margin:0; white-space:nowrap;\">Unit</label><select class=\"form-control filter-unit-select\" style=\"width:260px;\"></select></div><div><button type=\"button\" class=\"btn btn-secondary filter-apply-btn\">Apply</button></div></div>`; const header = scopeRoot.querySelector('.page-header') || scopeRoot.querySelector('.header-section'); if (header) header.insertAdjacentElement('afterend', bar); else container.prepend(bar); bar.querySelector('.filter-apply-btn')?.addEventListener('click', ()=>{ const csel = bar.querySelector('.filter-company-select'); const usel = bar.querySelector('.filter-unit-select'); selectedCompany = csel.value || null; selectedUnit = usel.value || null; ['fuel-based','distance-based','spend-based'].forEach(tab=>{ const tbody = scopeRoot.querySelector('#' + getBodyId(tab)); tbody?.querySelectorAll('.data-display-row').forEach(r=>r.remove()); }); loadExisting(); }); done&&done(); }
+    function buildFilterBar(done){ 
+        const container = scopeRoot.querySelector('.business-travel-container'); 
+        if(!container){ done&&done(); return; } 
+        if(container.querySelector('.filter-bar')){ done&&done(); return; } 
+        const bar = document.createElement('div'); 
+        bar.className='filter-bar'; 
+        (async ()=>{ 
+            try{ 
+                const ctx = await getUserContext(); 
+                const roles = (frappe && frappe.get_roles)? frappe.get_roles(): []; 
+                const canShow = ctx.is_super || roles.includes('System Manager') || roles.includes('Super Admin'); 
+                if(!canShow){ done&&done(); return; } 
+            }catch(e){ done&&done(); return; } 
+        })(); 
+        bar.innerHTML = `
+            <div class="filter-header">
+                <h3>Filters</h3>
+                <button type="button" class="filter-toggle-btn">
+                    <i class="fa fa-plus"></i>
+                </button>
+            </div>
+            <div class="filter-content" style="display: none;">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label>Company</label>
+                        <select class="form-control filter-company-select">
+                            <option value="">All Companies</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Unit</label>
+                        <select class="form-control filter-unit-select">
+                            <option value="">All Units</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>From Date</label>
+                        <input type="date" class="form-control date-from-input">
+                    </div>
+                    <div class="filter-group">
+                        <label>To Date</label>
+                        <input type="date" class="form-control date-to-input">
+                    </div>
+                    <div class="filter-actions">
+                        <button type="button" class="btn filter-apply-btn">Apply</button>
+                        <button type="button" class="btn filter-clear-btn">Clear Dates</button>
+                    </div>
+                </div>
+            </div>
+        `; 
+        const header = scopeRoot.querySelector('.page-header') || scopeRoot.querySelector('.header-section'); 
+        if (header) header.insertAdjacentElement('afterend', bar); else container.prepend(bar); 
+        
+        // Apply button event listener
+        bar.querySelector('.filter-apply-btn')?.addEventListener('click', ()=>{
+            const csel = bar.querySelector('.filter-company-select');
+            const usel = bar.querySelector('.filter-unit-select');
+            const fromDate = bar.querySelector('.date-from-input');
+            const toDate = bar.querySelector('.date-to-input');
+            
+            selectedCompany = csel.value || null;
+            selectedUnit = usel.value || null;
+            selectedDateFrom = fromDate.value || null;
+            selectedDateTo = toDate.value || null;
+            
+            console.log('Business Travel Filter values:', {
+                company: selectedCompany,
+                unit: selectedUnit,
+                dateFrom: selectedDateFrom,
+                dateTo: selectedDateTo
+            });
+            
+            ['fuel-based','distance-based','spend-based'].forEach(tab=>{ 
+                const tbody = scopeRoot.querySelector('#' + getBodyId(tab)); 
+                tbody?.querySelectorAll('.data-display-row').forEach(r=>r.remove()); 
+            }); 
+            loadExisting();
+        });
+        
+        // Clear dates button event listener
+        bar.querySelector('.filter-clear-btn')?.addEventListener('click', ()=>{
+            const fromDate = bar.querySelector('.date-from-input');
+            const toDate = bar.querySelector('.date-to-input');
+            
+            fromDate.value = '';
+            toDate.value = '';
+            selectedDateFrom = null;
+            selectedDateTo = null;
+            
+            console.log('Business Travel Date filters cleared');
+            ['fuel-based','distance-based','spend-based'].forEach(tab=>{ 
+                const tbody = scopeRoot.querySelector('#' + getBodyId(tab)); 
+                tbody?.querySelectorAll('.data-display-row').forEach(r=>r.remove()); 
+            }); 
+            loadExisting();
+        });
+        
+        // Toggle button event listener
+        bar.querySelector('.filter-toggle-btn')?.addEventListener('click', ()=>{
+            const content = bar.querySelector('.filter-content');
+            const icon = bar.querySelector('.filter-toggle-btn i');
+            
+            isFilterVisible = !isFilterVisible;
+            
+            if (isFilterVisible) {
+                content.style.display = 'block';
+                icon.className = 'fa fa-minus';
+            } else {
+                content.style.display = 'none';
+                icon.className = 'fa fa-plus';
+            }
+        });
+        
+        done&&done(); 
+    }
     async function fetchCompanies(){ const r = await frappe.call({ method:'frappe.client.get_list', args:{ doctype:'Company', fields:['name'], limit:500 } }); return (r.message||[]).map(x=>x.name); }
     async function fetchUnits(company){ const filters = company ? { company } : {}; const r = await frappe.call({ method:'frappe.client.get_list', args:{ doctype:'Units', fields:['name'], filters, limit:500 } }); return (r.message||[]).map(x=>x.name); }
     async function initializeFiltersFromContext(){ const ctx = await getUserContext(); const bar = scopeRoot.querySelector('.filter-bar'); if(!bar) return; const companySelect = bar.querySelector('.filter-company-select'); const unitSelect = bar.querySelector('.filter-unit-select'); companySelect.innerHTML=''; unitSelect.innerHTML=''; if(ctx.is_super){ const companies = await fetchCompanies(); companySelect.innerHTML = `<option value=\"\">All Companies</option>` + companies.map(c=>`<option value=\"${c}\">${c}</option>`).join(''); companySelect.addEventListener('change', async ()=>{ selectedCompany = companySelect.value || null; const units = await fetchUnits(selectedCompany); unitSelect.innerHTML = `<option value=\"\">All Units</option>` + units.map(u=>`<option value=\"${u}\">${u}</option>`).join(''); selectedUnit = null; }); const initialUnits = await fetchUnits(null); unitSelect.innerHTML = `<option value=\"\">All Units</option>` + initialUnits.map(u=>`<option value=\"${u}\">${u}</option>`).join(''); selectedCompany=null; selectedUnit=null; } else { selectedCompany = ctx.company || null; companySelect.innerHTML = `<option value=\"${selectedCompany||''}\">${selectedCompany||'-'}</option>`; companySelect.disabled = true; let units=[]; if(ctx.units && ctx.units.length) units=ctx.units; else if(selectedCompany) units = await fetchUnits(selectedCompany); if(!units || !units.length){ unitSelect.innerHTML = `<option value=\"\">All Units</option>`; selectedUnit=null; } else { unitSelect.innerHTML = units.map(u=>`<option value=\"${u}\">${u}</option>`).join(''); selectedUnit = units.length===1 ? units[0] : units[0]; } unitSelect.disabled = !(ctx.units && ctx.units.length>1); } }
