@@ -164,7 +164,38 @@
     }
 
     function getDoctypeName(tab){ return { 'fuel-based': 'Business Travel Fuel Based', 'distance-based': 'Business Travel Distance Based', 'spend-based': 'Business Travel Spend Based' }[tab]; }
-    function saveToDoctype(data, tab, cb){ const doctypeName = getDoctypeName(tab); (async ()=>{ const ctx = await getUserContext(); const doc = { doctype: doctypeName, ...data }; try { if (await hasField(doctypeName, 'company')) { doc.company = ctx.is_super ? (selectedCompany || ctx.company || null) : (ctx.company || null); } if (await hasField(doctypeName, 'company_unit')) { const chosenUnit = selectedUnit || (ctx.units && ctx.units.length===1 ? ctx.units[0] : null); if (chosenUnit) doc.company_unit = chosenUnit; } } catch(e){} frappe.call({ method: 'frappe.client.insert', args: { doc }, callback: function(r){ if(cb) cb(r.message && r.message.name); }, error: function(){ if(cb) cb(null); } }); })(); }
+    function saveToDoctype(data, tab, cb){ 
+        const doctypeName = getDoctypeName(tab); 
+        (async ()=>{ 
+            const ctx = await getUserContext(); 
+            const doc = { doctype: doctypeName, ...data }; 
+            try { 
+                if (await hasField(doctypeName, 'company')) { 
+                    doc.company = ctx.is_super ? (selectedCompany || ctx.company || null) : (ctx.company || null); 
+                } 
+                if (await hasField(doctypeName, 'company_unit')) { 
+                    const chosenUnit = selectedUnit || (ctx.units && ctx.units.length===1 ? ctx.units[0] : null); 
+                    if (chosenUnit) doc.company_unit = chosenUnit; 
+                } 
+            } catch(e){
+                console.warn(`Could not check fields for ${doctypeName}:`, e);
+            } 
+            frappe.call({ 
+                method: 'frappe.client.insert', 
+                args: { doc }, 
+                callback: function(r){ 
+                    if(cb) cb(r.message && r.message.name); 
+                }, 
+                error: function(err){ 
+                    console.error(`Error saving to ${doctypeName}:`, err);
+                    if (err && err.exc_type && err.exc_type.includes('DoesNotExistError')) {
+                        console.warn(`DocType ${doctypeName} does not exist. Please create the DocType first.`);
+                    }
+                    if(cb) cb(null); 
+                } 
+            }); 
+        })(); 
+    }
 
     function loadExisting(){ 
         ['fuel-based','distance-based','spend-based'].forEach(async tab=>{ 
@@ -177,11 +208,38 @@
             if (await hasField(dt, 'company_unit')) { 
                 if (selectedUnit) filters.company_unit = selectedUnit; 
             } 
+            
+            // Use minimal field set to avoid permission errors
+            let fields = ['name', 'date', 'description'];
+            
+            // Try to add more fields, but don't fail if they don't exist
+            try {
+                if (await hasField(dt, 'total_emissions')) fields.push('total_emissions');
+                if (await hasField(dt, 'emission_factor')) fields.push('emission_factor');
+                if (await hasField(dt, 'ef_unit')) fields.push('ef_unit');
+                
+                if(tab === 'fuel-based') {
+                    if (await hasField(dt, 'fuel_type')) fields.push('fuel_type');
+                    if (await hasField(dt, 'fuel_consumed')) fields.push('fuel_consumed');
+                    if (await hasField(dt, 'unit')) fields.push('unit');
+                } else if(tab === 'distance-based') {
+                    if (await hasField(dt, 'transport_mode')) fields.push('transport_mode');
+                    if (await hasField(dt, 'distance_traveled')) fields.push('distance_traveled');
+                    if (await hasField(dt, 'unit')) fields.push('unit');
+                } else if(tab === 'spend-based') {
+                    if (await hasField(dt, 'amount_spent')) fields.push('amount_spent');
+                    if (await hasField(dt, 'currency')) fields.push('currency');
+                    if (await hasField(dt, 'eeio_ef')) fields.push('eeio_ef');
+                }
+            } catch(e) {
+                console.warn(`Could not check fields for ${dt}:`, e);
+            }
+            
             frappe.call({ 
                 method: 'frappe.client.get_list', 
                 args: { 
                     doctype: dt, 
-                    fields: ['name', 'date', 'description', 'fuel_type', 'fuel_consumed', 'unit', 'emission_factor', 'ef_unit', 'total_emissions', 'transport_mode', 'distance_traveled', 'amount_spent', 'currency', 'eeio_ef'], 
+                    fields: fields, 
                     limit_page_length: 100, 
                     filters 
                 }, 
@@ -231,7 +289,15 @@
                         currentRowIds[tab] = (filteredRecords.length||0) + 1; 
                         if(entryRow) entryRow.querySelector('td:first-child').textContent = currentRowIds[tab]; 
                     }
-                } 
+                },
+                error: function(err) {
+                    console.error(`Error loading ${tab} records:`, err);
+                    // Check if it's a DocType not found error
+                    if (err && err.exc_type && err.exc_type.includes('DoesNotExistError')) {
+                        console.warn(`DocType ${dt} does not exist. Please create the DocType first.`);
+                    }
+                    // Don't show error to user, just log it
+                }
             }); 
         }); 
     }
