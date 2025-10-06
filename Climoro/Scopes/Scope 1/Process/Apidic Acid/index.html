@@ -1,0 +1,45 @@
+<div class="adipic-acid-container">
+    <div class="header-section">
+        <h1>Adipic Acid Production - N2O Emissions</h1>
+        <p class="description">Daily entries. Single worksheet combining Step 1 and Step 2.</p>
+    </div>
+
+    <div class="worksheet-section">
+        <div class="worksheet-header">
+            <h2>Worksheet: Direct Gross N2O Emissions</h2>
+            <p class="worksheet-description">Enter daily data; defaults are auto-filled from standard tables.</p>
+        </div>
+
+        <div class="table-section">
+            <div class="table-container">
+                <table class="adipic-table" id="adipicTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Date</th>
+                            <th>N2O Abatement Technology</th>
+                            <th>Adipic Acid Production<br><span class="unit">(tonnes equivalent)</span></th>
+                            <th>N2O Emission Factor<br><span class="unit">(t N2O/t adipic)</span></th>
+                            <th>Destruction Factor<br><span class="unit">(%)</span></th>
+                            <th>Utilization Factor<br><span class="unit">(%)</span></th>
+                            <th>Potential N2O Emissions<br><span class="unit">(t N2O)</span></th>
+                            <th>N2O Emissions<br><span class="unit">(t N2O)</span></th>
+                            <th>GWP<br><span class="unit">(N2O)</span></th>
+                            <th>CO2e<br><span class="unit">(t CO2e)</span></th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adipicTableBody">
+                        <!-- Entry row dynamically built by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-section">
+        <p class="footer-note">Defaults: EF=0.30; GWP(N2O)=310; Technology factors per worksheet table.</p>
+    </div>
+</div>
+
+
