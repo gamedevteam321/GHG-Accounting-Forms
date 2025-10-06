@@ -1,0 +1,45 @@
+<div class="ammonia-container">
+    <div class="header-section">
+        <h1>Ammonia Production – CO2 Emissions</h1>
+        <p class="description">Daily entries. Defaults from production process and Appendix A fuels.</p>
+    </div>
+
+    <div class="worksheet-section">
+        <div class="worksheet-header">
+            <h2>Worksheet: Direct Gross CO2 Emissions (Fuel-based)</h2>
+            <p class="worksheet-description">Use the daily NH3 production and selected fuel to compute CO2. Urea CO2 computed as NH3 × 44/60.</p>
+        </div>
+
+        <div class="table-section">
+            <div class="table-container">
+                <table class="ammonia-table" id="ammoniaTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Date</th>
+                            <th>Unit</th>
+                            <th>Production Process</th>
+                            <th>NH3 Production<br><span class="unit">(tonnes)</span></th>
+                            <th>Fuel Type</th>
+                            <th>Fuel Requirement<br><span class="unit">(GJ/t NH3)</span></th>
+                            <th>Carbon Content<br><span class="unit">(kg C/GJ)</span></th>
+                            <th>Oxidation Factor<br><span class="unit">(fraction)</span></th>
+                            <th>CO2 from NH3<br><span class="unit">(t)</span></th>
+                            <th>Urea CO2<br><span class="unit">(t)</span></th>
+                            <th>CSS<br><span class="unit">(t)</span></th>
+                            <th>Total CO2 Emissions<br><span class="unit">(t)</span></th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ammoniaTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-section">
+        <p class="footer-note">Formulas: CO2(NH3)=NH3×FuelReq×Carbon×Oxid×(44/12)/1000; Urea CO2=NH3×44/60; Total=CO2(NH3)−(Urea CO2+CSS).</p>
+    </div>
+</div>
+
+
