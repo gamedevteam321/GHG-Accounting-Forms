@@ -1,0 +1,42 @@
+<div class="nitric-acid-container">
+    <div class="header-section">
+        <h1>Nitric Acid Production – N2O Emissions</h1>
+        <p class="description">Daily entries. Technology-based defaults. GWP(N2O) fixed at 265.</p>
+    </div>
+
+    <div class="worksheet-section">
+        <div class="worksheet-header">
+            <h2>Worksheet: Direct N2O Emissions (Approach 2/3)</h2>
+            <p class="worksheet-description">Select technology to auto-fill the default emission factor.</p>
+        </div>
+
+        <div class="table-section">
+            <div class="table-container">
+                <table class="nitric-table" id="nitricTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Date</th>
+                            <th>Technology</th>
+                            <th>Production<br><span class="unit">(t HNO3)</span></th>
+                            <th>Default EF<br><span class="unit">(kg N2O/t HNO3)</span></th>
+                            <th>EF Used<br><span class="unit">(kg N2O/t HNO3)</span></th>
+                            <th>N2O Destruction<br><span class="unit">(%)</span></th>
+                            <th>Abatement Utilization<br><span class="unit">(%)</span></th>
+                            <th>N2O Emissions<br><span class="unit">(t)</span></th>
+                            <th>CO2e<br><span class="unit">(t)</span></th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="nitricTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-section">
+        <p class="footer-note">Formulas: EF Used = Default EF; N2O = (Prod × EF/1000) × [1 − (Destr% × Util%)] ; CO2e = N2O × 265.</p>
+    </div>
+</div>
+
+
