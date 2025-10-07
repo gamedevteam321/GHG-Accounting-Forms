@@ -1,0 +1,76 @@
+<div class="lime-container">
+    <div class="header-section">
+        <h1>Lime Production – CO2 Emissions</h1>
+        <p class="description">Facility removed; Unit is required. Use tabs for Approach 1 & 2.</p>
+    </div>
+
+    <div class="tabs-container">
+        <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="approach-1">Approach 1: Production Data</button>
+            <button class="tab-btn" data-tab="approach-2">Approach 2: Carbonate Input</button>
+        </div>
+    </div>
+
+    <div class="tab-content-container">
+        <!-- Approach 1 -->
+        <div class="tab-content active" id="approach-1-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="lime-table" id="approach1Table">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>Unit</th>
+                                <th>Lime type</th>
+                                <th>Production<br><span class="unit">(t)</span></th>
+                                <th>Country type</th>
+                                <th>CaO/(CaO+MgO)<br><span class="unit">(fraction)</span></th>
+                                <th>Stoichiometric ratio<br><span class="unit">(fraction)</span></th>
+                                <th>Hydrated proportion<br><span class="unit">(fraction)</span></th>
+                                <th>Hydrated water content<br><span class="unit">(fraction)</span></th>
+                                <th>LKD factor</th>
+                                <th>CO2 Emissions<br><span class="unit">(t)</span></th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approach1Body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Approach 2 -->
+        <div class="tab-content" id="approach-2-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="lime-table" id="approach2Table">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>Unit</th>
+                                <th>Carbonate</th>
+                                <th>EF<br><span class="unit">(t CO2/t)</span></th>
+                                <th>Amount<br><span class="unit">(t)</span></th>
+                                <th>Frac calcination (carbonate)</th>
+                                <th>LKD amount (t)</th>
+                                <th>LKD wt fraction</th>
+                                <th>Frac calcination (LKD)</th>
+                                <th>CO2 Emissions<br><span class="unit">(t)</span></th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approach2Body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-section">
+        <p class="footer-note">Defaults and carbonate EF values are fetched from Lime Defaults.</p>
+    </div>
+</div>
+
+
