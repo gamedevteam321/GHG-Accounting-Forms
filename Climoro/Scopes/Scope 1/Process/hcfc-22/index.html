@@ -1,0 +1,102 @@
+<div class="hcfc22-container">
+    <div class="header-section">
+        <h1>HCFC‑22 Production – HFC‑23 Emissions</h1>
+        <p class="description">GWP(HFC‑23) fixed at 12,400. Unit is required (company‑filtered).</p>
+    </div>
+
+    <div class="tabs-container">
+        <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="approach-2">Approach 2: Gas Stream</button>
+            <button class="tab-btn" data-tab="approach-3">Approach 3: Balance Method</button>
+            <button class="tab-btn" data-tab="approach-4">Approach 4: Production Only</button>
+        </div>
+    </div>
+
+    <div class="tab-content-container">
+        <!-- Approach 2 -->
+        <div class="tab-content active" id="approach-2-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="hcfc22-table" id="approach2Table">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>Unit</th>
+                                <th>Stream ID</th>
+                                <th>Flow Rate<br><span class="unit">(m³/min)</span></th>
+                                <th>Concentration<br><span class="unit">(g/m³)</span></th>
+                                <th>Time<br><span class="unit">(min)</span></th>
+                                <th>Abatement Utilization<br><span class="unit">(fraction)</span></th>
+                                <th>HFC‑23 Emissions<br><span class="unit">(t)</span></th>
+                                <th>CO2e<br><span class="unit">(t)</span></th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approach2Body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Approach 3 -->
+        <div class="tab-content" id="approach-3-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="hcfc22-table" id="approach3Table">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>Unit</th>
+                                <th>Production<br><span class="unit">(t HCFC‑22)</span></th>
+                                <th>Carbon balance efficiency<br><span class="unit">(%)</span></th>
+                                <th>Fluorine balance efficiency<br><span class="unit">(%)</span></th>
+                                <th>Carbon content factor</th>
+                                <th>Fluorine content factor</th>
+                                <th>Loss factor</th>
+                                <th>HFC‑23 EF<br><span class="unit">(t/t)</span></th>
+                                <th>Untreated fraction</th>
+                                <th>HFC‑23 Emissions<br><span class="unit">(t)</span></th>
+                                <th>CO2e<br><span class="unit">(t)</span></th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approach3Body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Approach 4 -->
+        <div class="tab-content" id="approach-4-tab">
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="hcfc22-table" id="approach4Table">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>Unit</th>
+                                <th>Production<br><span class="unit">(t HCFC‑22)</span></th>
+                                <th>Vintage</th>
+                                <th>EF<br><span class="unit">(t/t)</span></th>
+                                <th>Untreated fraction</th>
+                                <th>HFC‑23 Emissions<br><span class="unit">(t)</span></th>
+                                <th>CO2e<br><span class="unit">(t)</span></th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approach4Body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-section">
+        <p class="footer-note">GWP(HFC‑23) = 12,400</p>
+    </div>
+</div>
+
+
