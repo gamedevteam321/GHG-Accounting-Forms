@@ -6,7 +6,7 @@
 
     function init(){ ensureEntryRow(); attachGlobalKeyBlockers(); loadExisting(); }
 
-    function buildTechOptions(){ return TECH_DEFAULTS.map(t=>`<option value="${t.technology_name}" data-ef="${t.default_ef_kg_per_t}">${t.technology_name}</option>`).join(''); }
+    function buildTechOptions(){ return TECH_DEFAULTS.map(t=>`<option value="${t.name}" data-ef="${t.default_ef_kg_per_t}">${t.technology_name}</option>`).join(''); }
 
     function ensureEntryRow(){
         const tbody = scopeRoot.querySelector('#nitricTableBody'); if(!tbody) return;
@@ -31,7 +31,7 @@
 
     async function loadTechDefaults(){
         try {
-            const r = await frappe.call({ method: 'frappe.client.get_list', args: { doctype: 'Nitric Acid Technology Defaults', fields: ['technology_name','default_ef_kg_per_t','is_active'], filters: { is_active: 1 }, limit_page_length: 100 } });
+            const r = await frappe.call({ method: 'frappe.client.get_list', args: { doctype: 'Nitric Acid Technology Defaults', fields: ['name','technology_name','default_ef_kg_per_t','is_active'], filters: { is_active: 1 }, limit_page_length: 100 } });
             return r.message || [];
         } catch(e){ return []; }
     }
@@ -64,10 +64,12 @@
     function addDisplayRow(entryRow){
         const tbody = entryRow.parentElement; const tr = document.createElement('tr'); tr.className='data-display-row';
         const dateVal = entryRow.querySelector('.date-picker').value;
+        const techSel = entryRow.querySelector('.tech');
+        const techLabel = techSel && techSel.selectedOptions && techSel.selectedOptions[0] ? techSel.selectedOptions[0].textContent : val(entryRow,'.tech');
         const html = `
             <td>${currentIndex}</td>
             <td>${formatDate(dateVal)}</td>
-            <td>${val(entryRow,'.tech')}</td>
+            <td>${techLabel}</td>
             <td>${val(entryRow,'.prod')}</td>
             <td>${entryRow.querySelector('.defef').textContent}</td>
             <td>${entryRow.querySelector('.efused').textContent}</td>
