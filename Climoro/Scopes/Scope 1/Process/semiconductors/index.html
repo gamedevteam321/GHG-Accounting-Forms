@@ -1,0 +1,168 @@
+<div class="semiconductor-container">
+    <div class="header-section">
+        <h1>Semiconductor PFC Emissions Calculator</h1>
+        <p class="description">Track perfluorocompound emissions from semiconductor manufacturing</p>
+        <div class="company-info">
+            <div class="info-row">
+                <label>Company:</label>
+                <span class="company-display" id="companyDisplay">Loading...</span>
+            </div>
+            <div class="info-row">
+                <label>Reporting Year:</label>
+                <input type="number" class="form-control year-input" id="reportingYear" min="2000" max="2100" value="2024">
+            </div>
+        </div>
+    </div>
+
+    <div class="tabs-container">
+        <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="step-1">Step 1: Gas Purchased</button>
+            <button class="tab-btn" data-tab="step-2">Step 2: Abatement</button>
+            <button class="tab-btn" data-tab="step-3">Step 3: Wafer Data</button>
+            <button class="tab-btn" data-tab="summary">Summary</button>
+        </div>
+    </div>
+
+    <div class="tab-content-container">
+        <!-- Step 1: Gas Purchased -->
+        <div class="tab-content active" id="step-1-tab">
+            <div class="table-section">
+                <h3>Enter amount of material purchased for each chemical (kg)</h3>
+                <div class="table-container">
+                    <table class="semi-table" id="step1Table">
+                        <thead>
+                            <tr>
+                                <th>Chemical</th>
+                                <th>kgsi<br><span class="unit">(kg purchased)</span></th>
+                                <th>GWPi<br><span class="unit">(100-yr GWP)</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="step1Body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Abatement -->
+        <div class="tab-content" id="step-2-tab">
+            <div class="table-section">
+                <h3>Enter fraction of each material fed into abatement tools (0-1)</h3>
+                <div class="table-container">
+                    <table class="semi-table" id="step2Table">
+                        <thead>
+                            <tr>
+                                <th>Chemical</th>
+                                <th>Va<br><span class="unit">(fraction, 0-1)</span></th>
+                                <th>ai<br><span class="unit">(%)</span></th>
+                                <th>Ai = ai*Va<br><span class="unit">(fraction)</span></th>
+                                <th>ACF4 = aCF4*Va<br><span class="unit">(fraction)</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="step2Body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Wafer Data -->
+        <div class="tab-content" id="step-3-tab">
+            <div class="table-section">
+                <h3>Enter wafer out data for normalization</h3>
+                <div class="table-container">
+                    <table class="semi-table" id="step3Table">
+                        <thead>
+                            <tr>
+                                <th>Np<br><span class="unit">(# wafers)</span></th>
+                                <th>Size<br><span class="unit">(mm)</span></th>
+                                <th>Ap<br><span class="unit">(m²)</span></th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="step3Body"></tbody>
+                    </table>
+                    <div class="wafer-total">
+                        <strong>Total Surface Area (SAt):</strong> <span class="calculated-value" id="totalSurfaceArea">0.0000</span> m²
+                    </div>
+                    <button class="btn btn-primary add-wafer-btn" id="addWaferBtn">+ Add Wafer Size</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="tab-content" id="summary-tab">
+            <div class="table-section">
+                <h3>Emissions Summary</h3>
+                <div class="table-container">
+                    <table class="semi-table summary-table" id="summaryTable">
+                        <thead>
+                            <tr>
+                                <th>Chemical</th>
+                                <th>Primary Emissions<br><span class="unit">(t CO2e)</span></th>
+                                <th>Byproduct CF4<br><span class="unit">(t CO2e)</span></th>
+                                <th>Total<br><span class="unit">(t CO2e)</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="summaryBody"></tbody>
+                    </table>
+                </div>
+                <div class="summary-totals">
+                    <div class="total-row">
+                        <div class="total-label">Total Emissions:</div>
+                        <div class="total-values">
+                            <span class="total-value"><span class="calculated-value" id="totalTCO2e">0.00</span> Tons CO2 Equivalents</span>
+                            <span class="total-value"><span class="calculated-value" id="totalMTCE">0.00</span> MTCE</span>
+                        </div>
+                    </div>
+                    <div class="total-row">
+                        <div class="total-label">Normalized NER:</div>
+                        <div class="total-values">
+                            <span class="total-value"><span class="calculated-value" id="nerTCO2e">0.00</span> [Tons CO2e/m² of Si]</span>
+                            <span class="total-value"><span class="calculated-value" id="nerMTCE">0.00</span> [MTCE/m² of Si]</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="save-section">
+                    <button class="btn btn-success btn-lg" id="saveEntryBtn">Save Entry</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Section -->
+    <div class="history-section">
+        <h3>Entry History</h3>
+        <div class="table-container">
+            <table class="history-table" id="historyTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Year</th>
+                        <th>Total Emissions<br><span class="unit">(t CO2e)</span></th>
+                        <th>Total Emissions<br><span class="unit">(MTCE)</span></th>
+                        <th>NER<br><span class="unit">(t CO2e/m²)</span></th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="historyBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal for Expanded View -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Entry Details</h2>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content will be populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-section">
+        <p class="footer-note">Defaults fetched from Semiconductor PFC Defaults. Formula: Emissions = PFCi*(1-h)*[(1-Ci)(1-Ai)*GWPi + Bi*GWPCF4*(1-ACF4)]</p>
+    </div>
+</div>
+
