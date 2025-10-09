@@ -12,6 +12,8 @@
     let defaults = {};
     let currentCompany = '';
     let waferRows = [];
+    let currentStepNum = 1;
+    const totalSteps = 4;
 
     function init(){
         buildTabs();
@@ -19,28 +21,66 @@
         loadCompany();
         attachEventListeners();
         attachBlockers();
+        updateProgress();
     }
 
-    // Tab Management
+    // Tab Management - Wizard Mode
     function buildTabs(){
         const c = scopeRoot.querySelector('.semiconductor-container');
         if(!c) return;
         const btns = c.querySelectorAll('.tab-btn');
-        const tabs = {
-            'step-1': c.querySelector('#step-1-tab'),
-            'step-2': c.querySelector('#step-2-tab'),
-            'step-3': c.querySelector('#step-3-tab'),
-            'summary': c.querySelector('#summary-tab')
-        };
+        // Disable clicking on tabs directly - navigation only through Next/Prev buttons
         btns.forEach(b => {
-            b.addEventListener('click', () => {
-                btns.forEach(x => x.classList.remove('active'));
-                b.classList.add('active');
-                Object.values(tabs).forEach(t => t && t.classList.remove('active'));
-                const id = b.dataset.tab;
-                if(tabs[id]) tabs[id].classList.add('active');
-            });
+            b.style.cursor = 'default';
         });
+    }
+
+    function goToStep(stepNum){
+        if(stepNum < 1 || stepNum > totalSteps) return;
+        
+        const c = scopeRoot.querySelector('.semiconductor-container');
+        if(!c) return;
+        
+        // Hide all tabs
+        const allTabs = c.querySelectorAll('.tab-content');
+        allTabs.forEach(t => t.classList.remove('active'));
+        
+        // Update buttons
+        const btns = c.querySelectorAll('.tab-btn');
+        btns.forEach((b, idx) => {
+            b.classList.remove('active');
+            const btnStep = parseInt(b.dataset.step);
+            if(btnStep < stepNum){
+                b.classList.remove('disabled');
+                b.classList.add('completed');
+            } else if(btnStep === stepNum){
+                b.classList.add('active');
+                b.classList.remove('disabled', 'completed');
+            } else {
+                b.classList.add('disabled');
+                b.classList.remove('completed');
+            }
+        });
+        
+        // Show target tab
+        const tabMap = {1: 'step-1', 2: 'step-2', 3: 'step-3', 4: 'summary'};
+        const targetTab = c.querySelector(`#${tabMap[stepNum]}-tab`);
+        if(targetTab) targetTab.classList.add('active');
+        
+        currentStepNum = stepNum;
+        updateProgress();
+    }
+
+    function updateProgress(){
+        const progressFill = scopeRoot.querySelector('#progressFill');
+        const currentStepSpan = scopeRoot.querySelector('#currentStep');
+        if(progressFill){
+            const percentage = (currentStepNum / totalSteps) * 100;
+            progressFill.style.width = percentage + '%';
+        }
+        if(currentStepSpan){
+            currentStepSpan.textContent = currentStepNum;
+        }
     }
 
     // Load defaults from DocType
@@ -298,6 +338,23 @@
 
     // Event Listeners
     function attachEventListeners(){
+        // Step navigation buttons
+        const step1Next = scopeRoot.querySelector('#step1Next');
+        if(step1Next) step1Next.addEventListener('click', () => goToStep(2));
+
+        const step2Prev = scopeRoot.querySelector('#step2Prev');
+        const step2Next = scopeRoot.querySelector('#step2Next');
+        if(step2Prev) step2Prev.addEventListener('click', () => goToStep(1));
+        if(step2Next) step2Next.addEventListener('click', () => goToStep(3));
+
+        const step3Prev = scopeRoot.querySelector('#step3Prev');
+        const step3Next = scopeRoot.querySelector('#step3Next');
+        if(step3Prev) step3Prev.addEventListener('click', () => goToStep(2));
+        if(step3Next) step3Next.addEventListener('click', () => goToStep(4));
+
+        const summaryPrev = scopeRoot.querySelector('#summaryPrev');
+        if(summaryPrev) summaryPrev.addEventListener('click', () => goToStep(3));
+
         const addWaferBtn = scopeRoot.querySelector('#addWaferBtn');
         if(addWaferBtn){
             addWaferBtn.addEventListener('click', () => addWaferRow());
@@ -403,6 +460,7 @@
         scopeRoot.querySelectorAll('.kgsi-input, .va-input').forEach(input => input.value = '0');
         scopeRoot.querySelectorAll('.np-input, .size-input').forEach(input => input.value = '0');
         calculateAll();
+        goToStep(1); // Reset to step 1 after save
     }
 
     // Load History

@@ -109,6 +109,46 @@
     background: rgba(59,130,246,0.08);
 }
 
+.tab-btn.disabled {
+    color: #cbd5e1;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.tab-btn.completed {
+    color: #10b981;
+}
+
+/* Step Progress */
+.step-progress {
+    margin-top: 15px;
+    padding: 0 10px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
+    width: 25%;
+    transition: width 0.3s ease;
+    border-radius: 10px;
+}
+
+.step-info {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+}
+
 .tab-content-container {
     position: relative;
 }
@@ -278,9 +318,35 @@
     padding: 8px 16px;
 }
 
-.save-section {
-    text-align: center;
-    margin-top: 30px;
+/* Step Navigation */
+.step-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+    padding: 20px 30px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    gap: 15px;
+}
+
+.step-navigation:has(.prev-btn:only-of-type) {
+    justify-content: flex-start;
+}
+
+.step-navigation:has(.next-btn:only-of-type),
+.step-navigation:has(#saveEntryBtn:only-of-type) {
+    justify-content: flex-end;
+}
+
+.step-navigation .prev-btn {
+    order: 1;
+}
+
+.step-navigation .next-btn,
+.step-navigation #saveEntryBtn {
+    order: 2;
 }
 
 /* Buttons */
@@ -341,6 +407,18 @@
 
 .btn-info:hover {
     background: #2563eb;
+}
+
+.btn-outline {
+    background: transparent;
+    color: #64748b;
+    border: 2px solid #e2e8f0;
+}
+
+.btn-outline:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #475569;
 }
 
 /* History Section */
