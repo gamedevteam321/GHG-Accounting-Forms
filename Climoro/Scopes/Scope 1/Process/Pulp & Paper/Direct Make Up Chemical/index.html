@@ -1,0 +1,81 @@
+<div class="makeup-chemicals-container">
+    <div class="header-section">
+        <h1>Direct Emissions - Emissions from Make-up Chemicals</h1>
+        <p class="description">Calculate CO2 emissions from make-up chemicals and FGD systems used in pulp mill operations.</p>
+    </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" data-tab="makeup-chemicals">Make-up Chemicals</button>
+            <button class="tab-btn" data-tab="fgd-systems">FGD Systems</button>
+            <button class="btn btn-success" id="refresh-btn" style="margin-left: auto;">Refresh Records</button>
+        </div>
+
+    <!-- Make-up Chemicals Tab -->
+    <div class="tab-content active" id="makeup-chemicals">
+        <div class="worksheet-section">
+            <div class="worksheet-header">
+                <h2>Direct Emissions - Emissions from Make-up carbonates used in the pulp mill*</h2>
+                <p class="worksheet-description">Enter amount used for each chemical to calculate CO2 emissions.</p>
+            </div>
+
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="makeup-table" id="makeupTable">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>Sodium Carbonate</th>
+                                <th>Calcium Carbonate*</th>
+                                <th>Total CO2 from Make-up carbonates=</th>
+                                <th>Notes</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="makeupTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-section">
+            <p class="footer-note">Formula: CO2 Emissions = Amount Used × Emission Factor</p>
+            <p class="footer-note">*It is important to note that the calcium make-up is required because of losses from the causticizing area, most of which are in the form of calcium carbonate. This lost material is usually landfilled, thereby sequestering the carbon contained in the calcium carbonate. Because the default method in these calculation tools does not consider this loss of carbon from the system, the estimated CO2 emissions from make-up calcium carbonate will be higher than actual emissions. Where these emissions are significant, companies may want to perform the more detailed analyses required to correct the emissions estimates to account for the carbon that leaves the causticizing area in calcium carbonate.</p>
+        </div>
+    </div>
+
+    <!-- FGD Systems Tab -->
+    <div class="tab-content" id="fgd-systems">
+        <div class="worksheet-section">
+            <div class="worksheet-header">
+                <h2>Direct Emissions - Emissions from Limestone or Dolomite used in flue gas desulfurization systems**</h2>
+                <p class="worksheet-description">Enter amount consumed for each chemical to calculate CO2 emissions.</p>
+            </div>
+
+            <div class="table-section">
+                <div class="table-container">
+                    <table class="makeup-table" id="fgdTable">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>Calcium Carbonate</th>
+                                <th>Dolomite</th>
+                                <th>Total CO2 from FGD systems=</th>
+                                <th>Notes</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fgdTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-section">
+            <p class="footer-note">Formula: CO2 Emissions = Amount Consumed × Emission Factor</p>
+            <p class="footer-note">**Limestone (calcium carbonate) and dolomite can be used as sorbents in flue gas desulfurization (FGD) systems and fluidized bed boilers. During operation of these FGD systems the limestone is heated and CO2 is generated and released. Because the amount of CO2 released is directly related to consumption of limestone in the FGD system, emissions can be calculated based on limestone consumption in the FGD system.</p>
+        </div>
+    </div>
+</div>
