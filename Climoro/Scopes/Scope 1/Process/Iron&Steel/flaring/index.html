@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flaring - CO2 & CH4 Emissions</title>
+</head>
+<body>
+    <div class="flaring-container">
+        <!-- Header -->
+        <div class="form-header">
+            <h1>Flaring – CO2 & CH4 Emissions</h1>
+            <p class="form-description">Daily entries for flaring emissions. Hydrocarbon ratios auto-filled from defaults.</p>
+        </div>
+
+        <!-- Main Form Section -->
+        <div class="form-section">
+            <div class="table-container">
+                <table class="data-table flaring-table" id="flaringTable">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">S.No</th>
+                            <th rowspan="2">Date</th>
+                            <th rowspan="2">Unit</th>
+                            <th rowspan="2">Volume gas flared<br/>(standard cubic feet (scf))</th>
+                            <th colspan="3" class="section-header">Hydrocarbon profile of flared gas</th>
+                            <th rowspan="2">Amount of CO2 in flared gas</th>
+                            <th rowspan="2">Flaring combustion<br/>efficiency for CO2<br/>(Fraction)</th>
+                            <th rowspan="2">Uncombusted flared gas<br/>(Fraction of released CH4)</th>
+                            <th rowspan="2">Amount of methane in<br/>the flared gas (lbmoles<br/>CH4/lbmole flared gas)</th>
+                            <th rowspan="2">CO2 emissions<br/>(tonnes)</th>
+                            <th rowspan="2">CH4 emissions<br/>(tonnes)</th>
+                            <th rowspan="2">Actions</th>
+                        </tr>
+                        <tr>
+                            <th style="white-space: nowrap;">Hydrocarbon<br/>in flared gas</th>
+                            <th>Ratio of weight of hydrocarbon<br/>to weight of flared gas (lbmole<br/>HC/lbmole flared gas)</th>
+                            <th>Ratio of weight of carbon in<br/>the hydrocarbon to the weight<br/>of hydrocarbon (lbmoles<br/>C/lbmole HC)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="flaringBody">
+                        <!-- Entry rows will be added here dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <!-- Entry History -->
+        <div class="history-section">
+            <h2>Entry History</h2>
+            <div class="table-container">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Date</th>
+                            <th>Unit</th>
+                            <th>Volume (scf)</th>
+                            <th>CO2 (tonnes)</th>
+                            <th>CH4 (tonnes)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyBody">
+                        <!-- History rows loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expanded Details Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Entry Details</h2>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Details populated dynamically -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>
