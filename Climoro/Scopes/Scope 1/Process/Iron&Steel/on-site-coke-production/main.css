@@ -65,6 +65,43 @@ body {
     padding: 0;
 }
 
+.heating-basis-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.hb-label {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 14px;
+    min-width: 200px;
+}
+.hb-select {
+    flex: 1;
+    max-width: 300px;
+    padding: 10px 14px;
+    border: 2px solid #cbd5e1;
+    border-radius: 8px;
+    background: white;
+    font-size: 14px;
+    color: #334155;
+    transition: all 0.2s ease;
+}
+.hb-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+.hb-select:hover {
+    border-color: #94a3b8;
+}
+
 .tab-btn {
     flex: 1;
     padding: 16px 24px;

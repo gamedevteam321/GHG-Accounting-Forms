@@ -22,6 +22,7 @@
     let userCompany = '';
     let userUnits = [];
     let entryRows = [];
+    let heatingBasis = '';
 
     // Initialize
     if (typeof root_element !== 'undefined' && root_element) {
@@ -696,6 +697,12 @@ function syncStep2BasicInfo() {
 function validateStep1() {
     const row = $('.entry-row');
     if (!row) return false;
+    const hb = $('#heatingBasisSelect')?.value || '';
+    if (!hb) {
+        frappe.msgprint({ title: 'Validation Error', indicator: 'red', message: 'Please select Basis of Heating Values (NCV or GCV).' });
+        return false;
+    }
+    heatingBasis = hb;
     const date = $('#entryDate')?.value || '';
     const unit = $('#unitSelect')?.value || '';
     if (!date) {
@@ -772,6 +779,7 @@ async function saveEntry() {
             date: date,
             company: userCompany,
             unit: unit,
+            heating_basis: heatingBasis,
             coking_coal_consumed_json: JSON.stringify(cokingCoalData),
             blast_furnace_gas_amount: bfAmount,
             blast_furnace_gas_carbon_content: bfCarbon,
@@ -818,6 +826,12 @@ async function saveEntry() {
 function clearForm() {
     // Reset to step 1
     goToStep(1);
+    
+    // Clear heating basis
+    const heatingBasisSelect = $('#heatingBasisSelect');
+    if (heatingBasisSelect) heatingBasisSelect.value = '';
+    heatingBasis = '';
+    
     // Clear Step 1 row
     const row = $('.entry-row');
     if (row) {
@@ -943,6 +957,10 @@ async function showEntryDetails(entryName) {
                 <div class="modal-row">
                     <span class="modal-label">Unit:</span>
                     <span class="modal-value">${entry.unit}</span>
+                </div>
+                <div class="modal-row">
+                    <span class="modal-label">Heating Basis:</span>
+                    <span class="modal-value">${entry.heating_basis || 'Not specified'}</span>
                 </div>
             </div>
             

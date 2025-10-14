@@ -59,6 +59,7 @@ try:
         {"fieldname": "date", "label": "Date", "fieldtype": "Date", "reqd": 1, "in_list_view": 1},
         {"fieldname": "company", "label": "Company", "fieldtype": "Link", "options": "Company", "in_list_view": 0},
         {"fieldname": "unit", "label": "Unit", "fieldtype": "Link", "options": "Units", "reqd": 1, "in_list_view": 1},
+        {"fieldname": "heating_basis", "label": "Heating Basis", "fieldtype": "Select", "options": "Lower heating content\nHigher heating content", "reqd": 1, "in_list_view": 1},
         
         # Section Break - CO2 Emissions
         {"fieldname": "co2_section", "label": "CO2 Emissions Data", "fieldtype": "Section Break"},
