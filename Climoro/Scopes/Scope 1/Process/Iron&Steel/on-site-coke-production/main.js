@@ -243,13 +243,25 @@ function addEntryRow() {
         </td>
         
         <td>
-            <select class="fuel-select" data-frappe-ignore="true">
-                <option value="">Select...</option>
-                ${fuelOptions}
-            </select>
+            <div class="fuel-list">
+                <select class="fuel-select" data-frappe-ignore="true">
+                    <option value="">Select...</option>
+                    ${fuelOptions}
+                </select>
+            </div>
         </td>
-        <td><input type="number" class="fuel-amount" data-frappe-ignore="true" step="0.01" min="0" /></td>
-        <td><span class="calculated-value fuel-carbon">-</span></td>
+        <td>
+            <div class="fuel-amt-list">
+                <input type="number" class="fuel-amount" data-frappe-ignore="true" step="0.01" min="0" />
+            </div>
+        </td>
+        <td>
+            <div class="fuel-carbon-list">
+                <span class="calculated-value fuel-carbon">-</span>
+                <button type="button" class="btn-add add-fuel" title="Add fuel">+</button>
+            </div>
+        </td>
+        <td><span class="calculated-value fuel-total-carbon">0.00</span></td>
         
         <td><input type="number" class="bf-amount" id="bfAmount" data-frappe-ignore="true" step="0.01" min="0" /></td>
         <td><span class="readonly-value">Tonnes</span></td>
@@ -295,13 +307,15 @@ function addEntryRow() {
     row.querySelector('.byproduct-amount').addEventListener('input', function() { calculateRow(this); });
     const addBtn = row.querySelector('.add-byproduct');
     if (addBtn) addBtn.addEventListener('click', () => addByproductRow(row, byproductOptions));
+    const addFuelBtn = row.querySelector('.add-fuel');
+    if (addFuelBtn) addFuelBtn.addEventListener('click', () => addFuelRow(row, fuelOptions));
     
     const rowData = {
         row,
         sno: currentSNo,
         date: today,
         unit: '',
-        fuel: '', fuelAmount: 0, fuelCarbon: 0,
+        fuels: [],
         bfAmount: 0, bfCarbon: carbonDefaults['Blast Furnace Gas']?.carbon_content || 0,
         cokeAmount: 0, cokeCarbon: carbonDefaults['Coke']?.carbon_content || 0,
         cogAmount: 0, cogCarbon: carbonDefaults['Coke Oven gas']?.carbon_content || 0,
@@ -320,9 +334,9 @@ function addEntryRow() {
 
 function updateCarbonContent(row) {
     // Set fixed carbon contents
-    const bfCarbon = carbonDefaults['Blast Furnace Gas']?.carbon_content || 0;
-    const cokeCarbon = carbonDefaults['Coke']?.carbon_content || 0;
-    const cogCarbon = carbonDefaults['Coke Oven gas']?.carbon_content || 0;
+    const bfCarbon = (carbonDefaults['Blast Furnace Gas']?.carbon_content) || 0.17;
+    const cokeCarbon = (carbonDefaults['Coke']?.carbon_content) || 0.82;
+    const cogCarbon = (carbonDefaults['Coke Oven gas']?.carbon_content) || 0.47;
     
     row.querySelector('.bf-carbon').textContent = bfCarbon.toFixed(4);
     row.querySelector('.coke-carbon').textContent = cokeCarbon.toFixed(4);
@@ -372,6 +386,49 @@ function addByproductRow(row, byproductOptionsHtml) {
         amtList.removeChild(amt);
         carbonList.removeChild(wrap);
         calculateRow(amtList); // trigger recalc
+    });
+}
+
+function addFuelRow(row, fuelOptionsHtml) {
+    const list = row.querySelector('.fuel-list');
+    const amtList = row.querySelector('.fuel-amt-list');
+    const carbonList = row.querySelector('.fuel-carbon-list');
+    if (!list || !amtList || !carbonList) return;
+    const sel = document.createElement('select');
+    sel.className = 'fuel-select';
+    sel.setAttribute('data-frappe-ignore','true');
+    sel.innerHTML = `<option value="">Select...</option>${fuelOptionsHtml}`;
+    list.appendChild(sel);
+
+    const amt = document.createElement('input');
+    amt.type = 'number';
+    amt.className = 'fuel-amount';
+    amt.setAttribute('data-frappe-ignore','true');
+    amt.step = '0.01';
+    amt.min = '0';
+    amtList.appendChild(amt);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'bp-carbon-row';
+    const span = document.createElement('span');
+    span.className = 'calculated-value fuel-carbon';
+    span.textContent = '-';
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'btn-delete btn-mini-remove';
+    removeBtn.textContent = '×';
+    wrap.appendChild(span);
+    wrap.appendChild(removeBtn);
+    carbonList.insertBefore(wrap, carbonList.querySelector('.add-fuel'));
+
+    sel.addEventListener('change', function(){ handleFieldChange(this); });
+    amt.addEventListener('input', function(){ calculateRow(this); });
+    removeBtn.addEventListener('click', function(){
+        const i = Array.from(list.children).indexOf(sel);
+        list.removeChild(sel);
+        amtList.removeChild(amt);
+        carbonList.removeChild(wrap);
+        calculateRow(amtList);
     });
 }
 
@@ -452,16 +509,18 @@ function handleFieldChange(select) {
     const index = Array.from(row.parentElement.children).indexOf(row);
     
     if (select.classList.contains('fuel-select')) {
+        const list = row.querySelector('.fuel-list');
+        const carbonSpans = row.querySelectorAll('.fuel-carbon-list .fuel-carbon');
+        const i = Array.from(list.children).indexOf(select);
         const fuelName = select.value;
-        if (fuelName && carbonDefaults[fuelName]) {
-            const carbon = carbonDefaults[fuelName].carbon_content;
-            row.querySelector('.fuel-carbon').textContent = carbon.toFixed(4);
-            entryRows[index].fuel = fuelName;
-            entryRows[index].fuelCarbon = carbon;
-        } else {
-            row.querySelector('.fuel-carbon').textContent = '-';
-            entryRows[index].fuel = '';
-            entryRows[index].fuelCarbon = 0;
+        const targetSpan = carbonSpans[i];
+        if (targetSpan) {
+            if (fuelName && carbonDefaults[fuelName]) {
+                const carbon = carbonDefaults[fuelName].carbon_content;
+                targetSpan.textContent = carbon.toFixed(4);
+            } else {
+                targetSpan.textContent = '-';
+            }
         }
     } else if (select.classList.contains('byproduct-select')) {
         // Map to corresponding carbon span at same index
@@ -489,7 +548,10 @@ function calculateRow(element) {
     const rowData = entryRows[index];
     
     // Get all values
-    const fuelAmount = parseFloat(row.querySelector('.fuel-amount').value) || 0;
+    // Fuels (multiple)
+    const fuelSels = Array.from(row.querySelectorAll('.fuel-list .fuel-select'));
+    const fuelAmtInputs = Array.from(row.querySelectorAll('.fuel-amt-list .fuel-amount'));
+    const fuelCarbonSpans = Array.from(row.querySelectorAll('.fuel-carbon-list .fuel-carbon'));
     const bfAmount = parseFloat(row.querySelector('.bf-amount').value) || 0;
     const cokeAmount = parseFloat(row.querySelector('.coke-amount').value) || 0;
     const cogAmount = parseFloat(row.querySelector('.cog-amount').value) || 0;
@@ -499,7 +561,19 @@ function calculateRow(element) {
     const byCarbonSpans = Array.from(row.querySelectorAll('.byproduct-carbon-list .byproduct-carbon'));
     
     // Update row data
-    rowData.fuelAmount = fuelAmount;
+    // Build fuels and compute sum
+    const fuels = [];
+    let fuelCarbonSum = 0;
+    fuelSels.forEach((sel, i) => {
+        const name = sel.value;
+        const amt = parseFloat(fuelAmtInputs[i]?.value || '0') || 0;
+        const carbonPerKg = parseFloat((fuelCarbonSpans[i]?.textContent || '').replace(/[^0-9.\-]/g, '')) || 0;
+        if (name && amt > 0 && carbonPerKg > 0) {
+            fuels.push({ name, amount: amt, carbon: carbonPerKg });
+            fuelCarbonSum += amt * carbonPerKg;
+        }
+    });
+    rowData.fuels = fuels;
     rowData.bfAmount = bfAmount;
     rowData.cokeAmount = cokeAmount;
     rowData.cogAmount = cogAmount;
@@ -518,7 +592,10 @@ function calculateRow(element) {
     rowData.byproducts = byproducts;
 
     // Calculate CO2 for this row
-    const fuelCarbon = fuelAmount * rowData.fuelCarbon;
+    const fuelCarbon = fuelCarbonSum;
+    // Update total carbon display for fuels
+    const fuelTotalSpan = row.querySelector('.fuel-total-carbon');
+    if (fuelTotalSpan) fuelTotalSpan.textContent = fuelCarbon.toFixed(2);
     const bfCarbon = bfAmount * rowData.bfCarbon;
     const cokeCarbon = cokeAmount * rowData.cokeCarbon;
     const cogCarbon = cogAmount * rowData.cogCarbon;
@@ -549,7 +626,7 @@ function calculateCH4() {
     // CH4 factor is in g CH4 per unit coke; convert g -> kg by /1000
     const ch4 = (cokeAmount * CH4_FACTOR) / 1000; // kg CH4
     const out = $('#totalCH4');
-    if (out) out.textContent = ch4.toFixed(2);
+    if (out) out.textContent = ch4.toFixed(5);
 }
 
 /* ============================================
@@ -666,10 +743,8 @@ async function saveEntry() {
         // From single entry row
         const row = $('.entry-row');
         const rowData = entryRows[0] || {};
-        const fuel = rowData.fuel;
-        const fuelAmount = parseFloat(row.querySelector('.fuel-amount')?.value || '0');
-        const fuelCarbon = rowData.fuelCarbon || 0;
-        const cokingCoalData = (fuel && fuelAmount > 0) ? [{ fuel, amount: fuelAmount, carbon_content: fuelCarbon }] : [];
+        // Fuels
+        const cokingCoalData = (rowData.fuels || []).map(f => ({ fuel: f.name, amount: f.amount, carbon_content: f.carbon }));
 
         // Byproducts (support multiple)
         const byproductsData = (rowData.byproducts || []).map(b => ({
@@ -808,7 +883,7 @@ async function loadHistory() {
                     <td>${new Date(entry.date).toLocaleDateString()}</td>
                     <td>${entry.unit}</td>
                     <td>${Number(entry.co2_emissions_tonnes || 0).toFixed(2)}</td>
-                    <td>${Number(entry.ch4_emissions_kg || 0).toFixed(2)}</td>
+                    <td>${Number(entry.ch4_emissions_kg || 0).toFixed(5)}</td>
                     <td>
                         <button class="btn-expand" onclick="showEntryDetails('${entry.name}')">👁 View</button>
                         <button class="btn-history-delete" onclick="deleteEntry('${entry.name}')">🗑 Delete</button>
@@ -917,7 +992,7 @@ async function showEntryDetails(entryName) {
                 </div>
                 <div class="modal-row" style="border-top: 2px solid #667eea; margin-top: 10px; padding-top: 10px;">
                     <span class="modal-label" style="font-size: 16px; font-weight: 700;">Total CH4:</span>
-                    <span class="modal-value" style="font-size: 16px; font-weight: 700; color: #667eea;">${entry.ch4_emissions_kg.toFixed(2)} kg</span>
+                    <span class="modal-value" style="font-size: 16px; font-weight: 700; color: #667eea;">${Number(entry.ch4_emissions_kg || 0).toFixed(5)} kg</span>
                 </div>
             </div>
         `;

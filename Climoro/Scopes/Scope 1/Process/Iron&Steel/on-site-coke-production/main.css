@@ -1,3 +1,11 @@
+.fuel-list,
+.fuel-amt-list,
+.fuel-carbon-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+}
 /* ============================================
    On-Site Coke Production - GHG Emissions
    Color Theme: Stationary Emissions Match
