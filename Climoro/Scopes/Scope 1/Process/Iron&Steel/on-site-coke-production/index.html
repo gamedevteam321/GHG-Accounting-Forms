@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>On-Site Coke Production - GHG Emissions</title>
+</head>
+<body>
+    <div class="coke-production-container">
+        <!-- Header -->
+        <div class="form-header">
+            <h1>On-Site Coke Production – CO2 & CH4 Emissions</h1>
+            <p class="form-description">Daily entries. Carbon content auto-filled from defaults. Use tabs for CO2 and CH4 data.</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <button class="tab-btn active" data-step="1">Step 1: CO2 Emissions</button>
+            <button class="tab-btn" data-step="2">Step 2: CH4 Emissions</button>
+        </div>
+
+        <!-- Step 1: CO2 Emissions -->
+        <div class="tab-content active" data-step="1">
+            <div class="step-header">
+                <h2>Step 1: CO2 Emissions - On-Site Coke Production</h2>
+                <p class="step-description">Enter daily production data. Carbon content is auto-filled from defaults.</p>
+            </div>
+
+            <!-- Combined Table with All Sections -->
+            <div class="form-section">
+                <div class="table-container">
+                    <table class="data-table combined-table" id="cokeProductionTable">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">S.No</th>
+                                <th rowspan="2">Date</th>
+                                <th rowspan="2">Unit</th>
+                                <th colspan="3" class="section-header">Coking coal consumed for coke production and other process materials</th>
+                                <th colspan="3" class="section-header">Blast Furnace gas consumed at facility*</th>
+                                <th colspan="2" class="section-header">Coke produced at facility*</th>
+                                <th colspan="2" class="section-header">Coke oven gas transferred offsite*</th>
+                                <th colspan="3" class="section-header">Coke-oven byproducts transferred offsite*</th>
+                                <th rowspan="2" class="section-header">CO2 emissions<br/>(tonnes CO2)</th>
+                            </tr>
+                            <tr>
+                                <th>Fuel</th>
+                                <th>Amount<br/>(tonnes)</th>
+                                <th>Carbon content<br/>(kg C/kg fuel)</th>
+                                <th>Amount<br/>(tonnes)</th>
+                                <th>Unit</th>
+                                <th>Carbon content<br/>(kg C/kg gas)</th>
+                                <th>Amount<br/>(tonnes)</th>
+                                <th>Carbon content<br/>(kg C/kg coke)</th>
+                                <th>Amount<br/>(tonnes)</th>
+                                <th>Carbon content<br/>(kg C/kg gas)</th>
+                                <th>Byproduct</th>
+                                <th>Amount<br/>(tonnes)</th>
+                                <th>Carbon content<br/>(kg C/kg byproduct)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cokeProductionBody">
+                            <!-- Entry row will be added here on init -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- CO2 Total removed per requirement -->
+
+            <!-- Navigation -->
+            <div class="step-navigation">
+                <button class="btn-next" id="nextToCH4">Next: CH4 Emissions →</button>
+            </div>
+        </div>
+
+        <!-- Step 2: CH4 Emissions -->
+        <div class="tab-content" data-step="2">
+            <div class="step-header">
+                <h2>Step 2: CH4 Emissions</h2>
+            </div>
+
+            <!-- One-row mini table -->
+            <div class="table-container">
+                <table class="data-table mini-table">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Date</th>
+                            <th>Unit</th>
+                            <th>Coke produced onsite<br/>(tonnes)</th>
+                            <th>CH4 emission factor<br/>(g CH4 / unit coke)</th>
+                            <th>Total CH4<br/>(kg)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="sno-display" id="snoDisplay2">1</span></td>
+                            <td><span class="readonly-value" id="dateDisplay2">-</span></td>
+                            <td><span class="readonly-value" id="unitDisplay2">-</span></td>
+                            <td><input type="number" id="ch4CokeAmount" class="form-control" step="0.01" min="0" /></td>
+                            <td><span class="calculated-value" id="ch4FactorDisplay">0.1 g CH4/unit coke</span></td>
+                            <td><span class="calculated-value" id="totalCH4">0.00</span></td>
+                            <td><button class="btn-save" id="saveEntryBtn">Add</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Navigation -->
+            <div class="step-navigation">
+                <button class="btn-prev" id="prevToCO2">← Previous: CO2 Emissions</button>
+            </div>
+        </div>
+
+        <!-- Entry History -->
+        <div class="history-section">
+            <h2>Entry History</h2>
+            <div class="table-container">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Date</th>
+                            <th>Unit</th>
+                            <th>CO2 (tonnes)</th>
+                            <th>CH4 (kg)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyBody">
+                        <!-- History rows loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expanded Details Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Entry Details</h2>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Details populated dynamically -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
