@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>DRI Production – CO2 & CH4 Emissions</title>
+</head>
+<body>
+	<div class="dri-container">
+		<div class="form-header">
+			<h1>DRI Production – CO2 & CH4 Emissions</h1>
+			<p class="form-description">Daily entries for Direct Reduced Iron production emissions tracking.</p>
+		</div>
+
+		<div class="tab-container">
+			<button class="tab-btn active" data-step="1">Step 1: CO2 Emissions</button>
+			<button class="tab-btn" data-step="2">Step 2: CH4 Emissions</button>
+		</div>
+
+		<!-- Step 1: CO2 -->
+		<div class="tab-content active" data-step="1">
+			<div class="step-header">
+				<h2>Step 1: CO2 Emissions</h2>
+				<p class="step-description">Enter fuel consumption data and carbon content values.</p>
+			</div>
+			<div class="table-container">
+				<table class="data-table combined-table" id="co2Table">
+					<thead>
+						<tr>
+							<th>S.No</th>
+							<th>Date</th>
+							<th>Unit</th>
+							<th colspan="2" class="section-header">Natural gas consumption</th>
+							<th colspan="2" class="section-header">Coke breeze consumption</th>
+							<th colspan="2" class="section-header">Metallurgical coke consumption</th>
+							<th rowspan="2" class="section-header">CO2 emissions<br/>(tonnes)</th>
+						</tr>
+						<tr>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th>Amount<br/>(tonnes)</th>
+							<th>Carbon content<br/>(fraction)</th>
+							<th>Amount<br/>(tonnes)</th>
+							<th>Carbon content<br/>(fraction)</th>
+							<th>Amount<br/>(tonnes)</th>
+							<th>Carbon content<br/>(fraction)</th>
+						</tr>
+					</thead>
+					<tbody id="co2Body"></tbody>
+				</table>
+			</div>
+			<div class="step-navigation">
+				<button class="btn-next" id="nextToCH4">Next: CH4 Emissions →</button>
+			</div>
+		</div>
+
+		<!-- Step 2: CH4 -->
+		<div class="tab-content" data-step="2">
+			<div class="step-header">
+				<h2>Step 2: CH4 Emissions</h2>
+				<p class="step-description">Enter DRI production and CH4 emission factor data.</p>
+			</div>
+			<div class="table-container">
+				<table class="data-table mini-table" id="ch4Table">
+					<thead>
+						<tr>
+							<th>S.No</th>
+							<th>Date</th>
+							<th>Unit</th>
+							<th>Amount of DRI produced<br/>(tonnes)</th>
+							<th>CH4 emission factor<br/>(kg/unit DRI)</th>
+							<th>Total CH4 emissions<br/>(kg)</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody id="ch4Body"></tbody>
+				</table>
+			</div>
+			<div class="step-navigation">
+				<button class="btn-prev" id="prevToCO2">← Previous: CO2 Emissions</button>
+			</div>
+		</div>
+
+		<!-- History -->
+		<div class="history-section">
+			<h2>Entry History</h2>
+			<div class="table-container">
+				<table class="history-table">
+					<thead>
+						<tr>
+							<th>S.No</th>
+							<th>Date</th>
+							<th>Unit</th>
+							<th>CO2 (tonnes)</th>
+							<th>CH4 (kg)</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody id="historyBody"></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div class="modal-overlay" id="modalOverlay">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2>Entry Details</h2>
+				<button class="modal-close" id="modalClose">&times;</button>
+			</div>
+			<div class="modal-body" id="modalBody"></div>
+		</div>
+	</div>
+</body>
+</html>
+
