@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Iron & Steel Production – CO2 & CH4 Emissions</title>
+</head>
+<body>
+	<div class="iron-steel-container">
+		<div class="form-header">
+			<h1>Iron & Steel Production – CO2 & CH4 Emissions</h1>
+			<p class="form-description">Daily entries for Iron and Steel production emissions tracking. Default carbon content values from Appendix C.</p>
+		</div>
+
+		<div class="tab-container">
+			<button class="tab-btn active" data-step="1">Step 1: CO2 Emissions</button>
+			<button class="tab-btn" data-step="2">Step 2: CH4 Emissions</button>
+		</div>
+
+		<!-- Step 1: CO2 -->
+		<div class="tab-content active" data-step="1">
+			<div class="step-header">
+				<h2>Step 1: CO2 Emissions from Iron and Steel Production</h2>
+				<p class="step-description">Enter resource consumption, steel production, iron, and blast furnace gas data.</p>
+			</div>
+			<div class="table-container">
+				<table class="data-table combined-table" id="co2Table">
+					<thead>
+						<tr>
+							<th>S.No</th>
+							<th>Date</th>
+							<th>Unit</th>
+							<th colspan="4" class="section-header">Resource consumed in iron and steel production</th>
+							<th colspan="2" class="section-header">Steel produced at facility</th>
+							<th colspan="2" class="section-header">Iron not converted into steel</th>
+							<th colspan="2" class="section-header">Blast furnace gas transferred offsite</th>
+							<th rowspan="2" class="section-header">CO2 emissions<br/>(tonnes)</th>
+						</tr>
+						<tr>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th>Resource</th>
+							<th>Amount<br/>(tonnes)</th>
+							<th>Carbon content<br/>(fraction)</th>
+							<th>Total resource carbon<br/>(tonnes C)</th>
+							<th>Amount<br/>(tonnes)</th>
+							<th>Carbon content<br/>(fraction)</th>
+							<th>Amount<br/>(tonnes)</th>
+							<th>Carbon content<br/>(fraction)</th>
+							<th>Amount<br/>(tonnes)</th>
+							<th>Carbon content<br/>(fraction)</th>
+						</tr>
+					</thead>
+					<tbody id="co2Body"></tbody>
+				</table>
+			</div>
+			<div class="step-navigation">
+				<button class="btn-next" id="nextToCH4">Next: CH4 Emissions →</button>
+			</div>
+		</div>
+
+		<!-- Step 2: CH4 -->
+		<div class="tab-content" data-step="2">
+			<div class="step-header">
+				<h2>Step 2: CH4 Emissions from Pig Iron Production</h2>
+				<p class="step-description">Enter pig iron production and CH4 emission factor data.</p>
+				<div class="info-note">
+					<span class="note-icon">⚠️</span>
+					<div class="note-text">
+						<strong>Note:</strong> No default CH4 emission factor is available for pig iron production. 
+						Facilities need not calculate their CH4 emissions from steel production as these are assumed to be negligible.
+					</div>
+				</div>
+			</div>
+			<div class="table-container">
+				<table class="data-table mini-table" id="ch4Table">
+					<thead>
+						<tr>
+							<th>S.No</th>
+							<th>Date</th>
+							<th>Unit</th>
+							<th>Amount of Pig Iron produced<br/>(tonnes)</th>
+							<th>CH4 emission factor<br/>(kg/unit pig iron)</th>
+							<th>Total CH4 emissions<br/>(kg)</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody id="ch4Body"></tbody>
+				</table>
+			</div>
+			<div class="step-navigation">
+				<button class="btn-prev" id="prevToCO2">← Previous: CO2 Emissions</button>
+			</div>
+		</div>
+
+		<!-- History -->
+		<div class="history-section">
+			<h2>Entry History</h2>
+			<div class="table-container">
+				<table class="history-table">
+					<thead>
+						<tr>
+							<th>S.No</th>
+							<th>Date</th>
+							<th>Unit</th>
+							<th>CO2 (tonnes)</th>
+							<th>CH4 (kg)</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody id="historyBody"></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div class="modal-overlay" id="modalOverlay">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2>Entry Details</h2>
+				<button class="modal-close" id="modalClose">&times;</button>
+			</div>
+			<div class="modal-body" id="modalBody"></div>
+		</div>
+	</div>
+</body>
+</html>
+
