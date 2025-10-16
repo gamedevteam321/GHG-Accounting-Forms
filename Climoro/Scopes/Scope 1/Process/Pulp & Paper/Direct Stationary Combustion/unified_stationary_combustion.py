@@ -18,7 +18,7 @@ doc = frappe.new_doc("DocType")
 doc.name = doctype_name
 doc.module = "Custom"
 doc.custom = 1
-doc.autoname = "field:activity_data"
+doc.autoname = "hash"
 doc.title_field = "activity_data"
 
 # Define fields that work for both approaches
@@ -38,6 +38,12 @@ fields = [
     {"fieldname": "activity_types", "label": "Activity Types", "fieldtype": "Select", 
      "reqd": 1, "in_list_view": 1,
      "options": "Boilers\nBurners\nGen Sets\nFurnace (Including Blast Furnace)\nOther"},
+    
+    # Company Information
+    {"fieldname": "company", "label": "Company", "fieldtype": "Link", 
+     "options": "Company", "in_list_view": 1},
+    {"fieldname": "company_unit", "label": "Company Unit", "fieldtype": "Link", 
+     "options": "Units", "in_list_view": 1},
     
     # Fuel Information Section
     {"fieldname": "sb_fuel", "label": "Fuel Information", "fieldtype": "Section Break"},

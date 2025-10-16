@@ -331,9 +331,19 @@ console.log('--- UNIFIED STATIONARY COMBUSTION CODE IS RUNNING ---');
             } else {
                 unitSelect.innerHTML = units.map(u => `<option value="${u}">${u}</option>`).join('');
                 selectedUnit = units.length === 1 ? units[0] : units[0];
+                // Set the selected value in the dropdown
+                unitSelect.value = selectedUnit;
             }
             unitSelect.disabled = !(ctx.units && ctx.units.length > 1);
+            
+            // Add change listener for non-admin users to update selectedUnit
+            unitSelect.addEventListener('change', () => {
+                selectedUnit = unitSelect.value || null;
+                console.log('Non-admin unit changed:', selectedUnit);
+            });
         }
+        
+        console.log('Initialized filters - Company:', selectedCompany, 'Unit:', selectedUnit);
     }
 
     function createDataEntryRow() {
@@ -395,6 +405,13 @@ console.log('--- UNIFIED STATIONARY COMBUSTION CODE IS RUNNING ---');
                         <option value="litre">Litre (Volume - Liquid)</option>
                         <option value="m³">m³ (Cubic Meter - Volume)</option>
                         <option value="tonne">Tonne (Metric Ton - Mass)</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="form-control heating-value-basis-select">
+                        <option value="">Select Basis</option>
+                        <option value="Lower">Lower</option>
+                        <option value="Higher">Higher</option>
                     </select>
                 </td>
                 <td><input type="number" class="form-control efco2-input" placeholder="EF CO2" step="0.0001" readonly></td>
@@ -1007,14 +1024,33 @@ console.log('--- UNIFIED STATIONARY COMBUSTION CODE IS RUNNING ---');
                 en2o: data.en2o,
                 etco2eq: data.etco2eq
             };
+            
+            console.log('Creating record with context:', {
+                is_super: ctx.is_super,
+                user_company: ctx.company,
+                user_units: ctx.units,
+                selected_company: selectedCompany,
+                selected_unit: selectedUnit
+            });
+            
             if (ctx.is_super) {
                 if (selectedCompany) doc.company = selectedCompany;
                 if (selectedUnit) { doc.company_unit = selectedUnit; }
+                console.log('Admin user - using selected values:', { company: doc.company, company_unit: doc.company_unit });
             } else if (ctx.company) {
                 doc.company = ctx.company;
-                if (selectedUnit) { doc.company_unit = selectedUnit; }
-                else if (ctx.units && ctx.units.length === 1) { doc.company_unit = ctx.units[0]; }
+                if (selectedUnit) { 
+                    doc.company_unit = selectedUnit; 
+                    console.log('Non-admin user - using selected unit:', selectedUnit);
+                } else if (ctx.units && ctx.units.length === 1) { 
+                    doc.company_unit = ctx.units[0]; 
+                    console.log('Non-admin user - auto-assigning single unit:', ctx.units[0]);
+                }
+                console.log('Non-admin user - final values:', { company: doc.company, company_unit: doc.company_unit });
             }
+            
+            console.log('Final document to save:', doc);
+            
             frappe.call({
                 method: 'frappe.client.insert',
                 args: { doc },
@@ -1023,6 +1059,7 @@ console.log('--- UNIFIED STATIONARY COMBUSTION CODE IS RUNNING ---');
                         console.error('Error creating record:', r.exc);
                         callback(false);
                     } else {
+                        console.log('Record created successfully:', r.message.name);
                         callback(true, r.message.name);
                     }
                 }
@@ -1285,7 +1322,7 @@ console.log('--- UNIFIED STATIONARY COMBUSTION CODE IS RUNNING ---');
                     doctype: 'Unified Stationary Combustion',
                     fields: ['name', 's_no', 'date', 'invoice_no', 'upload_invoice', 'fuel_type', 
                             'fuel_selection', 'activity_types', 'activity_data', 'unit_selection', 'heating_value_basis',
-                            'efco2', 'efch4', 'efn2o', 'eco2', 'ech4', 'en2o', 'etco2eq'],
+                            'company', 'company_unit', 'efco2', 'efch4', 'efn2o', 'eco2', 'ech4', 'en2o', 'etco2eq'],
                     order_by: 'creation desc',
                     limit: 20,
                     filters: filters
