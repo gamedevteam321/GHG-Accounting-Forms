@@ -44,14 +44,16 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
         
         // Load emission factor data first
         loadEmissionFactorData(() => {
-            // Build filters, then entry row and data
-            buildFilterBar(async () => {
-                await initializeFiltersFromContext();
-                createDataEntryRow();
-                loadExistingData();
-                addEventListeners();
-                isInitialized = true;
-                console.log('Stationary emissions initialized successfully');
+            // Ensure DocType exists, then build filters and data
+            createStationaryEmissionsDoctype(() => {
+                buildFilterBar(async () => {
+                    await initializeFiltersFromContext();
+                    createDataEntryRow();
+                    loadExistingData();
+                    addEventListeners();
+                    isInitialized = true;
+                    console.log('Stationary emissions initialized successfully');
+                });
             });
         });
     }
@@ -72,10 +74,10 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
                     method: 'frappe.client.get_list',
                     args: {
                         doctype: 'Emission Factor Master',
-                        fields: ['fuel_type', 'fuel_name', 'efco2_energy', 'efch4_energy', 'efn20_energy', 
-                                'efco2_mass', 'efch4_mass', 'efn20_mass', 
-                                'efco2_liquid', 'efch4_liquid', 'efn20_liquid',
-                                'efco2_gas', 'efch4_gas', 'efn20_gas'],
+                        fields: ['fuel_type', 'fuel_name', 'efco2_energy', 'efch4_energy', 'efn2o_energy', 
+                                'efco2_mass', 'efch4_mass', 'efn2o_mass', 
+                                'efco2_liquid', 'efch4_liquid', 'efn2o_liquid',
+                                'efco2_gas', 'efch4_gas', 'efn2o_gas'],
                         limit_start: start, // The starting point of the page
                         limit_page_length: pageSize // The size of the page
                     }
@@ -100,16 +102,16 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
                 emissionFactorData[record.fuel_type][record.fuel_name] = {
                     efco2_energy: record.efco2_energy,
                     efch4_energy: record.efch4_energy,
-                    efn20_energy: record.ef20_energy,
+                    efn2o_energy: record.efn2o_energy,
                     efco2_mass: record.efco2_mass,
                     efch4_mass: record.efch4_mass,
-                    efn20_mass: record.efn20_mass,
+                    efn2o_mass: record.efn2o_mass,
                     efco2_liquid: record.efco2_liquid,
                     efch4_liquid: record.efch4_liquid,
-                    efn20_liquid: record.efn20_liquid,
+                    efn2o_liquid: record.efn2o_liquid,
                     efco2_gas: record.efco2_gas,
                     efch4_gas: record.efch4_gas,
-                    efn20_gas: record.efn20_gas
+                    efn2o_gas: record.efn2o_gas
                 };
             });
 
@@ -433,21 +435,21 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
                 return {
                     efco2: factors.efco2_mass || 0,
                     efch4: factors.efch4_mass || 0,
-                    ef_n2o: factors.efn20_mass || 0
+                    ef_n2o: factors.efn2o_mass || 0
                 };
             } else if (unitSelection === 'Litre') {
                 // Use liquid-based factors
                 return {
                     efco2: factors.efco2_liquid || 0,
                     efch4: factors.efch4_liquid || 0,
-                    ef_n2o: factors.efn20_liquid || 0
+                    ef_n2o: factors.efn2o_liquid || 0
                 };
             } else if (unitSelection === 'm³') {
                 // Use gas-based factors
                 return {
                     efco2: factors.efco2_gas || 0,
                     efch4: factors.efch4_gas || 0,
-                    ef_n2o: factors.efn20_gas || 0
+                    ef_n2o: factors.efn2o_gas || 0
                 };
             }
         }
@@ -456,7 +458,7 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
         return {
             efco2: factors.efco2_mass || 0,
             efch4: factors.efch4_mass || 0,
-            ef_n2o: factors.efn20_mass || 0
+            ef_n2o: factors.efn2o_mass || 0
         };
     }
 
@@ -945,6 +947,8 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
                                     {fieldname: 'activity_types', label: 'Activity Types', fieldtype: 'Select', options: 'Boilers\nBurners\nGen Sets\nFurnace (Including Blast Furnace)', reqd: 1},
                                     {fieldname: 'activity_data', label: 'Activity Data', fieldtype: 'Float', reqd: 1},
                                     {fieldname: 'unit_selection', label: 'Unit Selection', fieldtype: 'Select', options: 'kg\nTonnes\nLitre\nm³', reqd: 1},
+                                    {fieldname: 'company', label: 'Company', fieldtype: 'Link', options: 'Company'},
+                                    {fieldname: 'company_unit', label: 'Company Unit', fieldtype: 'Link', options: 'Units'},
                                     {fieldname: 'efco2', label: 'EFCO2', fieldtype: 'Float'},
                                     {fieldname: 'efch4', label: 'EFCH4', fieldtype: 'Float'},
                                     {fieldname: 'ef_n2o', label: 'EFN2O', fieldtype: 'Float'},
@@ -1019,10 +1023,10 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
                 unit_selection: data.unit_selection,
                 efco2: data.efco2,
                 efch4: data.efch4,
-                efn20: data.ef_n2o,
+                efn2o: data.ef_n2o,
                 eco2: data.eco2,
                 ech4: data.ech4,
-                en20: data.en2o,
+                en2o: data.en2o,
                 etco2eq: data.etco2eq
             };
             if (ctx.is_super) {
@@ -1232,7 +1236,7 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
                     doctype: 'Stationary Emissions',
                     fields: ['name', 's_no', 'date', 'invoice_no', 'upload_invoice', 'fuel_type', 
                             'fuel_selection', 'activity_types', 'activity_data', 'unit_selection',
-                            'efco2', 'efch4', 'efn20', 'eco2', 'ech4', 'en20', 'etco2eq'],
+                            'efco2', 'efch4', 'ef_n2o', 'eco2', 'ech4', 'en2o', 'etco2eq'],
                     order_by: 'creation desc',
                     limit: 20,
                     filters: filters
@@ -1275,8 +1279,8 @@ console.log('--- MY LATEST CODE IS RUNNING ---');
                         
                         const mappedData = filteredData.map(record => ({
                             ...record,
-                            ef_n2o: record.efn20,
-                            en2o: record.en20
+                            ef_n2o: record.ef_n2o,
+                            en2o: record.en2o
                         }));
                         
                         console.log('Final mapped data to display:', mappedData);
