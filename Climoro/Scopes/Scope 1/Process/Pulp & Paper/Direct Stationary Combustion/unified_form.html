@@ -1,0 +1,113 @@
+<div class="stationary-emissions-container">
+    <div class="header-section">
+        <h1> Stationary Combustion</h1>
+    </div>
+        
+    <!-- Main Table Section -->
+    <div class="table-section">
+        <div class="table-header">
+            <div class="table-actions">
+                <!-- Filter and action buttons will be added by JavaScript -->
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="emissions-table" id="emissionsTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Date</th>
+                            <th>Invoice No</th>
+                            <th>Upload Invoice</th>
+                            <th>Fuel Type</th>
+                            <th>Fuel Selection</th>
+                            <th>Activity Types</th>
+                            <th>Activity Data</th>
+                            <th>Unit Selection</th>
+                <th>Heating Value Basis</th>
+                <th>EFCO2</th>
+                            <th>EFCH4</th>
+                            <th>EFN2O</th>
+                            <th>ECO2</th>
+                            <th>ECH4</th>
+                            <th>EN2O</th>
+                            <th>ETCO2eq</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="emissionsTableBody">
+                        <!-- Data entry row -->
+                        <tr class="data-entry-row">
+                            <td><input type="number" class="form-control s-no-input" placeholder="Auto" readonly value="1"></td>
+                            <td><input type="date" class="form-control date-input" required></td>
+                            <td><input type="text" class="form-control invoice-no-input" placeholder="Enter invoice number"></td>
+                            <td>
+                                <input type="file" class="form-control file-input" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: none;">
+                                <button type="button" class="btn btn-outline-secondary btn-sm upload-btn">
+                                    <i class="fa fa-upload"></i> Upload
+                                </button>
+                                <span class="file-name"></span>
+                            </td>
+                            <td>
+                                <select class="form-control fuel-type-select">
+                                    <option value="">Select Fuel Type</option>
+                                    <option value="Solid fossil">Solid fossil</option>
+                                    <option value="Liquid fossil">Liquid fossil</option>
+                                    <option value="Gaseous fossil">Gaseous fossil</option>
+                                    <option value="Biomass">Biomass</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-control fuel-selection-select" disabled>
+                                    <option value="">Select Fuel</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-control activity-types-select">
+                                    <option value="">Select Activity</option>
+                                    <option value="Boilers">Boilers</option>
+                                    <option value="Burners">Burners</option>
+                                    <option value="Gen Sets">Gen Sets</option>
+                                    <option value="Furnace (Including Blast Furnace)">Furnace (Including Blast Furnace)</option>
+                                </select>
+                            </td>
+                            <td><input type="number" class="form-control activity-data-input" placeholder="Enter activity data" step="0.01"></td>
+                            <td>
+                                <select class="form-control unit-selection-select">
+                                    <option value="">Select Unit</option>
+                                    <option value="TJ">TJ (Terajoule - Energy Content)</option>
+                                    <option value="GJ">GJ (Gigajoule - Energy Content)</option>
+                                    <option value="kg">kg (Kilogram - Mass)</option>
+                                    <option value="litre">Litre (Volume - Liquid)</option>
+                                    <option value="m³">m³ (Cubic Meter - Volume)</option>
+                                    <option value="tonne">Tonne (Metric Ton - Mass)</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-control heating-value-basis-select">
+                                    <option value="">Select Basis</option>
+                                    <option value="Lower">Lower</option>
+                                    <option value="Higher">Higher</option>
+                                </select>
+                            </td>
+                            <td><input type="number" class="form-control efco2-input" placeholder="EF CO2" step="0.0001" readonly></td>
+                            <td><input type="number" class="form-control efch4-input" placeholder="EF CH4" step="0.0001" readonly></td>
+                            <td><input type="number" class="form-control efn2o-input" placeholder="EF N2O" step="0.0001" readonly></td>
+                            <td><input type="number" class="form-control eco2-input" placeholder="E CO2" step="0.00000001" readonly></td>
+                            <td><input type="number" class="form-control ech4-input" placeholder="E CH4" step="0.00000001" readonly></td>
+                            <td><input type="number" class="form-control en2o-input" placeholder="E N2O" step="0.00000001" readonly></td>
+                            <td><input type="number" class="form-control etco2eq-input" placeholder="ET CO2eq" step="0.01" readonly></td>
+                            <td>
+                                <button type="button" class="btn btn-success btn-sm add-row-btn">
+                                    <i class="fa fa-plus"></i> Add
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+        </div>
+    </div>
+</div>
+
+<script src="unified_calculator.js"></script>
