@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Onsite Lime Production – CO2 Emissions</title>
+</head>
+<body>
+	<div class="lime-container">
+		<div class="form-header">
+			<h1>Onsite Lime Production – CO2 Emissions</h1>
+			<p class="form-description">Daily entries for onsite lime production emissions tracking</p>
+		</div>
+
+		<!-- Entry Form -->
+		<div class="table-container">
+			<table class="data-table lime-table">
+				<thead>
+					<tr>
+						<th rowspan="2">S.No</th>
+						<th rowspan="2">Date</th>
+						<th rowspan="2">Unit</th>
+						<th colspan="4" class="section-header">Carbonate Properties</th>
+						<th colspan="3" class="section-header">Lime Kiln Dust (LKD) Properties</th>
+						<th rowspan="2">CO2 emissions<br/>(tonnes)</th>
+						<th rowspan="2">Actions</th>
+					</tr>
+					<tr>
+						<th>Carbonate<br/>(select from dropdown list)</th>
+						<th>Carbonate-specific<br/>emission factor</th>
+						<th>Amount of carbonate<br/>used (tonnes)</th>
+						<th>Fraction calcination achieved<br/>for carbonate (fraction)</th>
+						<th>Amount of LKD<br/>(tonnes)</th>
+						<th>Weight fraction of original<br/>carbonate in the LKD (fraction)</th>
+						<th>Fraction calcination<br/>achieved for LKD (fraction)</th>
+					</tr>
+				</thead>
+				<tbody id="limeBody"></tbody>
+			</table>
+		</div>
+
+		<!-- History -->
+		<div class="history-section">
+			<h2>Entry History</h2>
+			<div class="table-container">
+				<table class="history-table">
+					<thead>
+						<tr>
+							<th>S.No</th>
+							<th>Date</th>
+							<th>Unit</th>
+							<th>Carbonate</th>
+							<th>CO2 (tonnes)</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody id="historyBody"></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div class="modal-overlay" id="modalOverlay">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2>Entry Details</h2>
+				<button class="modal-close" id="modalClose">&times;</button>
+			</div>
+			<div class="modal-body" id="modalBody"></div>
+		</div>
+	</div>
+</body>
+</html>
+
