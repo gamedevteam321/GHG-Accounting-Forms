@@ -1,0 +1,138 @@
+<div class="soderberg-container">
+    <div class="header-section">
+        <h1>Soderberg Process CO2 Emissions</h1>
+        <p class="description">Daily Entry Form for Soderberg Anode Consumption Emissions</p>
+    </div>
+
+    <div class="table-section">
+        <div class="table-container">
+            <table class="soderberg-table">
+                <thead>
+                    <tr>
+                        <th rowspan="2">S.NO</th>
+                        <th rowspan="2">DATE</th>
+                        <th rowspan="2">UNIT</th>
+                        <th rowspan="2">TYPE<br><span class="unit">(A)</span></th>
+                        <th rowspan="2">WEIGHT OF Al<br><span class="unit">(t Al) (B)</span></th>
+                        <th rowspan="2">PASTE CONSUMPTION<br><span class="unit">(t/t Al) (C)</span></th>
+                        <th rowspan="2">CYCLOHEXANE<br><span class="unit">(kg/t Al) (D)</span></th>
+                        <th rowspan="2">BINDER CONTENT<br><span class="unit">(%) (E)</span></th>
+                        <th colspan="3" style="text-align: center;">Pitch properties (F)</th>
+                        <th colspan="2" style="text-align: center;">Calcinated coke properties (G)</th>
+                        <th rowspan="2">CARBON DUST<br><span class="unit">(t/t Al) (H)</span></th>
+                        <th rowspan="2">CO2 EMISSIONS<br><span class="unit">(t CO2) (I)</span></th>
+                        <th rowspan="2">ACTIONS</th>
+                    </tr>
+                    <tr>
+                        <th>SULPHUR<br><span class="unit">(wt %)</span></th>
+                        <th>ASH<br><span class="unit">(wt %)</span></th>
+                        <th>HYDROGEN<br><span class="unit">(wt %)</span></th>
+                        <th>SULPHUR<br><span class="unit">(wt %)</span></th>
+                        <th>ASH<br><span class="unit">(wt %)</span></th>
+                    </tr>
+                </thead>
+                <tbody id="entryTableBody">
+                    <tr class="data-entry-row">
+                        <td style="text-align: center;">
+                            <span class="sno-display" id="currentSno">1</span>
+                        </td>
+                        <td>
+                            <input type="date" class="form-control date-cell" id="entryDate" />
+                        </td>
+                        <td>
+                            <select class="form-control unit-select" id="entryUnit">
+                                <option value="">-- Unit --</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-control type-select" id="entryType">
+                                <option value="">Select Type</option>
+                                <option value="HSS">HSS</option>
+                                <option value="VSS">VSS</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" class="form-control al-weight" id="entryAlWeight" step="0.01" min="0" placeholder="0.00" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control paste-consumption" id="entryPaste" step="0.0001" min="0" placeholder="0.0000" />
+                        </td>
+                        <td>
+                            <span class="calculated-value" id="entryCyclohexane">-</span>
+                        </td>
+                        <td>
+                            <input type="number" class="form-control binder-content" id="entryBinder" step="0.01" min="0" max="100" placeholder="0.00" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control pitch-sulphur" id="entryPitchS" step="0.01" min="0" max="100" placeholder="0.00" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control pitch-ash" id="entryPitchAsh" step="0.01" min="0" max="100" placeholder="0.00" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control pitch-hydrogen" id="entryPitchH" step="0.01" min="0" max="100" placeholder="0.00" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control coke-sulphur" id="entryCokeS" step="0.01" min="0" max="100" placeholder="0.00" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control coke-ash" id="entryCokeAsh" step="0.01" min="0" max="100" placeholder="0.00" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control carbon-dust" id="entryCarbonDust" step="0.0001" min="0" placeholder="0.0000" />
+                        </td>
+                        <td>
+                            <span class="calculated-value" id="entryCO2">0.00</span>
+                        </td>
+                        <td style="text-align: center;">
+                            <button class="btn btn-success" id="saveBtn">Save</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- History Section -->
+    <div class="history-section">
+        <h2>Entry History</h2>
+        <div class="table-container">
+            <table class="soderberg-table history-table">
+                <thead>
+                    <tr>
+                        <th>S.NO</th>
+                        <th>DATE</th>
+                        <th>UNIT</th>
+                        <th>TYPE</th>
+                        <th>Al WEIGHT(t)</th>
+                        <th>CO2 EMISSIONS(t CO2)</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 2rem; color: #64748b;">
+                            <em>No entries yet. Add your first entry above.</em>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- View Entry Modal -->
+    <div class="modal-overlay" id="viewModal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Entry Details</h3>
+                <button class="btn-close-modal" id="closeViewModal">&times;</button>
+            </div>
+            <div class="modal-body" id="viewModalBody">
+                <!-- Details will be populated by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="closeViewModalBtn">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

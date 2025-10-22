@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Aluminium Prebake Process – CO2 Emissions</title>
+</head>
+<body>
+	<div class="prebake-container">
+		<div class="form-header">
+			<h1>Primary Aluminium Production – Prebake Process CO2 Emissions</h1>
+			<p class="form-description">Worksheet 1: Calculating CO2 emissions from prebake process (Part A: Electrolysis + Part B: Anode Baking)</p>
+		</div>
+
+		<!-- Progress Bar -->
+		<!-- Horizontal Progress Bar -->
+		<div class="wizard-progress">
+			<div class="progress-line">
+				<div class="progress-fill" id="progressFill"></div>
+			</div>
+			<div class="progress-steps">
+				<div class="progress-step active" data-step="1">
+					<div class="step-circle">1</div>
+					<div class="step-text">Part A: Electrolysis</div>
+				</div>
+				<div class="progress-step" data-step="2">
+					<div class="step-circle">2</div>
+					<div class="step-text">Part B: Anode Baking</div>
+				</div>
+				<div class="progress-step" data-step="3">
+					<div class="step-circle">3</div>
+					<div class="step-text">Summary</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Step 1: Part A -->
+		<div class="tab-content active" data-step="1">
+			<div class="step-header">
+				<h2>Part A: Electrolysis Carbon Dioxide Emissions from Prebake Cells</h2>
+				<p class="step-description">Enter aluminium production and anode consumption data for multiple potlines/periods.</p>
+			</div>
+
+			<div class="table-container">
+				<table class="data-table parta-table">
+					<thead>
+						<tr>
+							<th rowspan="2">S.NO</th>
+							<th rowspan="2">DATE</th>
+							<th rowspan="2">UNIT</th>
+							<th rowspan="2">Period/Potline</th>
+							<th rowspan="2">Weight of aluminium<br/>produced (t Al)</th>
+							<th rowspan="2">Net anode consumption<br/>(t anode/t of Al)</th>
+							<th colspan="2">Baked anode (weight percent)</th>
+							<th rowspan="2">CO2 Emissions<br/>(t CO2)</th>
+						</tr>
+						<tr>
+							<th>Sulphur</th>
+							<th>Ash</th>
+						</tr>
+					</thead>
+					<tbody id="partABody"></tbody>
+				</table>
+				
+			</div>
+
+			<div class="step-navigation">
+				<button class="btn-next" id="nextToPartB">Next: Part B →</button>
+			</div>
+		</div>
+
+		<!-- Step 2: Part B -->
+		<div class="tab-content" data-step="2">
+			<div class="step-header">
+				<h2>Part B: Process Carbon Dioxide Emissions from Anode Baking Furnace</h2>
+				<p class="step-description">Enter anode baking furnace data for multiple furnaces/periods.</p>
+			</div>
+
+			<div class="table-container">
+				<table class="data-table partb-table">
+					<thead>
+						<tr>
+							<th rowspan="2">S.NO</th>
+							<th rowspan="2">DATE</th>
+							<th rowspan="2">UNIT</th>
+							<th rowspan="2">Period/Furnace</th>
+							<th colspan="3">A</th>
+							<th>B</th>
+							<th>C</th>
+							<th>D</th>
+							<th>E</th>
+							<th>F</th>
+							<th colspan="2">G</th>
+							<th rowspan="2">H<br/>CO2 Emissions<br/>(t CO2)</th>
+						</tr>
+						<tr>
+							<th>Green anode<br/>weight (t)</th>
+							<th>Baked anode<br/>weight (t)</th>
+							<th>Anode baking<br/>weightloss factor<br/>(A1/A2)</th>
+							<th>Baked anode<br/>production (t)</th>
+							<th>Weight of loaded<br/>green anodes (t)</th>
+							<th>Hydrogen content in<br/>green anodes (%)</th>
+							<th>Waste Tar<br/>Collected (t)</th>
+							<th>Packing coke<br/>consumption<br/>(t coke/t BA)</th>
+							<th>Sulphur content<br/>of packing coke (%)</th>
+							<th>Ash content of<br/>packing coke (%)</th>
+						</tr>
+					</thead>
+					<tbody id="partBBody"></tbody>
+				</table>
+				
+			</div>
+
+			<div class="step-navigation">
+				<button class="btn-prev" id="prevToPartA">← Previous: Part A</button>
+				<button class="btn-next" id="nextToSummary">Next: Summary →</button>
+			</div>
+		</div>
+
+		<!-- Step 3: Summary -->
+		<div class="tab-content" data-step="3">
+			<div class="step-header">
+				<h2>Summary: Total CO2 Emissions</h2>
+				<p class="step-description">Review and save your emission calculations.</p>
+			</div>
+
+			<div class="summary-container">
+				<div class="summary-card">
+					<h3>Part A: Electrolysis Emissions</h3>
+					<div class="summary-value">
+						<span class="value summary-parta-co2">0.00</span>
+						<span class="unit">tonnes CO2</span>
+					</div>
+					<div class="summary-detail" id="partASummaryDetail"></div>
+				</div>
+
+				<div class="summary-card">
+					<h3>Part B: Anode Baking Emissions</h3>
+					<div class="summary-value">
+						<span class="value summary-partb-co2">0.00</span>
+						<span class="unit">tonnes CO2</span>
+					</div>
+					<div class="summary-detail" id="partBSummaryDetail"></div>
+				</div>
+
+				<div class="summary-card total-card">
+					<h3>Total CO2 Emissions</h3>
+					<div class="summary-value">
+						<span class="value summary-total-co2">0.00</span>
+						<span class="unit">tonnes CO2</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="step-navigation">
+				<button class="btn-prev" id="prevToPartB">← Previous: Part B</button>
+				<button class="btn-save" id="saveEntryBtn">Save Entry</button>
+			</div>
+		</div>
+
+		<!-- History -->
+		<div class="history-section">
+			<h2>Entry History</h2>
+			<div class="table-container">
+				<table class="history-table">
+					<thead>
+						<tr>
+							<th>S.No</th>
+							<th>Date</th>
+							<th>Unit</th>
+							<th>Part A CO2 (t)</th>
+							<th>Part B CO2 (t)</th>
+							<th>Total CO2 (t)</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody id="historyBody"></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div class="modal-overlay" id="modalOverlay">
+		<div class="modal-content large-modal">
+			<div class="modal-header">
+				<h2>Entry Details</h2>
+				<button class="modal-close" id="modalClose">&times;</button>
+			</div>
+			<div class="modal-body" id="modalBody"></div>
+		</div>
+	</div>
+</body>
+</html>
+
