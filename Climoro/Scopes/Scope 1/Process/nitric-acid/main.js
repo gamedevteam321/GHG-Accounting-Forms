@@ -49,7 +49,24 @@
             row.querySelector('.efused').textContent = D.toFixed(2);
             const E = (parseFloat(destr.value)||0) / 100.0;
             const F = (parseFloat(util.value)||0) / 100.0;
-            const n2o = (A * D / 1000) * (1 - (E * F));
+            
+            // Get selected technology name
+            const techLabel = techSel && techSel.selectedOptions && techSel.selectedOptions[0] ? techSel.selectedOptions[0].textContent.trim() : '';
+            
+            // Check if technology is one of the special cases
+            const isSpecialTech = techLabel === 'Plants with NSCR (all processes)' || 
+                                  techLabel === 'Plants with process-integrated or tailgas N2O destruction';
+            
+            // Apply different formula based on technology
+            let n2o;
+            if (isSpecialTech) {
+                // For special technologies: (Production * EF) / 1000
+                n2o = (A * D) / 1000;
+            } else {
+                // For other technologies: (Production * EF / 1000) * (1 - (Destruction% * Utilization%))
+                n2o = (A * D / 1000) * (1 - (E * F));
+            }
+            
             const co2e = n2o * GWP;
             row.querySelector('.n2o').textContent = (isFinite(n2o)?n2o:0).toFixed(2);
             row.querySelector('.co2e').textContent = (isFinite(co2e)?co2e:0).toFixed(2);
