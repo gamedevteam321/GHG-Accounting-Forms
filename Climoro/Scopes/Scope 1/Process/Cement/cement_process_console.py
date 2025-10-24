@@ -36,8 +36,8 @@ fields = [
     {"fieldname": "duration_type", "label": "Duration Type", "fieldtype": "Select", 
      "options": "Daily\nMonthly\nYearly", "reqd": 1, "default": "Yearly", "in_list_view": 1},
     
-    # Section 1: Clinker and Cement Production - Clinker
-    {"fieldname": "sb_clinker", "label": "Clinker and Cement Production - Clinker", "fieldtype": "Section Break"},
+    # Section 2: Clinker and Cement Production - Clinker (Step 2)
+    {"fieldname": "sb_clinker", "label": "Step 2: Clinker Production", "fieldtype": "Section Break"},
     
     {"fieldname": "clinker_production", "label": "Clinker Production", "fieldtype": "Float", 
      "description": "Actual clinker production of active kilns", "precision": 2},
@@ -51,8 +51,8 @@ fields = [
      "description": "Calculated: clinker_production + clinker_bought - clinker_sold - change_in_clinker_stocks", 
      "precision": 2, "read_only": 1},
     
-    # Section 2: Mineral Components for Portland and Blended Cements
-    {"fieldname": "sb_mic_portland", "label": "Mineral Components (MIC) for Portland and Blended Cements", "fieldtype": "Section Break"},
+    # Section 3: Mineral Components for Portland and Blended Cements (Step 3)
+    {"fieldname": "sb_mic_portland", "label": "Step 3: Mineral Components (MIC)", "fieldtype": "Section Break"},
     
     {"fieldname": "mic_gypsum", "label": "MIC Gypsum", "fieldtype": "Float", 
      "description": "Gypsum consumed for Portland and blended cements (dry weight)", "precision": 2},
@@ -69,8 +69,8 @@ fields = [
     {"fieldname": "total_mic_consumed_portland_blended", "label": "Total MIC Consumed (Portland/Blended)", "fieldtype": "Float", 
      "description": "Total MIC consumed for Portland and blended cements (dry weight)", "precision": 2, "read_only": 1},
     
-    # Section 3: Mineral Components as Cement Substitutes
-    {"fieldname": "sb_mic_substitutes", "label": "Mineral Components (MIC) as Cement Substitutes", "fieldtype": "Section Break"},
+    # MIC as Cement Substitutes (Part of Step 3)
+    {"fieldname": "sb_mic_substitutes", "label": "MIC as Cement Substitutes", "fieldtype": "Section Break"},
     
     {"fieldname": "mic_consumed_pure_slag_cement", "label": "MIC Consumed (Pure Slag Cement)", "fieldtype": "Float", 
      "description": "MIC consumed for production of pure ground slag cement, containing no clinker (dry weight)", "precision": 2},
@@ -79,8 +79,47 @@ fields = [
     {"fieldname": "total_pure_mic_products_substitutes", "label": "Total Pure MIC Products (Substitutes)", "fieldtype": "Float", 
      "description": "Total pure MIC products used as cement substitutes (dry weight)", "precision": 2, "read_only": 1},
     
-    # Section 4: Production Totals
-    {"fieldname": "sb_production_totals", "label": "Production Totals", "fieldtype": "Section Break"},
+    # Section 4: Calcination (Step 4)
+    {"fieldname": "sb_calcination", "label": "Step 4: Calcination", "fieldtype": "Section Break"},
+    
+    # Clinker Composition
+    {"fieldname": "clinker_produced_21", "label": "Clinker Produced", "fieldtype": "Float", 
+     "description": "From Step 2: Clinker Production (tonnes)", "precision": 2, "read_only": 1},
+    {"fieldname": "cao_content_clinker_22", "label": "CaO Content (incl. free lime)", "fieldtype": "Percent", 
+     "description": "CaO content including free lime in clinker (%)", "precision": 2},
+    {"fieldname": "mgo_content_clinker_23", "label": "MgO Content", "fieldtype": "Percent", 
+     "description": "MgO content in clinker (%)", "precision": 2},
+    {"fieldname": "cao_amount_clinker_24", "label": "CaO Amount", "fieldtype": "Float", 
+     "description": "Calculated: CaO content * Clinker produced / 100 (tonnes)", "precision": 2, "read_only": 1},
+    {"fieldname": "mgo_amount_clinker_25", "label": "MgO Amount", "fieldtype": "Float", 
+     "description": "Calculated: MgO content * Clinker produced / 100 (tonnes)", "precision": 2, "read_only": 1},
+    
+    # Raw Material Composition
+    {"fieldname": "raw_material_consumed_51", "label": "Raw Material Consumed (dry weight)", "fieldtype": "Float", 
+     "description": "Raw material consumed (dry weight) (tonnes)", "precision": 2},
+    {"fieldname": "cao_content_raw_material_52", "label": "CaO Content", "fieldtype": "Percent", 
+     "description": "CaO content in raw material (%)", "precision": 2},
+    {"fieldname": "mgo_content_raw_material_53", "label": "MgO Content", "fieldtype": "Percent", 
+     "description": "MgO content in raw material (%)", "precision": 2},
+    {"fieldname": "cao_amount_raw_material_54", "label": "CaO Amount", "fieldtype": "Float", 
+     "description": "Calculated: CaO content * Raw material consumed / 100 (tonnes)", "precision": 2, "read_only": 1},
+    {"fieldname": "mgo_amount_raw_material_55", "label": "MgO Amount", "fieldtype": "Float", 
+     "description": "Calculated: MgO content * Raw material consumed / 100 (tonnes)", "precision": 2, "read_only": 1},
+    
+    # CO2 Emissions from Raw Material Calcination
+    {"fieldname": "uncorrected_co2_emissions_81", "label": "Uncorrected CO2 emissions, based on CaO- and MgO content of clinker", "fieldtype": "Float", 
+     "description": "Calculated: CaO amount * (44.0/56.1) + MgO amount * (44.0/40.3) (tonnes CO2)", "precision": 2, "read_only": 1},
+    {"fieldname": "correction_non_carbonate_82", "label": "Correction for non-carbonate sources of CaO and MgO", "fieldtype": "Float", 
+     "description": "Calculated: Raw material CaO amount * (44.0/56.1) + Raw material MgO amount * (44.0/40.3) (tonnes CO2)", "precision": 2, "read_only": 1},
+    {"fieldname": "corrected_direct_co2_emissions_83", "label": "Corrected, direct CO2 emissions", "fieldtype": "Float", 
+     "description": "Calculated: Uncorrected CO2 emissions - Correction for non-carbonate sources (tonnes CO2)", "precision": 2, "read_only": 1},
+    {"fieldname": "calcination_factor_uncorrected_84", "label": "Calcination factor, uncorrected", "fieldtype": "Float", 
+     "description": "Calculated: (Uncorrected CO2 emissions / Clinker produced) * 1000 (kg CO2/tonne clinker)", "precision": 2, "read_only": 1},
+    {"fieldname": "calcination_factor_corrected_85", "label": "Calcination factor, corrected for non-carbonate sources of CaO, MgO", "fieldtype": "Float", 
+     "description": "Calculated: (Corrected direct CO2 emissions / Clinker produced) * 1000 (kg CO2/tonne clinker)", "precision": 2, "read_only": 1},
+    
+    # Section 5: Production Totals (Step 5)
+    {"fieldname": "sb_production_totals", "label": "Step 5: Production Totals", "fieldtype": "Section Break"},
     
     {"fieldname": "total_portland_blended_cements", "label": "Total Portland/Blended Cements", "fieldtype": "Float", 
      "description": "Total cement produced (all types together except pure slag cement and direct fly ash sales)", "precision": 2, "read_only": 1},
@@ -89,8 +128,8 @@ fields = [
     {"fieldname": "total_cementitious_products", "label": "Total Cementitious Products", "fieldtype": "Float", 
      "description": "Total clinker produced plus MIC consumed for blending or production of cement substitutes", "precision": 2, "read_only": 1},
     
-    # Section 5: Dust Production
-    {"fieldname": "sb_dust_production", "label": "Dust Production (Dry Weight)", "fieldtype": "Section Break"},
+    # Section 6: Dust Production (Step 6)
+    {"fieldname": "sb_dust_production", "label": "Step 6: Dust Production", "fieldtype": "Section Break"},
     
     {"fieldname": "bypass_dust_leaving_kiln_system", "label": "Bypass Dust Leaving Kiln System", "fieldtype": "Float", 
      "description": "Only bypass dust which leaves the kiln system, e.g. for landfilling (dry weight)", "precision": 2},
@@ -100,106 +139,11 @@ fields = [
      "description": "Default = 100%. To be replaced with more precise data by Company if available", "default": 100},
     
     
-    # Section 9: Clinker Production and Composition
-    {"fieldname": "sb_clinker_composition", "label": "Clinker Production and Composition", "fieldtype": "Section Break"},
-    
-    # Clinker #1
-    {"fieldname": "clinker1_produced", "label": "Clinker #1 Produced", "fieldtype": "Float", 
-     "description": "Clinker production for type 1 (tonnes)", "precision": 2},
-    {"fieldname": "clinker1_cao_content", "label": "Clinker #1 CaO Content (incl. free lime)", "fieldtype": "Percent", 
-     "description": "CaO content percentage for clinker type 1", "precision": 2},
-    {"fieldname": "clinker1_mgo_content", "label": "Clinker #1 MgO Content", "fieldtype": "Percent", 
-     "description": "MgO content percentage for clinker type 1", "precision": 2},
-    {"fieldname": "clinker1_cao_amount", "label": "Clinker #1 CaO Amount", "fieldtype": "Float", 
-     "description": "Calculated: Clinker produced × CaO content / 100 (tonnes)", "precision": 2, "read_only": 1},
-    {"fieldname": "clinker1_mgo_amount", "label": "Clinker #1 MgO Amount", "fieldtype": "Float", 
-     "description": "Calculated: Clinker produced × MgO content / 100 (tonnes)", "precision": 2, "read_only": 1},
-    
-    # Clinker #2
-    {"fieldname": "clinker2_produced", "label": "Clinker #2 Produced", "fieldtype": "Float", 
-     "description": "Clinker production for type 2 (tonnes)", "precision": 2},
-    {"fieldname": "clinker2_cao_content", "label": "Clinker #2 CaO Content (incl. free lime)", "fieldtype": "Percent", 
-     "description": "CaO content percentage for clinker type 2", "precision": 2},
-    {"fieldname": "clinker2_mgo_content", "label": "Clinker #2 MgO Content", "fieldtype": "Percent", 
-     "description": "MgO content percentage for clinker type 2", "precision": 2},
-    {"fieldname": "clinker2_cao_amount", "label": "Clinker #2 CaO Amount", "fieldtype": "Float", 
-     "description": "Calculated: Clinker produced × CaO content / 100 (tonnes)", "precision": 2, "read_only": 1},
-    {"fieldname": "clinker2_mgo_amount", "label": "Clinker #2 MgO Amount", "fieldtype": "Float", 
-     "description": "Calculated: Clinker produced × MgO content / 100 (tonnes)", "precision": 2, "read_only": 1},
-    
-    # Total Clinker
-    {"fieldname": "total_clinker_produced_composition", "label": "Total Clinker Produced (Composition)", "fieldtype": "Float", 
-     "description": "Sum of all clinker types (tonnes)", "precision": 2, "read_only": 1},
-    {"fieldname": "average_cao_content", "label": "Average CaO Content (incl. free lime)", "fieldtype": "Percent", 
-     "description": "Weighted average CaO content (%)", "precision": 2, "read_only": 1},
-    {"fieldname": "average_mgo_content", "label": "Average MgO Content", "fieldtype": "Percent", 
-     "description": "Weighted average MgO content (%)", "precision": 2, "read_only": 1},
-    {"fieldname": "total_cao_amount", "label": "Total CaO Amount", "fieldtype": "Float", 
-     "description": "Sum of all CaO amounts (tonnes)", "precision": 2, "read_only": 1},
-    {"fieldname": "total_mgo_amount", "label": "Total MgO Amount", "fieldtype": "Float", 
-     "description": "Sum of all MgO amounts (tonnes)", "precision": 2, "read_only": 1},
-    
-    # Section 10: Correction for Non-carbonate Sources
-    {"fieldname": "sb_non_carbonate_sources", "label": "Correction for Non-carbonate Sources of CaO, MgO found in Clinker", "fieldtype": "Section Break"},
-    
-    # Raw Material #1
-    {"fieldname": "raw_material1_consumed", "label": "Raw Material #1 Consumed (dry weight)", "fieldtype": "Float", 
-     "description": "Raw material consumption for type 1 (tonnes)", "precision": 2},
-    {"fieldname": "raw_material1_cao_content", "label": "Raw Material #1 CaO Content", "fieldtype": "Percent", 
-     "description": "CaO content percentage for raw material type 1", "precision": 2},
-    {"fieldname": "raw_material1_mgo_content", "label": "Raw Material #1 MgO Content", "fieldtype": "Percent", 
-     "description": "MgO content percentage for raw material type 1", "precision": 2},
-    {"fieldname": "raw_material1_cao_amount", "label": "Raw Material #1 CaO Amount", "fieldtype": "Float", 
-     "description": "Calculated: Raw material consumed × CaO content / 100 (tonnes)", "precision": 2, "read_only": 1},
-    {"fieldname": "raw_material1_mgo_amount", "label": "Raw Material #1 MgO Amount", "fieldtype": "Float", 
-     "description": "Calculated: Raw material consumed × MgO content / 100 (tonnes)", "precision": 2, "read_only": 1},
-    
-    # Raw Material #2
-    {"fieldname": "raw_material2_consumed", "label": "Raw Material #2 Consumed (dry weight)", "fieldtype": "Float", 
-     "description": "Raw material consumption for type 2 (tonnes)", "precision": 2},
-    {"fieldname": "raw_material2_cao_content", "label": "Raw Material #2 CaO Content", "fieldtype": "Percent", 
-     "description": "CaO content percentage for raw material type 2", "precision": 2},
-    {"fieldname": "raw_material2_mgo_content", "label": "Raw Material #2 MgO Content", "fieldtype": "Percent", 
-     "description": "MgO content percentage for raw material type 2", "precision": 2},
-    {"fieldname": "raw_material2_cao_amount", "label": "Raw Material #2 CaO Amount", "fieldtype": "Float", 
-     "description": "Calculated: Raw material consumed × CaO content / 100 (tonnes)", "precision": 2, "read_only": 1},
-    {"fieldname": "raw_material2_mgo_amount", "label": "Raw Material #2 MgO Amount", "fieldtype": "Float", 
-     "description": "Calculated: Raw material consumed × MgO content / 100 (tonnes)", "precision": 2, "read_only": 1},
-    
-    # Total Raw Materials
-    {"fieldname": "total_raw_material_consumed", "label": "Total Raw Material Consumed (dry weight)", "fieldtype": "Float", 
-     "description": "Sum of all raw materials (tonnes)", "precision": 2, "read_only": 1},
-    {"fieldname": "average_raw_material_cao_content", "label": "Average Raw Material CaO Content", "fieldtype": "Percent", 
-     "description": "Weighted average CaO content (%)", "precision": 2, "read_only": 1},
-    {"fieldname": "average_raw_material_mgo_content", "label": "Average Raw Material MgO Content", "fieldtype": "Percent", 
-     "description": "Weighted average MgO content (%)", "precision": 2, "read_only": 1},
-    {"fieldname": "total_raw_material_cao_amount", "label": "Total Raw Material CaO Amount", "fieldtype": "Float", 
-     "description": "Sum of all CaO amounts from raw materials (tonnes)", "precision": 2, "read_only": 1},
-    {"fieldname": "total_raw_material_mgo_amount", "label": "Total Raw Material MgO Amount", "fieldtype": "Float", 
-     "description": "Sum of all MgO amounts from raw materials (tonnes)", "precision": 2, "read_only": 1},
-    
-    # Section 11: CO2 Emissions from Raw Material Calcination
-    {"fieldname": "sb_co2_calcination", "label": "CO2 Emissions from Raw Material Calcination", "fieldtype": "Section Break"},
-    
-    # Absolute CO2 Emissions
-    {"fieldname": "uncorrected_co2_emissions", "label": "Uncorrected CO2 Emissions, based on CaO- and MgO content of clinker", "fieldtype": "Float", 
-     "description": "Calculated from total CaO and MgO amounts in clinker (t CO2/yr)", "precision": 2, "read_only": 1},
-    {"fieldname": "correction_non_carbonate_sources", "label": "Correction for Non-carbonate Sources of CaO and MgO", "fieldtype": "Float", 
-     "description": "Calculated from CaO and MgO amounts in pre-calcined raw materials (t CO2/yr)", "precision": 2, "read_only": 1},
-    {"fieldname": "corrected_direct_co2_emissions", "label": "Corrected, Direct CO2 Emissions", "fieldtype": "Float", 
-     "description": "Line 81 - Line 82 (t CO2/yr)", "precision": 2, "read_only": 1},
-    
-    # Specific CO2 Emissions per Ton of Clinker
-    {"fieldname": "calcination_factor_uncorrected", "label": "Calcination Factor, Uncorrected", "fieldtype": "Float", 
-     "description": "Uncorrected CO2 emissions / Total clinker produced × 1000 (kg CO2/t cli)", "precision": 2, "read_only": 1},
-    {"fieldname": "calcination_factor_corrected", "label": "Calcination Factor, Corrected for Non-carbonate Sources", "fieldtype": "Float", 
-     "description": "Corrected CO2 emissions / Total clinker produced × 1000 (kg CO2/t cli)", "precision": 2, "read_only": 1},
-    
-    # Section 12: CO2 from Raw Materials (Original Section)
-    {"fieldname": "sb_co2_raw_materials", "label": "CO2 from Raw Materials (Original Section)", "fieldtype": "Section Break"},
+    # Section 7: CO2 Emissions (Step 7)
+    {"fieldname": "sb_co2_raw_materials", "label": "Step 7: CO2 Emissions", "fieldtype": "Section Break"},
     
     {"fieldname": "calcination_emission_factor_35a", "label": "Calcination Emission Factor, Corrected for CaO- and MgO Imports", "fieldtype": "Float", 
-     "description": "Default = 525 kg CO2 per tonne of clinker (kg CO2/tonne clinker)", "precision": 2, "default": 525},
+     "description": "Auto-populated from Step 4: Corrected calcination factor. Default = 525 kg CO2 per tonne of clinker (kg CO2/tonne clinker)", "precision": 2, "default": 525},
     {"fieldname": "organic_carbon_content_35b", "label": "Organic Carbon Content of Raw Meal (Average)", "fieldtype": "Percent", 
      "description": "Default = 0.2%. Replace with company-specific data if raw materials have substantially higher or lower organic carbon content", "precision": 2, "default": 0.2},
     {"fieldname": "raw_meal_clinker_ratio_35c", "label": "Raw Meal : Clinker Ratio", "fieldtype": "Float", 
@@ -218,7 +162,7 @@ fields = [
      "description": "Total (tonnes CO2)", "precision": 2, "read_only": 1},
     
     
-    # Section 14: Total CO2 Emissions
+    # Total CO2 Emissions
     {"fieldname": "sb_total_co2_emissions", "label": "Total CO2 Emissions", "fieldtype": "Section Break"},
     
     {"fieldname": "emission_factor_bought_clinker", "label": "Emission Factor for Bought Clinker", "fieldtype": "Float", 

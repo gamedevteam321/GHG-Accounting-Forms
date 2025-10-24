@@ -6,7 +6,7 @@ const scopeRoot = (typeof root_element !== 'undefined' && root_element) ? root_e
 console.log('Using scope root:', scopeRoot);
 
     let currentStep = 1;
-    const totalSteps = 6;
+    const totalSteps = 7;
 let currentRecordId = null;
 let isEditMode = false;
 
@@ -124,6 +124,16 @@ function setupModalCloseListeners() {
         // Trigger when substitutes total changes
         const totalSubstitutes = scopeRoot.querySelector('#total_pure_mic_products_substitutes');
         if (totalSubstitutes) totalSubstitutes.addEventListener('input', calculateProductionTotals);
+
+        // Calcination step calculations
+        const calcinationFields = ['clinker_production', 'cao_content_clinker_22', 'mgo_content_clinker_23', 
+                                   'raw_material_consumed_51', 'cao_content_raw_material_52', 'mgo_content_raw_material_53'];
+        calcinationFields.forEach(field => {
+            const element = scopeRoot.querySelector(`#${field}`);
+            if (element) {
+                element.addEventListener('input', calculateCalcinationStep);
+            }
+        });
 
         // CO2 calculations
         const co2RawMaterialFields = ['calcination_emission_factor_35a', 'organic_carbon_content_35b', 'raw_meal_clinker_ratio_35c', 'clinker_production', 'bypass_dust_leaving_kiln_system', 'ckd_leaving_kiln_system'];
@@ -323,6 +333,97 @@ function loadUnits() {
         const cementitiousField = scopeRoot.querySelector('#total_cementitious_products');
         if (cementitiousField) {
             cementitiousField.value = totalCementitious.toFixed(2);
+        }
+    }
+
+    // Calculate calcination step values
+    function calculateCalcinationStep() {
+        // Get clinker production from step 2
+        const clinkerProduction = parseFloat(scopeRoot.querySelector('#clinker_production')?.value) || 0;
+        const clinkerField = scopeRoot.querySelector('#clinker_produced_21');
+        if (clinkerField) {
+            clinkerField.value = clinkerProduction.toFixed(2);
+        }
+
+        // Calculate CaO and MgO amounts for clinker
+        const caoContentClinker = parseFloat(scopeRoot.querySelector('#cao_content_clinker_22')?.value) || 0;
+        const mgoContentClinker = parseFloat(scopeRoot.querySelector('#mgo_content_clinker_23')?.value) || 0;
+        
+        const caoAmountClinker = (caoContentClinker / 100) * clinkerProduction;
+        const mgoAmountClinker = (mgoContentClinker / 100) * clinkerProduction;
+        
+        const caoAmountField = scopeRoot.querySelector('#cao_amount_clinker_24');
+        const mgoAmountField = scopeRoot.querySelector('#mgo_amount_clinker_25');
+        
+        if (caoAmountField) caoAmountField.value = caoAmountClinker.toFixed(2);
+        if (mgoAmountField) mgoAmountField.value = mgoAmountClinker.toFixed(2);
+
+        // Calculate CaO and MgO amounts for raw material
+        const rawMaterialConsumed = parseFloat(scopeRoot.querySelector('#raw_material_consumed_51')?.value) || 0;
+        const caoContentRawMaterial = parseFloat(scopeRoot.querySelector('#cao_content_raw_material_52')?.value) || 0;
+        const mgoContentRawMaterial = parseFloat(scopeRoot.querySelector('#mgo_content_raw_material_53')?.value) || 0;
+        
+        const caoAmountRawMaterial = (caoContentRawMaterial / 100) * rawMaterialConsumed;
+        const mgoAmountRawMaterial = (mgoContentRawMaterial / 100) * rawMaterialConsumed;
+        
+        const caoAmountRawField = scopeRoot.querySelector('#cao_amount_raw_material_54');
+        const mgoAmountRawField = scopeRoot.querySelector('#mgo_amount_raw_material_55');
+        
+        if (caoAmountRawField) caoAmountRawField.value = caoAmountRawMaterial.toFixed(2);
+        if (mgoAmountRawField) mgoAmountRawField.value = mgoAmountRawMaterial.toFixed(2);
+
+        // Calculate CO2 emissions using precise molecular weight conversions
+        // Molecular weights: CaO = 56.1 g/mol, MgO = 40.3 g/mol, CO2 = 44.0 g/mol
+        
+        // Line 81: Uncorrected CO2 emissions from clinker CaO and MgO
+        // CO2 from CaO = CaO amount * (CO2 molecular weight / CaO molecular weight)
+        const co2FromCaoClinker = caoAmountClinker * (44.0 / 56.1);
+        // CO2 from MgO = MgO amount * (CO2 molecular weight / MgO molecular weight)  
+        const co2FromMgoClinker = mgoAmountClinker * (44.0 / 40.3);
+        const uncorrectedCO2 = co2FromCaoClinker + co2FromMgoClinker;
+        
+        const uncorrectedField = scopeRoot.querySelector('#uncorrected_co2_emissions_81');
+        if (uncorrectedField) {
+            uncorrectedField.value = uncorrectedCO2.toFixed(2);
+        }
+
+        // Line 82: Correction for non-carbonate sources from raw material CaO and MgO
+        // CO2 from raw material CaO = CaO amount * (CO2 molecular weight / CaO molecular weight)
+        const co2FromCaoRawMaterial = caoAmountRawMaterial * (44.0 / 56.1);
+        // CO2 from raw material MgO = MgO amount * (CO2 molecular weight / MgO molecular weight)
+        const co2FromMgoRawMaterial = mgoAmountRawMaterial * (44.0 / 40.3);
+        const correctionAmount = co2FromCaoRawMaterial + co2FromMgoRawMaterial;
+        
+        const correctionField = scopeRoot.querySelector('#correction_non_carbonate_82');
+        if (correctionField) {
+            correctionField.value = correctionAmount.toFixed(2);
+        }
+
+        // Line 83: Corrected, direct CO2 emissions = Line 81 - Line 82
+        const correctedCO2 = uncorrectedCO2 - correctionAmount;
+        const correctedField = scopeRoot.querySelector('#corrected_direct_co2_emissions_83');
+        if (correctedField) {
+            correctedField.value = correctedCO2.toFixed(2);
+        }
+
+        // Line 84: Calcination factor, uncorrected = (Line 81 / Line 21) * 1000
+        const uncorrectedFactor = clinkerProduction > 0 ? (uncorrectedCO2 * 1000) / clinkerProduction : 0;
+        const uncorrectedFactorField = scopeRoot.querySelector('#calcination_factor_uncorrected_84');
+        if (uncorrectedFactorField) {
+            uncorrectedFactorField.value = uncorrectedFactor.toFixed(2);
+        }
+
+        // Line 85: Calcination factor, corrected = (Line 83 / Line 21) * 1000
+        const correctedFactor = clinkerProduction > 0 ? (correctedCO2 * 1000) / clinkerProduction : 0;
+        const correctedFactorField = scopeRoot.querySelector('#calcination_factor_corrected_85');
+        if (correctedFactorField) {
+            correctedFactorField.value = correctedFactor.toFixed(2);
+        }
+
+        // Auto-populate calcination emission factor in Step 7 with the corrected factor
+        const calcinationEmissionFactorField = scopeRoot.querySelector('#calcination_emission_factor_35a');
+        if (calcinationEmissionFactorField && correctedFactor > 0) {
+            calcinationEmissionFactorField.value = correctedFactor.toFixed(2);
         }
     }
 

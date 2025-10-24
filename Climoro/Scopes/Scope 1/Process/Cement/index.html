@@ -12,7 +12,7 @@
     <div class="data-manager-container">
         <!-- Header Section -->
         <div class="header-section">
-            <h1><i class="fa fa-industry"></i> Cement Process Data Manager</h1>
+            <h1> Cement Process Data Manager</h1>
             <p>Manage cement production data and CO2 emissions tracking</p>
         </div>
 
@@ -73,11 +73,27 @@
                         </div>
                         <div class="step-item" data-step="2">
                             <div class="step-number">2</div>
-                            <div class="step-label">Production Data</div>
+                            <div class="step-label">Clinker</div>
                         </div>
                         <div class="step-item" data-step="3">
                             <div class="step-number">3</div>
-                            <div class="step-label">CO2 Emissions</div>
+                            <div class="step-label">MIC</div>
+                        </div>
+                        <div class="step-item" data-step="4">
+                            <div class="step-number">4</div>
+                            <div class="step-label">Calcination</div>
+                        </div>
+                        <div class="step-item" data-step="5">
+                            <div class="step-number">5</div>
+                            <div class="step-label">Totals</div>
+                        </div>
+                        <div class="step-item" data-step="6">
+                            <div class="step-number">6</div>
+                            <div class="step-label">Dust</div>
+                        </div>
+                        <div class="step-item" data-step="7">
+                            <div class="step-number">7</div>
+                            <div class="step-label">CO2 Em.</div>
                         </div>
                     </div>
 
@@ -119,7 +135,7 @@
                             </div>
                         </div>
 
-                        <!-- Step 2: Production Data -->
+                        <!-- Step 2: Clinker Production -->
                         <div class="step-content" id="step2">
                             <div class="subsection">
                                 <h3>Clinker and Cement Production</h3>
@@ -160,8 +176,11 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- Mineral Components -->
+                        <!-- Step 3: Mineral Components -->
+                        <div class="step-content" id="step3">
+                            <!-- MIC for Portland and Blended Cements -->
                             <div class="subsection">
                                 <h3>Mineral Components (MIC) for Portland and Blended Cements</h3>
                                 <div class="form-row">
@@ -214,11 +233,11 @@
                                         <small class="form-text">Total MIC consumed for Portland and blended cements</small>
                                     </div>
                                 </div>
-                            </div>
+                                    </div>
 
-                            <!-- Cement Substitutes -->
-                            <div class="subsection">
-                                <h3>Mineral Components (MIC) as Cement Substitutes</h3>
+                                    <!-- MIC as Cement Substitutes -->
+                                    <div class="subsection">
+                                        <h3>Mineral Components (MIC) as Cement Substitutes</h3>
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="mic_consumed_pure_slag_cement">MIC Consumed (Pure Slag Cement) (tonnes, dry weight)</label>
@@ -242,8 +261,136 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- Production Totals -->
+                        <!-- Step 4: Calcination -->
+                        <div class="step-content" id="step4">
+                            <!-- Clinker Composition -->
+                            <div class="subsection">
+                                <h3>Clinker Composition</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="clinker_produced_21">Clinker Produced (tonnes)</label>
+                                        <input type="number" class="form-control" id="clinker_produced_21" name="clinker_produced_21" 
+                                               step="0.01" readonly>
+                                        <small class="form-text">From Step 2: Clinker Production</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cao_content_clinker_22">CaO Content (incl. free lime) (%)</label>
+                                        <input type="number" class="form-control" id="cao_content_clinker_22" name="cao_content_clinker_22" 
+                                               step="0.01" placeholder="Enter CaO content percentage">
+                                        <small class="form-text">CaO content including free lime in clinker</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="mgo_content_clinker_23">MgO Content (%)</label>
+                                        <input type="number" class="form-control" id="mgo_content_clinker_23" name="mgo_content_clinker_23" 
+                                               step="0.01" placeholder="Enter MgO content percentage">
+                                        <small class="form-text">MgO content in clinker</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cao_amount_clinker_24">CaO Amount (tonnes)</label>
+                                        <input type="number" class="form-control" id="cao_amount_clinker_24" name="cao_amount_clinker_24" 
+                                               step="0.01" readonly>
+                                        <small class="form-text">Calculated: CaO content * Clinker produced / 100</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="mgo_amount_clinker_25">MgO Amount (tonnes)</label>
+                                        <input type="number" class="form-control" id="mgo_amount_clinker_25" name="mgo_amount_clinker_25" 
+                                               step="0.01" readonly>
+                                        <small class="form-text">Calculated: MgO content * Clinker produced / 100</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Raw Material Composition -->
+                            <div class="subsection">
+                                <h3>Raw Material Composition</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="raw_material_consumed_51">Raw Material Consumed (dry weight) (tonnes)</label>
+                                        <input type="number" class="form-control" id="raw_material_consumed_51" name="raw_material_consumed_51" 
+                                               step="0.01" placeholder="Enter raw material consumption">
+                                        <small class="form-text">Raw material consumed (dry weight)</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cao_content_raw_material_52">CaO Content (%)</label>
+                                        <input type="number" class="form-control" id="cao_content_raw_material_52" name="cao_content_raw_material_52" 
+                                               step="0.01" placeholder="Enter CaO content percentage">
+                                        <small class="form-text">CaO content in raw material</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="mgo_content_raw_material_53">MgO Content (%)</label>
+                                        <input type="number" class="form-control" id="mgo_content_raw_material_53" name="mgo_content_raw_material_53" 
+                                               step="0.01" placeholder="Enter MgO content percentage">
+                                        <small class="form-text">MgO content in raw material</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cao_amount_raw_material_54">CaO Amount (tonnes)</label>
+                                        <input type="number" class="form-control" id="cao_amount_raw_material_54" name="cao_amount_raw_material_54" 
+                                               step="0.01" readonly>
+                                        <small class="form-text">Calculated: CaO content * Raw material consumed / 100</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="mgo_amount_raw_material_55">MgO Amount (tonnes)</label>
+                                        <input type="number" class="form-control" id="mgo_amount_raw_material_55" name="mgo_amount_raw_material_55" 
+                                               step="0.01" readonly>
+                                        <small class="form-text">Calculated: MgO content * Raw material consumed / 100</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CO2 Emissions from Raw Material Calcination -->
+                            <div class="subsection">
+                                <h3>CO2 Emissions from Raw Material Calcination</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="uncorrected_co2_emissions_81">Uncorrected CO2 emissions, based on CaO- and MgO content of clinker (tonnes CO2)</label>
+                                        <input type="number" class="form-control" id="uncorrected_co2_emissions_81" name="uncorrected_co2_emissions_81" 
+                                               step="0.01" readonly>
+                                        <small class="form-text">Calculated: CaO amount * (44.0/56.1) + MgO amount * (44.0/40.3)</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="correction_non_carbonate_82">Correction for non-carbonate sources of CaO and MgO (tonnes CO2)</label>
+                                        <input type="number" class="form-control" id="correction_non_carbonate_82" name="correction_non_carbonate_82" 
+                                               step="0.01" readonly>
+                                        <small class="form-text">Calculated: Raw material CaO amount * (44.0/56.1) + Raw material MgO amount * (44.0/40.3)</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="corrected_direct_co2_emissions_83">Corrected, direct CO2 emissions (tonnes CO2)</label>
+                                        <input type="number" class="form-control" id="corrected_direct_co2_emissions_83" name="corrected_direct_co2_emissions_83" 
+                                               step="0.01" readonly>
+                                        <small class="form-text">Calculated: Uncorrected CO2 emissions - Correction for non-carbonate sources</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="calcination_factor_uncorrected_84">Calcination factor, uncorrected (kg CO2/tonne clinker)</label>
+                                        <input type="number" class="form-control" id="calcination_factor_uncorrected_84" name="calcination_factor_uncorrected_84" 
+                                               step="0.01" readonly>
+                                        <small class="form-text">Calculated: (Uncorrected CO2 emissions / Clinker produced) * 1000</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="calcination_factor_corrected_85">Calcination factor, corrected for non-carbonate sources of CaO, MgO (kg CO2/tonne clinker)</label>
+                                        <input type="number" class="form-control" id="calcination_factor_corrected_85" name="calcination_factor_corrected_85" 
+                                               step="0.01" readonly>
+                                        <small class="form-text">Calculated: (Corrected direct CO2 emissions / Clinker produced) * 1000</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 5: Production Totals -->
+                        <div class="step-content" id="step5">
                             <div class="subsection">
                                 <h3>Production Totals</h3>
                                 <div class="form-row">
@@ -269,8 +416,10 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- Dust Production -->
+                        <!-- Step 6: Dust Production -->
+                        <div class="step-content" id="step6">
                             <div class="subsection">
                                 <h3>Dust Production (Dry Weight)</h3>
                                 <div class="form-row">
@@ -298,8 +447,8 @@
                             </div>
                         </div>
 
-                        <!-- Step 3: CO2 Emissions -->
-                        <div class="step-content" id="step3">
+                        <!-- Step 7: CO2 Emissions -->
+                        <div class="step-content" id="step7">
                             <div class="subsection">
                                 <h3>CO2 from Raw Materials</h3>
                                 <div class="form-row">
@@ -307,7 +456,7 @@
                                         <label for="calcination_emission_factor_35a">Calcination emission factor, corrected for CaO- and MgO imports (kg CO2/tonne clinker) <span class="required">*</span></label>
                                         <input type="number" class="form-control" id="calcination_emission_factor_35a" name="calcination_emission_factor_35a" 
                                                step="0.01" value="525" required>
-                                        <small class="form-text">Default: 525 kg CO2/tonne clinker. Replace with company-specific data.</small>
+                                        <small class="form-text">Auto-populated from Step 4: Corrected calcination factor. Default: 525 kg CO2/tonne clinker.</small>
                                     </div>
                                 </div>
                                 <div class="form-row">
@@ -331,7 +480,7 @@
                                         <label for="raw_meal_consumption_35d">Raw meal consumption (tonnes, dry weight)</label>
                                         <input type="number" class="form-control" id="raw_meal_consumption_35d" name="raw_meal_consumption_35d" 
                                                step="0.01" readonly>
-                                        <small class="form-text">Calculated: 35c * Clinker production</small>
+                                        <small class="form-text">Calculated: Raw meal : clinker ratio * Clinker production</small>
                                     </div>
                                 </div>
                                 <div class="form-row">
@@ -339,7 +488,7 @@
                                         <label for="co2_from_calcination_clinker_36">CO2 from calcination of clinker (tonnes CO2)</label>
                                         <input type="number" class="form-control" id="co2_from_calcination_clinker_36" name="co2_from_calcination_clinker_36" 
                                                step="0.01" readonly>
-                                        <small class="form-text">Calculated: (35a / 1000) * Clinker production</small>
+                                        <small class="form-text">Calculated: (Calcination emission factor / 1000) * Clinker production</small>
                                     </div>
                                 </div>
                                 <div class="form-row">
