@@ -1,0 +1,126 @@
+<div class="alternative-co2-container">
+    <div class="header-section">
+        <h1>Alternative Method for Electrolysis Process CO2 Emissions</h1>
+        <p class="description">Based on Consumption of Purchased Carbon Containing Materials</p>
+    </div>
+
+    <div class="table-section">
+        <div class="table-container">
+            <table class="alternative-table">
+                <thead>
+                    <tr>
+                        <th rowspan="2">S.NO</th>
+                        <th rowspan="2">DATE</th>
+                        <th rowspan="2">UNIT</th>
+                        <th colspan="2" style="text-align: center;">PITCH</th>
+                        <th colspan="2" style="text-align: center;">COKE</th>
+                        <th colspan="2" style="text-align: center;">PACKING COKE</th>
+                        <th rowspan="2">CARBON<br>BY-PRODUCTS/<br>WASTE<br><span class="unit">(t)</span></th>
+                        <th colspan="2" style="text-align: center;">PURCHASED ANODES</th>
+                        <th colspan="2" style="text-align: center;">SOLD ANODES</th>
+                        <th rowspan="2">CO2<br>EMISSIONS<br><span class="unit">(t CO2)</span></th>
+                        <th rowspan="2">ACTIONS</th>
+                    </tr>
+                    <tr>
+                        <th>CONSUMPTION<br><span class="unit">(t)</span></th>
+                        <th>CARBON<br>CONTENT<br><span class="unit">(%)</span></th>
+                        <th>CONSUMPTION<br><span class="unit">(t)</span></th>
+                        <th>CARBON<br>CONTENT<br><span class="unit">(%)</span></th>
+                        <th>CONSUMPTION<br><span class="unit">(t)</span></th>
+                        <th>CARBON<br>CONTENT<br><span class="unit">(%)</span></th>
+                        <th>MASS<br><span class="unit">(t)</span></th>
+                        <th>CARBON<br>CONTENT<br><span class="unit">(%)</span></th>
+                        <th>MASS<br><span class="unit">(t)</span></th>
+                        <th>CARBON<br>CONTENT<br><span class="unit">(%)</span></th>
+                    </tr>
+                </thead>
+                <tbody id="entryTableBody">
+                    <tr class="data-entry-row">
+                        <td style="text-align: center;">
+                            <span class="sno-display" id="currentSno">1</span>
+                        </td>
+                        <td>
+                            <input type="date" class="form-control date-cell" id="entryDate" />
+                        </td>
+                        <td>
+                            <select class="form-control unit-select" id="entryUnit">
+                                <option value="">-- Unit --</option>
+                            </select>
+                        </td>
+                        <!-- Pitch -->
+                        <td>
+                            <input type="number" class="form-control pitch-consumption" id="pitchConsumption" step="0.01" min="0" placeholder="0.00" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control pitch-carbon" id="pitchCarbon" step="0.01" min="0" max="100" placeholder="0.00" />
+                        </td>
+                        <!-- Coke -->
+                        <td>
+                            <input type="number" class="form-control coke-consumption" id="cokeConsumption" step="0.01" min="0" placeholder="0.00" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control coke-carbon" id="cokeCarbon" step="0.01" min="0" max="100" placeholder="0.00" />
+                        </td>
+                        <!-- Packing Coke -->
+                        <td>
+                            <input type="number" class="form-control packing-consumption" id="packingConsumption" step="0.01" min="0" placeholder="0.00" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control packing-carbon" id="packingCarbon" step="0.01" min="0" max="100" placeholder="0.00" />
+                        </td>
+                        <!-- Carbon Waste -->
+                        <td>
+                            <input type="number" class="form-control carbon-waste" id="carbonWaste" step="0.01" min="0" placeholder="0.00" />
+                        </td>
+                        <!-- Purchased Anodes -->
+                        <td>
+                            <input type="number" class="form-control purchased-mass" id="purchasedMass" step="0.01" min="0" placeholder="0.00" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control purchased-carbon" id="purchasedCarbon" step="0.01" min="0" max="100" placeholder="0.00" />
+                        </td>
+                        <!-- Sold Anodes -->
+                        <td>
+                            <input type="number" class="form-control sold-mass" id="soldMass" step="0.01" min="0" placeholder="0.00" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control sold-carbon" id="soldCarbon" step="0.01" min="0" max="100" placeholder="0.00" />
+                        </td>
+                        <!-- CO2 Emissions -->
+                        <td>
+                            <span class="calculated-value" id="entryCO2">0.00</span>
+                        </td>
+                        <!-- Actions -->
+                        <td style="text-align: center;">
+                            <button class="btn btn-success" id="saveBtn">Save</button>
+                        </td>
+                    </tr>
+                </tbody>
+                <!-- History rows will render directly below the entry row (same table) -->
+                <tbody id="historyRowsBody">
+                    <tr class="no-history-row">
+                        <td colspan="16" style="text-align: center; padding: 1.25rem; color: #64748b;">
+                            <em>No entries yet. Add your first entry above.</em>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- View Entry Modal -->
+    <div class="modal-overlay" id="viewModal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Entry Details</h3>
+                <button class="btn-close-modal" id="closeViewModal">&times;</button>
+            </div>
+            <div class="modal-body" id="viewModalBody">
+                <!-- Details will be populated by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="closeViewModalBtn">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
