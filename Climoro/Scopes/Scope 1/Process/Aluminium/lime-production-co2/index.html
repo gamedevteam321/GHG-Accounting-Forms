@@ -1,0 +1,62 @@
+<div class="lime-prod-container">
+    <div class="header-section">
+        <h1>Lime Production – CO2 Emissions</h1>
+        <p class="description">CO2 = ((Content × Stoichiometric ratio) × Amount) × (1 − (H × H2O)) × CF</p>
+    </div>
+
+    <div class="table-section">
+        <div class="table-container">
+            <table class="lime-table">
+                <thead>
+                    <tr>
+                        <th>S.NO</th>
+                        <th>DATE</th>
+                        <th>UNIT</th>
+                        <th>Lime type</th>
+                        <th>Country type<br><span class="unit">(Dolomitic only)</span></th>
+                        <th>Amount produced<br><span class="unit">(t)</span></th>
+                        <th>CaO/CaO·MgO content<br><span class="unit">(fraction)</span></th>
+                        <th>Stoichiometric ratio<br><span class="unit">(fraction)</span></th>
+                        <th>H</th>
+                        <th>H2O</th>
+                        <th>CF</th>
+                        <th>CO2 EMISSIONS<br><span class="unit">(t CO2)</span></th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody id="entryBody">
+                    <tr class="data-entry-row">
+                        <td><span class="sno-display" id="currentSno">1</span></td>
+                        <td><input type="date" id="entryDate" class="form-control" /></td>
+                        <td><select id="entryUnit" class="form-control"><option value="">-- Unit --</option></select></td>
+                        <td>
+                            <select id="limeType" class="form-control">
+                                <option value="">-- Type --</option>
+                                <option value="High-calcium">High-calcium</option>
+                                <option value="Dolomitic">Dolomitic</option>
+                                <option value="Hydraulic">Hydraulic</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="countryType" class="form-control" disabled>
+                                <option value="Developed">Developed</option>
+                                <option value="Developing">Developing</option>
+                            </select>
+                        </td>
+                        <td><input type="number" id="amount" class="form-control" step="0.001" min="0" placeholder="0.000" /></td>
+                        <td><span id="content" class="calculated-value">-</span></td>
+                        <td><span id="stoich" class="calculated-value">-</span></td>
+                        <td><span id="hVal" class="calculated-value">0.10</span></td>
+                        <td><span id="h2oVal" class="calculated-value">0.28</span></td>
+                        <td><span id="cfVal" class="calculated-value">1.02</span></td>
+                        <td><span id="co2" class="calculated-value">0.00</span></td>
+                        <td><button id="saveBtn" class="btn btn-success">Save</button></td>
+                    </tr>
+                </tbody>
+                <tbody id="historyRowsBody">
+                    <tr class="no-history-row"><td colspan="13" style="text-align:center; padding:1rem; color:#64748b;"><em>No entries yet. Add your first entry above.</em></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
