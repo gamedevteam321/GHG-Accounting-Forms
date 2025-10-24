@@ -1,400 +1,375 @@
-<div class="cement-process-container">
-    <div class="header-section">
-        <h1>Cement Process Data Entry</h1>
-        <p class="description">Comprehensive cement production and consumption tracking</p>
-    </div>
-
-    <!-- Step Navigation -->
-    <div class="step-navigation">
-        <div class="step-indicators">
-            <div class="step-item active" data-step="1">
-                <div class="step-number">1</div>
-                <div class="step-label">Basic Info</div>
-            </div>
-            <div class="step-item" data-step="2">
-                <div class="step-number">2</div>
-                <div class="step-label">Production Data</div>
-            </div>
-            <div class="step-item" data-step="3">
-                <div class="step-number">3</div>
-                <div class="step-label">CO2 Emissions</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Step Content -->
-    <div class="step-content-container">
-        <!-- Step 1: Basic Information -->
-        <div class="step-content active" id="step1">
-            <div class="worksheet-section">
-                <div class="worksheet-header">
-                    <h2>Basic Information</h2>
-                    <p class="worksheet-description">Enter company and date information for the cement process data.</p>
-                </div>
-                
-                <div class="form-section">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="company">Company <span class="required">*</span></label>
-                            <select class="form-control" id="company" name="company" required>
-                                <option value="">Loading companies...</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="company_unit">Company Unit <span class="required">*</span></label>
-                            <select class="form-control" id="company_unit" name="company_unit" required disabled>
-                                <option value="">Select Company first</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="date_of_input">Date of Input <span class="required">*</span></label>
-                            <input type="date" class="form-control" id="date_of_input" name="date_of_input" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="duration_type">Duration Type <span class="required">*</span></label>
-                            <select class="form-control" id="duration_type" name="duration_type" required>
-                                <option value="">Select Duration</option>
-                                <option value="Daily">Daily</option>
-                                <option value="Monthly">Monthly</option>
-                                <option value="Yearly" selected>Yearly</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cement Process Data Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="cement_data_manager.css">
+</head>
+<body>
+    <div class="data-manager-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <h1><i class="fa fa-industry"></i> Cement Process Data Manager</h1>
+            <p>Manage cement production data and CO2 emissions tracking</p>
         </div>
 
-        <!-- Step 2: Production Data -->
-        <div class="step-content" id="step2">
-            <div class="worksheet-section">
-                <div class="worksheet-header">
-                    <h2>Production Data</h2>
-                    <p class="worksheet-description">Enter clinker production, mineral components, and production totals.</p>
-                </div>
-                
-                <!-- Clinker Production -->
-                <div class="subsection">
-                    <h3>Clinker and Cement Production</h3>
-                    <div class="form-section">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="clinker_production">Clinker Production (tonnes)</label>
-                                <input type="number" class="form-control" id="clinker_production" name="clinker_production" 
-                                       step="0.01" placeholder="Actual clinker production of active kilns">
-                                <small class="form-text">Actual clinker production of active kilns</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="clinker_bought">Clinker Bought (tonnes)</label>
-                                <input type="number" class="form-control" id="clinker_bought" name="clinker_bought" 
-                                       step="0.01" placeholder="Amount of clinker purchased">
-                                <small class="form-text">Amount of clinker purchased from other plants or companies</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="clinker_sold">Clinker Sold (tonnes)</label>
-                                <input type="number" class="form-control" id="clinker_sold" name="clinker_sold" 
-                                       step="0.01" placeholder="Amount of clinker sold">
-                                <small class="form-text">Amount of clinker sold to other plants or companies</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="change_in_clinker_stocks">Change in Clinker Stocks (tonnes)</label>
-                                <input type="number" class="form-control" id="change_in_clinker_stocks" name="change_in_clinker_stocks" 
-                                       step="0.01" placeholder="Positive = added, Negative = taken">
-                                <small class="form-text">Amount of clinker added to stocks (positive) or taken from stocks (negative)</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="total_clinker_consumed">Total Clinker Consumed (tonnes)</label>
-                                <input type="number" class="form-control" id="total_clinker_consumed" name="total_clinker_consumed" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Calculated: Production + Bought - Sold - Stock Change</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Mineral Components -->
-                <div class="subsection">
-                    <h3>Mineral Components (MIC) for Portland and Blended Cements</h3>
-                    <div class="form-section">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="mic_gypsum">MIC Gypsum (tonnes, dry weight)</label>
-                                <input type="number" class="form-control" id="mic_gypsum" name="mic_gypsum" 
-                                       step="0.01" placeholder="Gypsum consumed">
-                                <small class="form-text">Gypsum consumed for Portland and blended cements</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="mic_limestone">MIC Limestone (tonnes, dry weight)</label>
-                                <input type="number" class="form-control" id="mic_limestone" name="mic_limestone" 
-                                       step="0.01" placeholder="Limestone consumed">
-                                <small class="form-text">Limestone consumed for Portland and blended cements</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="mic_slag_portland_blended">MIC Slag (Portland/Blended) (tonnes, dry weight)</label>
-                                <input type="number" class="form-control" id="mic_slag_portland_blended" name="mic_slag_portland_blended" 
-                                       step="0.01" placeholder="Slag consumed">
-                                <small class="form-text">Slag consumed for Portland and blended cements</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="mic_fly_ash_blending">MIC Fly Ash Blending (tonnes, dry weight)</label>
-                                <input type="number" class="form-control" id="mic_fly_ash_blending" name="mic_fly_ash_blending" 
-                                       step="0.01" placeholder="Fly ash consumed">
-                                <small class="form-text">Fly ash consumed for blending in Portland and blended cements</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="mic_pozzolana_blending">MIC Pozzolana Blending (tonnes, dry weight)</label>
-                                <input type="number" class="form-control" id="mic_pozzolana_blending" name="mic_pozzolana_blending" 
-                                       step="0.01" placeholder="Pozzolana consumed">
-                                <small class="form-text">Pozzolana consumed for blending in Portland and blended cements</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="mic_others_cement_mill">MIC Others (Cement Mill) (tonnes, dry weight)</label>
-                                <input type="number" class="form-control" id="mic_others_cement_mill" name="mic_others_cement_mill" 
-                                       step="0.01" placeholder="Other mineral components">
-                                <small class="form-text">Other mineral components (e.g., CKD) added to cement mill</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="total_mic_consumed_portland_blended">Total MIC Consumed (Portland/Blended) (tonnes, dry weight)</label>
-                                <input type="number" class="form-control" id="total_mic_consumed_portland_blended" name="total_mic_consumed_portland_blended" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Total MIC consumed for Portland and blended cements</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Cement Substitutes -->
-                <div class="subsection">
-                    <h3>Mineral Components (MIC) as Cement Substitutes</h3>
-                    <div class="form-section">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="mic_consumed_pure_slag_cement">MIC Consumed (Pure Slag Cement) (tonnes, dry weight)</label>
-                                <input type="number" class="form-control" id="mic_consumed_pure_slag_cement" name="mic_consumed_pure_slag_cement" 
-                                       step="0.01" placeholder="MIC consumed for pure slag cement">
-                                <small class="form-text">MIC consumed for production of pure ground slag cement, containing no clinker</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="mic_fly_ash_pozzolana_direct_sales">MIC Fly Ash/Pozzolana Direct Sales (tonnes, dry weight)</label>
-                                <input type="number" class="form-control" id="mic_fly_ash_pozzolana_direct_sales" name="mic_fly_ash_pozzolana_direct_sales" 
-                                       step="0.01" placeholder="Direct sales of fly ash and pozzolana">
-                                <small class="form-text">Pure fly ash and pozzolana sold directly to consumers for production of concrete</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="total_pure_mic_products_substitutes">Total Pure MIC Products (Substitutes) (tonnes, dry weight)</label>
-                                <input type="number" class="form-control" id="total_pure_mic_products_substitutes" name="total_pure_mic_products_substitutes" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Total pure MIC products used as cement substitutes</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Production Totals -->
-                <div class="subsection">
-                    <h3>Production Totals</h3>
-                    <div class="form-section">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="total_portland_blended_cements">Total Portland/Blended Cements (tonnes)</label>
-                                <input type="number" class="form-control" id="total_portland_blended_cements" name="total_portland_blended_cements" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Total cement produced (all types together except pure slag cement and direct fly ash sales)</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="total_cements_substitutes_portland_blended_slag">Total Cements/Substitutes (Portland/Blended/Slag) (tonnes)</label>
-                                <input type="number" class="form-control" id="total_cements_substitutes_portland_blended_slag" name="total_cements_substitutes_portland_blended_slag" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Total cements produced, exclusive clinker sold to third parties</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="total_cementitious_products">Total Cementitious Products (tonnes)</label>
-                                <input type="number" class="form-control" id="total_cementitious_products" name="total_cementitious_products" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Total clinker produced plus MIC consumed for blending or production of cement substitutes</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dust Production -->
-                <div class="subsection">
-                    <h3>Dust Production (Dry Weight)</h3>
-                    <div class="form-section">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="bypass_dust_leaving_kiln_system">Bypass Dust Leaving Kiln System (tonnes, dry weight)</label>
-                                <input type="number" class="form-control" id="bypass_dust_leaving_kiln_system" name="bypass_dust_leaving_kiln_system" 
-                                       step="0.01" placeholder="Bypass dust leaving kiln system">
-                                <small class="form-text">Only bypass dust which leaves the kiln system, e.g. for landfilling</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="ckd_leaving_kiln_system">CKD Leaving Kiln System (tonnes, dry weight)</label>
-                                <input type="number" class="form-control" id="ckd_leaving_kiln_system" name="ckd_leaving_kiln_system" 
-                                       step="0.01" placeholder="CKD leaving kiln system">
-                                <small class="form-text">All CKD which leaves the kiln system, e.g. for additions to cement mill, direct sale, landfilling, etc.</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="calcination_rate_ckd">Calcination Rate of CKD (%)</label>
-                                <input type="number" class="form-control" id="calcination_rate_ckd" name="calcination_rate_ckd" 
-                                       step="0.01" value="100" min="0" max="100">
-                                <small class="form-text">Default = 100%. To be replaced with more precise data by Company if available</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Step 3: Direct CO2 Emissions -->
-        <div class="step-content" id="step3">
-            <div class="worksheet-section">
-                <div class="worksheet-header">
-                    <h2>Direct CO2 Emissions from Raw Materials</h2>
-                    <p class="worksheet-description">Enter data for CO2 emissions originating from raw materials used in clinker production.</p>
-                </div>
-                
-                <!-- CO2 from Raw Materials -->
-                <div class="subsection">
-                    <h3>CO2 from Raw Materials</h3>
-                    <div class="form-section">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="calcination_emission_factor_35a">Calcination emission factor, corrected for CaO- and MgO imports (kg CO2/tonne clinker)</label>
-                                <input type="number" class="form-control" id="calcination_emission_factor_35a" name="calcination_emission_factor_35a" 
-                                       step="0.01" value="525" placeholder="Default: 525 kg CO2/t cli">
-                                <small class="form-text">Default = 525 kg CO2 per tonne of clinker. Replace with company-specific data if available</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="organic_carbon_content_35b">Organic carbon content of raw meal (average) (%, dry weight)</label>
-                                <input type="number" class="form-control" id="organic_carbon_content_35b" name="organic_carbon_content_35b" 
-                                       step="0.01" value="0.2" placeholder="Default: 0.2%">
-                                <small class="form-text">Default = 0.2%. Replace with company-specific data if raw materials have substantially higher or lower organic carbon content</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="raw_meal_clinker_ratio_35c">Raw meal : clinker ratio (--, dry weight)</label>
-                                <input type="number" class="form-control" id="raw_meal_clinker_ratio_35c" name="raw_meal_clinker_ratio_35c" 
-                                       step="0.01" value="1.55" placeholder="Default: 1.55">
-                                <small class="form-text">Default = 1.55. Replace with company-specific data (excluding fuel ash content)</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="raw_meal_consumption_35d">Raw meal consumption (tonnes, dry weight)</label>
-                                <input type="number" class="form-control" id="raw_meal_consumption_35d" name="raw_meal_consumption_35d" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Calculated: Raw meal:clinker ratio × Clinker production</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="co2_from_calcination_clinker_36">CO2 from calcination of clinker (tonnes CO2)</label>
-                                <input type="number" class="form-control" id="co2_from_calcination_clinker_36" name="co2_from_calcination_clinker_36" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Calculated: Calcination emission factor × Clinker production / 1000</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="co2_from_calcination_bypass_dust_37">CO2 from calcination of bypass dust leaving the kiln system (tonnes CO2)</label>
-                                <input type="number" class="form-control" id="co2_from_calcination_bypass_dust_37" name="co2_from_calcination_bypass_dust_37" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Calculated: Calcination emission factor × Bypass dust / 1000</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="co2_from_calcination_ckd_38a">CO2 from calcination of CKD leaving the kiln system (tonnes CO2)</label>
-                                <input type="number" class="form-control" id="co2_from_calcination_ckd_38a" name="co2_from_calcination_ckd_38a" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Calculated: CKD amount × Non-linear function of calcination factor and calcination rate</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="co2_from_organic_carbon_38b">CO2 from organic carbon content of raw meal (tonnes CO2)</label>
-                                <input type="number" class="form-control" id="co2_from_organic_carbon_38b" name="co2_from_organic_carbon_38b" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Calculated: Organic carbon content × Raw meal consumption × 3.664</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="total_co2_from_raw_materials_39">Total CO2 from raw materials (tonnes CO2)</label>
-                                <input type="number" class="form-control" id="total_co2_from_raw_materials_39" name="total_co2_from_raw_materials_39" 
-                                       step="0.01" readonly>
-                               
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Navigation Buttons -->
-    <div class="navigation-section">
-        <div class="nav-buttons">
-            <button type="button" class="btn btn-secondary" id="prevBtn">
-                <i class="fa fa-arrow-left"></i> Previous
-            </button>
-            <button type="button" class="btn btn-primary" id="nextBtn">
-                Next <i class="fa fa-arrow-right"></i>
-            </button>
-            <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">
-                <i class="fa fa-save"></i> Submit Data
-            </button>
-        </div>
-    </div>
-
-    <!-- Data History Table -->
-    <div class="history-section">
-        <div class="worksheet-section">
-            <div class="worksheet-header">
-                <h2>Data History</h2>
-                <p class="worksheet-description">Previously saved cement process data entries</p>
-                <button type="button" class="btn btn-primary" id="refreshHistoryBtn">
-                    <i class="fa fa-refresh"></i> Refresh History
+        <!-- Data Table Section -->
+        <div class="table-section">
+            <div class="table-header">
+                <h2><i class="fa fa-table"></i> Cement Process Records</h2>
+                <button type="button" class="btn btn-add" id="addRecordBtn">
+                    <i class="fa fa-plus"></i> Add New Record
                 </button>
             </div>
             
-            <div class="table-section">
-                <div class="table-container">
-                    <table class="history-table" id="historyTable">
-                        <thead>
-                            <tr>
-                                <th>S.No</th>
-                                <th>Date</th>
-                                <th>Company</th>
-                                <th>Company Unit</th>
-                                <th>Duration</th>
-                                <th>Clinker Production</th>
-                                <th>Total CO2 (Direct)</th>
-                                <th>Total CO2 (Indirect)</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historyTableBody">
-                            <!-- History data will be populated here -->
-                        </tbody>
-                    </table>
+            <div class="table-container">
+                <table class="data-table" id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Date</th>
+                            <th>Company</th>
+                            <th>Unit</th>
+                            <th>Duration</th>
+                            <th>Clinker Production</th>
+                            <th>Total CO2 (Direct)</th>
+                            <th>Total CO2 (Indirect)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTableBody">
+                        <!-- Data will be populated here -->
+                    </tbody>
+                </table>
+                
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <i class="fa fa-inbox"></i>
+                    <h3>No Records Found</h3>
+                    <p>Click "Add New Record" to create your first cement process entry.</p>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- Modal for Add/Edit Form -->
+    <div class="modal fade" id="cementFormModal" tabindex="-1" aria-labelledby="cementFormModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cementFormModalLabel">
+                        <i class="fa fa-plus"></i> Add New Cement Process Record
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <div class="modal-body">
+                    <!-- Step Indicator -->
+                    <div class="step-indicator">
+                        <div class="step-item active" data-step="1">
+                            <div class="step-number">1</div>
+                            <div class="step-label">Basic Info</div>
+                        </div>
+                        <div class="step-item" data-step="2">
+                            <div class="step-number">2</div>
+                            <div class="step-label">Production Data</div>
+                        </div>
+                        <div class="step-item" data-step="3">
+                            <div class="step-number">3</div>
+                            <div class="step-label">CO2 Emissions</div>
+                        </div>
+                    </div>
+
+                    <!-- Form Content -->
+                    <form id="cementProcessForm">
+                        <!-- Step 1: Basic Information -->
+                        <div class="step-content active" id="step1">
+                            <div class="subsection">
+                                <h3>Basic Information</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="company">Company <span class="required">*</span></label>
+                                        <select class="form-control" id="company" name="company" required>
+                                            <option value="">Loading companies...</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="company_unit">Company Unit <span class="required">*</span></label>
+                                        <select class="form-control" id="company_unit" name="company_unit" required disabled>
+                                            <option value="">Select Company first</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="date_of_input">Date of Input <span class="required">*</span></label>
+                                        <input type="date" class="form-control" id="date_of_input" name="date_of_input" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="duration_type">Duration Type <span class="required">*</span></label>
+                                        <select class="form-control" id="duration_type" name="duration_type" required>
+                                            <option value="">Select Duration</option>
+                                            <option value="Daily">Daily</option>
+                                            <option value="Monthly">Monthly</option>
+                                            <option value="Yearly">Yearly</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Production Data -->
+                        <div class="step-content" id="step2">
+                            <div class="subsection">
+                                <h3>Clinker and Cement Production</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="clinker_production">Clinker Production (tonnes)</label>
+                                        <input type="number" class="form-control" id="clinker_production" name="clinker_production" 
+                                               step="0.01" placeholder="Actual clinker production of active kilns">
+                                        <small class="form-text">Actual clinker production of active kilns</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="clinker_bought">Clinker Bought (tonnes)</label>
+                                        <input type="number" class="form-control" id="clinker_bought" name="clinker_bought" 
+                                               step="0.01" placeholder="Amount of clinker purchased">
+                                        <small class="form-text">Amount of clinker purchased from other plants or companies</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="clinker_sold">Clinker Sold (tonnes)</label>
+                                        <input type="number" class="form-control" id="clinker_sold" name="clinker_sold" 
+                                               step="0.01" placeholder="Amount of clinker sold">
+                                        <small class="form-text">Amount of clinker sold to other plants or companies</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="change_in_clinker_stocks">Change in Clinker Stocks (tonnes)</label>
+                                        <input type="number" class="form-control" id="change_in_clinker_stocks" name="change_in_clinker_stocks" 
+                                               step="0.01" placeholder="Positive = added, Negative = taken">
+                                        <small class="form-text">Amount of clinker added to stocks (positive) or taken from stocks (negative)</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="total_clinker_consumed">Total Clinker Consumed (tonnes)</label>
+                                        <input type="number" class="form-control" id="total_clinker_consumed" name="total_clinker_consumed" 
+                                               step="0.01" readonly>
+                                        <small class="form-text">Calculated: Production + Bought - Sold - Stock Change</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mineral Components -->
+                            <div class="subsection">
+                                <h3>Mineral Components (MIC) for Portland and Blended Cements</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="mic_gypsum">MIC Gypsum (tonnes, dry weight)</label>
+                                        <input type="number" class="form-control" id="mic_gypsum" name="mic_gypsum" 
+                                               step="0.01" placeholder="Gypsum consumed">
+                                        <small class="form-text">Gypsum consumed for Portland and blended cements</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mic_limestone">MIC Limestone (tonnes, dry weight)</label>
+                                        <input type="number" class="form-control" id="mic_limestone" name="mic_limestone" 
+                                               step="0.01" placeholder="Limestone consumed">
+                                        <small class="form-text">Limestone consumed for Portland and blended cements</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="mic_slag_portland_blended">MIC Slag (Portland/Blended) (tonnes, dry weight)</label>
+                                        <input type="number" class="form-control" id="mic_slag_portland_blended" name="mic_slag_portland_blended" 
+                                               step="0.01" placeholder="Slag consumed">
+                                        <small class="form-text">Slag consumed for Portland and blended cements</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mic_fly_ash_blending">MIC Fly Ash Blending (tonnes, dry weight)</label>
+                                        <input type="number" class="form-control" id="mic_fly_ash_blending" name="mic_fly_ash_blending" 
+                                               step="0.01" placeholder="Fly ash consumed">
+                                        <small class="form-text">Fly ash consumed for blending in Portland and blended cements</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="mic_pozzolana_blending">MIC Pozzolana Blending (tonnes, dry weight)</label>
+                                        <input type="number" class="form-control" id="mic_pozzolana_blending" name="mic_pozzolana_blending" 
+                                               step="0.01" placeholder="Pozzolana consumed">
+                                        <small class="form-text">Pozzolana consumed for blending in Portland and blended cements</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mic_others_cement_mill">MIC Others (Cement Mill) (tonnes, dry weight)</label>
+                                        <input type="number" class="form-control" id="mic_others_cement_mill" name="mic_others_cement_mill" 
+                                               step="0.01" placeholder="Other mineral components">
+                                        <small class="form-text">Other mineral components (e.g., CKD) added to cement mill</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="total_mic_consumed_portland_blended">Total MIC Consumed (Portland/Blended) (tonnes, dry weight)</label>
+                                        <input type="number" class="form-control" id="total_mic_consumed_portland_blended" name="total_mic_consumed_portland_blended" 
+                                               step="0.01" readonly>
+                                        <small class="form-text">Total MIC consumed for Portland and blended cements</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cement Substitutes -->
+                            <div class="subsection">
+                                <h3>Mineral Components (MIC) as Cement Substitutes</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="mic_consumed_pure_slag_cement">MIC Consumed (Pure Slag Cement) (tonnes, dry weight)</label>
+                                        <input type="number" class="form-control" id="mic_consumed_pure_slag_cement" name="mic_consumed_pure_slag_cement" 
+                                               step="0.01" placeholder="MIC consumed for pure slag cement">
+                                        <small class="form-text">MIC consumed for production of pure ground slag cement, containing no clinker</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mic_fly_ash_pozzolana_direct_sales">MIC Fly Ash/Pozzolana Direct Sales (tonnes, dry weight)</label>
+                                        <input type="number" class="form-control" id="mic_fly_ash_pozzolana_direct_sales" name="mic_fly_ash_pozzolana_direct_sales" 
+                                               step="0.01" placeholder="Direct sales of fly ash and pozzolana">
+                                        <small class="form-text">Pure fly ash and pozzolana sold directly to consumers for production of concrete</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="total_pure_mic_products_substitutes">Total Pure MIC Products (Substitutes) (tonnes, dry weight)</label>
+                                        <input type="number" class="form-control" id="total_pure_mic_products_substitutes" name="total_pure_mic_products_substitutes" 
+                                               step="0.01" readonly>
+                                        <small class="form-text">Total pure MIC products used as cement substitutes</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Production Totals -->
+                            <div class="subsection">
+                                <h3>Production Totals</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="total_portland_blended_cements">Total Portland/Blended Cements (tonnes)</label>
+                                        <input type="number" class="form-control" id="total_portland_blended_cements" name="total_portland_blended_cements" 
+                                               step="0.01" readonly>
+                                        <small class="form-text">Total cement produced (all types together except pure slag cement and direct fly ash sales)</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="total_cements_substitutes_portland_blended_slag">Total Cements/Substitutes (Portland/Blended/Slag) (tonnes)</label>
+                                        <input type="number" class="form-control" id="total_cements_substitutes_portland_blended_slag" name="total_cements_substitutes_portland_blended_slag" 
+                                               step="0.01" readonly>
+                                        <small class="form-text">Total cements produced, exclusive clinker sold to third parties</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="total_cementitious_products">Total Cementitious Products (tonnes)</label>
+                                        <input type="number" class="form-control" id="total_cementitious_products" name="total_cementitious_products" 
+                                               step="0.01" readonly>
+                                        <small class="form-text">Total clinker produced plus MIC consumed for blending or production of cement substitutes</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dust Production -->
+                            <div class="subsection">
+                                <h3>Dust Production (Dry Weight)</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="bypass_dust_leaving_kiln_system">Bypass Dust Leaving Kiln System (tonnes, dry weight)</label>
+                                        <input type="number" class="form-control" id="bypass_dust_leaving_kiln_system" name="bypass_dust_leaving_kiln_system" 
+                                               step="0.01" placeholder="Bypass dust leaving kiln system">
+                                        <small class="form-text">Only bypass dust which leaves the kiln system, e.g. for landfilling</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ckd_leaving_kiln_system">CKD Leaving Kiln System (tonnes, dry weight)</label>
+                                        <input type="number" class="form-control" id="ckd_leaving_kiln_system" name="ckd_leaving_kiln_system" 
+                                               step="0.01" placeholder="CKD leaving kiln system">
+                                        <small class="form-text">All CKD which leaves the kiln system, e.g. for additions to cement mill, direct sale, landfilling, etc.</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="calcination_rate_ckd">Calcination Rate of CKD (%)</label>
+                                        <input type="number" class="form-control" id="calcination_rate_ckd" name="calcination_rate_ckd" 
+                                               step="0.01" value="100" min="0" max="100">
+                                        <small class="form-text">Default = 100%. To be replaced with more precise data by Company if available</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: CO2 Emissions -->
+                        <div class="step-content" id="step3">
+                            <div class="subsection">
+                                <h3>CO2 from Raw Materials</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="calcination_emission_factor_35a">Calcination emission factor, corrected for CaO- and MgO imports (kg CO2/tonne clinker) <span class="required">*</span></label>
+                                        <input type="number" class="form-control" id="calcination_emission_factor_35a" name="calcination_emission_factor_35a" 
+                                               step="0.01" value="525" required>
+                                        <small class="form-text">Default: 525 kg CO2/tonne clinker. Replace with company-specific data.</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="organic_carbon_content_35b">Organic carbon content of raw meal (average) (%, dry weight) <span class="required">*</span></label>
+                                        <input type="number" class="form-control" id="organic_carbon_content_35b" name="organic_carbon_content_35b" 
+                                               step="0.01" value="0.2" required>
+                                        <small class="form-text">Default: 0.2%. Replace with company-specific data.</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="raw_meal_clinker_ratio_35c">Raw meal : clinker ratio (--, dry weight) <span class="required">*</span></label>
+                                        <input type="number" class="form-control" id="raw_meal_clinker_ratio_35c" name="raw_meal_clinker_ratio_35c" 
+                                               step="0.01" value="1.55" required>
+                                        <small class="form-text">Default: 1.55. Reflects dust leaving kiln system; excludes fuel ash.</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="raw_meal_consumption_35d">Raw meal consumption (tonnes, dry weight)</label>
+                                        <input type="number" class="form-control" id="raw_meal_consumption_35d" name="raw_meal_consumption_35d" 
+                                               step="0.01" readonly>
+                                        <small class="form-text">Calculated: 35c * Clinker production</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="co2_from_calcination_clinker_36">CO2 from calcination of clinker (tonnes CO2)</label>
+                                        <input type="number" class="form-control" id="co2_from_calcination_clinker_36" name="co2_from_calcination_clinker_36" 
+                                               step="0.01" readonly>
+                                        <small class="form-text">Calculated: (35a / 1000) * Clinker production</small>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="total_co2_from_raw_materials_39">Total CO2 from raw materials (tonnes CO2)</label>
+                                        <input type="number" class="form-control" id="total_co2_from_raw_materials_39" name="total_co2_from_raw_materials_39" 
+                                               step="0.01" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="prevStepBtn" style="display: none;">
+                        <i class="fa fa-arrow-left"></i> Previous
+                    </button>
+                    <button type="button" class="btn btn-primary" id="nextStepBtn">
+                        Next <i class="fa fa-arrow-right"></i>
+                    </button>
+                    <button type="button" class="btn btn-save" id="saveRecordBtn" style="display: none;">
+                        <i class="fa fa-save"></i> Save Record
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="cement_data_manager.js"></script>
+</body>
+</html>
