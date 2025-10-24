@@ -1,0 +1,40 @@
+<div class="soda-ash-container">
+    <div class="header-section">
+        <h1>Soda Ash CO2 Emissions</h1>
+        <p class="description">CO2 = A × B × C × 44/106. All inputs are user-entered; CO2 auto-calculates.</p>
+    </div>
+
+    <div class="table-section">
+        <div class="table-container">
+            <table class="soda-table">
+                <thead>
+                    <tr>
+                        <th>S.NO</th>
+                        <th>DATE</th>
+                        <th>UNIT</th>
+                        <th>Quantity of Soda Ash (A)<br><span class="unit">(t)</span></th>
+                        <th>Purity of Soda Ash (B)<br><span class="unit">(fraction)</span></th>
+                        <th>Fraction calcination achieved (C)<br><span class="unit">(fraction)</span></th>
+                        <th>CO2 EMISSIONS (D)<br><span class="unit">(t CO2)</span></th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody id="entryBody">
+                    <tr class="data-entry-row">
+                        <td><span class="sno-display" id="currentSno">1</span></td>
+                        <td><input type="date" id="entryDate" class="form-control" /></td>
+                        <td><select id="entryUnit" class="form-control"><option value="">-- Unit --</option></select></td>
+                        <td><input type="number" id="qtyA" class="form-control" step="0.0001" min="0" placeholder="0.0000" /></td>
+                        <td><input type="number" id="purityB" class="form-control" step="0.0001" min="0" max="1" placeholder="0.0000" /></td>
+                        <td><input type="number" id="fractionC" class="form-control" step="0.0001" min="0" max="1" placeholder="0.0000" /></td>
+                        <td><span id="co2D" class="calculated-value">0.0000</span></td>
+                        <td><button id="saveBtn" class="btn btn-success">Save</button></td>
+                    </tr>
+                </tbody>
+                <tbody id="historyRowsBody">
+                    <tr class="no-history-row"><td colspan="8" style="text-align:center; padding:1rem; color:#64748b;"><em>No entries yet. Add your first entry above.</em></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
