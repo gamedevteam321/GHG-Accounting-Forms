@@ -62,7 +62,7 @@
 
 .soderberg-table th {
     padding: 16px 12px;
-    text-align: left;
+    text-align: center;
     font-weight: 600;
     color: #1e293b;
     border-bottom: 2px solid #e2e8f0;
@@ -92,6 +92,7 @@
     padding: 12px;
     border-bottom: 1px solid #f1f5f9;
     vertical-align: middle;
+    text-align: center;
 }
 
 /* Column widths */

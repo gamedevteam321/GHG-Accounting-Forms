@@ -89,29 +89,10 @@
                         </td>
                     </tr>
                 </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- History Section -->
-    <div class="history-section">
-        <h2>Entry History</h2>
-        <div class="table-container">
-            <table class="soderberg-table history-table">
-                <thead>
-                    <tr>
-                        <th>S.NO</th>
-                        <th>DATE</th>
-                        <th>UNIT</th>
-                        <th>TYPE</th>
-                        <th>Al WEIGHT(t)</th>
-                        <th>CO2 EMISSIONS(t CO2)</th>
-                        <th>ACTIONS</th>
-                    </tr>
-                </thead>
-                <tbody id="historyTableBody">
-                    <tr>
-                        <td colspan="7" style="text-align: center; padding: 2rem; color: #64748b;">
+                <!-- Inline history rows render below the entry row (same table) -->
+                <tbody id="historyRowsBody">
+                    <tr class="no-history-row">
+                        <td colspan="16" style="text-align: center; padding: 1.25rem; color: #64748b;">
                             <em>No entries yet. Add your first entry above.</em>
                         </td>
                     </tr>
@@ -119,6 +100,7 @@
             </table>
         </div>
     </div>
+    
 
     <!-- View Entry Modal -->
     <div class="modal-overlay" id="viewModal" style="display: none;">

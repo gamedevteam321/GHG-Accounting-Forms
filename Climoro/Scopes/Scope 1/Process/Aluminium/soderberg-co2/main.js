@@ -484,7 +484,7 @@
         args: {
           doctype: 'Soderberg CO2 Emissions',
           filters: { company: currentCompany },
-          fields: ['name', 'date', 'unit', 'type_line', 'al_weight_t', 'co2_emissions_t'],
+          fields: ['name', 'date', 'unit', 'type_line', 'al_weight_t', 'paste_consumption', 'cyclohexane_kg_per_t', 'binder_content_pct', 'pitch_sulphur_pct', 'pitch_ash_pct', 'pitch_hydrogen_pct', 'coke_sulphur_pct', 'coke_ash_pct', 'carbon_dust', 'co2_emissions_t'],
           order_by: 'date desc, creation desc',
           limit_page_length: 0
         }
@@ -501,16 +501,16 @@
     }
   }
 
-  // Display History
+  // Display History inline under the entry row (same table)
   function displayHistory(entries) {
-    const tbody = $('#historyTableBody');
+    const tbody = $('#historyRowsBody');
     if (!tbody) return;
 
     if (entries.length === 0) {
       tbody.innerHTML = `
-        <tr>
-          <td colspan="7" style="text-align: center; padding: 2rem;">
-            <em style="color: #6c757d;">No entries yet. Add your first entry above.</em>
+        <tr class="no-history-row">
+          <td colspan="16" style="text-align: center; padding: 1.25rem; color: #64748b;">
+            <em>No entries yet. Add your first entry above.</em>
           </td>
         </tr>
       `;
@@ -518,15 +518,23 @@
     }
 
     tbody.innerHTML = entries.map((entry, index) => `
-      <tr>
-        <td style="text-align: center;">${entries.length - index}</td>
+      <tr class="history-inline-row">
+        <td style="text-align:center;">${entries.length - index}</td>
         <td>${formatDate(entry.date)}</td>
         <td>${entry.unit || '-'}</td>
         <td>${entry.type_line || '-'}</td>
-        <td>${entry.al_weight_t?.toFixed(2) || '0.00'}</td>
-        <td>${entry.co2_emissions_t?.toFixed(2) || '0.00'}</td>
-        <td style="text-align: center;">
-          <button class="btn btn-view" onclick="viewEntry_${root_element.id || 'soderberg'}('${entry.name}')">View</button>
+        <td>${num(entry.al_weight_t)}</td>
+        <td>${num(entry.paste_consumption)}</td>
+        <td>${num(entry.cyclohexane_kg_per_t)}</td>
+        <td>${pct(entry.binder_content_pct)}</td>
+        <td>${pct(entry.pitch_sulphur_pct)}</td>
+        <td>${pct(entry.pitch_ash_pct)}</td>
+        <td>${pct(entry.pitch_hydrogen_pct)}</td>
+        <td>${pct(entry.coke_sulphur_pct)}</td>
+        <td>${pct(entry.coke_ash_pct)}</td>
+        <td>${num(entry.carbon_dust)}</td>
+        <td style=" font-weight:600;">${num(entry.co2_emissions_t)}</td>
+        <td style="text-align:center;">
           <button class="btn btn-danger" onclick="deleteEntry_${root_element.id || 'soderberg'}('${entry.name}')">Delete</button>
         </td>
       </tr>
@@ -538,6 +546,18 @@
     if (!dateStr) return '-';
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+
+  // Formatting helpers for inline history
+  function num(value) {
+    const n = parseFloat(value);
+    if (isNaN(n)) return '-';
+    return n.toFixed(2);
+  }
+  function pct(value) {
+    const n = parseFloat(value);
+    if (isNaN(n)) return '-';
+    return n.toFixed(2) + '%';
   }
 
   // View Entry
@@ -730,7 +750,6 @@
 
   // Expose functions to global scope for onclick handlers
   const uniqueId = root_element.id || 'soderberg';
-  window[`viewEntry_${uniqueId}`] = viewEntry;
   window[`deleteEntry_${uniqueId}`] = deleteEntry;
 
   // Initialize immediately - Frappe's custom block ensures DOM is ready
