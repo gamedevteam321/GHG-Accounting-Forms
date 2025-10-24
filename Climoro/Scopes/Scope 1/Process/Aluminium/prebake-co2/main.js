@@ -26,7 +26,7 @@
 				buildPartA();
 				buildPartB();
 				wireTabs();
-				await loadHistory();
+            await loadHistory();
 			}
 			
 			async function loadUserContext(){
@@ -540,44 +540,45 @@
 			buildPartB();
 		}
 
-		async function loadHistory(){
-			try{
-				const r = await frappe.call({ 
-					method:'frappe.client.get_list', 
-					args:{ 
-						doctype:'Aluminium Prebake CO2 Emissions', 
-						fields:['name','date','unit','parta_total_co2_t','partb_total_co2_t','total_co2_t'], 
-						order_by:'creation desc', 
-						limit_page_length:100 
-					}
-				});
-				const tbody = $('#historyBody'); 
-				if(!tbody) return; 
-				tbody.innerHTML='';
-				
-				(r.message||[]).forEach((doc, idx)=>{
-					const tr = document.createElement('tr');
-					tr.innerHTML = `
-						<td>${idx+1}</td>
-						<td>${doc.date||'-'}</td>
-						<td>${doc.unit||'-'}</td>
-						<td>${(doc.parta_total_co2_t||0).toFixed(2)}</td>
-						<td>${(doc.partb_total_co2_t||0).toFixed(2)}</td>
-						<td>${(doc.total_co2_t||0).toFixed(2)}</td>
-						<td>
-							<button class="btn-view" data-id="${doc.name}">View</button> 
-							<button class="btn-delete" data-id="${doc.name}">Delete</button>
-						</td>
-					`;
-					tbody.appendChild(tr);
-				});
-				
-				$$('.btn-delete').forEach(b=> b.addEventListener('click', deleteEntry));
-				$$('.btn-view').forEach(b=> b.addEventListener('click', viewEntry));
-			}catch(e){
-				console.error('Error loading history:', e);
-			}
-		}
+        async function loadHistory(){
+            try{
+                const r = await frappe.call({ 
+                    method:'frappe.client.get_list', 
+                    args:{ 
+                        doctype:'Aluminium Prebake CO2 Emissions', 
+                        fields:['name','date','unit','parta_total_co2_t','partb_total_co2_t','total_co2_t'], 
+                        order_by:'creation desc', 
+                        limit_page_length:100 
+                    }
+                });
+                const body = $('#inlineHistoryBody'); 
+                if(!body) return; 
+                body.innerHTML='';
+                
+                (r.message||[]).forEach((doc, idx)=>{
+                    const tr = document.createElement('tr');
+                    tr.className = 'history-inline-row';
+                    tr.innerHTML = `
+                        <td style="text-align:center;">${idx+1}</td>
+                        <td>${doc.date||'-'}</td>
+                        <td>${doc.unit||'-'}</td>
+                        <td colspan="5" style="text-align:center;"><strong>Part A CO2:</strong> ${(doc.parta_total_co2_t||0).toFixed(2)} t</td>
+                        <td colspan="5" style="text-align:center;"><strong>Part B CO2:</strong> ${(doc.partb_total_co2_t||0).toFixed(2)} t</td>
+                        <td style="text-align:right; font-weight:600;">${(doc.total_co2_t||0).toFixed(2)}</td>
+                        <td style="text-align:center;">
+                            <button class="btn-view" data-id="${doc.name}">View</button>
+                            <button class="btn-delete" data-id="${doc.name}">Delete</button>
+                        </td>
+                    `;
+                    body.appendChild(tr);
+                });
+                
+                $$('.btn-delete').forEach(b=> b.addEventListener('click', deleteEntry));
+                $$('.btn-view').forEach(b=> b.addEventListener('click', viewEntry));
+            }catch(e){
+                console.error('Error loading history:', e);
+            }
+        }
 
 		async function deleteEntry(e){
 			const name = e.target.dataset.id; 

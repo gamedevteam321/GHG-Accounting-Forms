@@ -564,6 +564,7 @@ body {
     position: relative; 
     padding: 14px 10px;
     vertical-align: middle;
+    text-align: center;
 }
 
 .prebake-container .btn-add-material,
