@@ -1,13 +1,14 @@
 (function(){
     const scopeRoot = (typeof root_element !== 'undefined' && root_element) ? root_element : document;
     let currentStep = 1;
-    const totalSteps = 4;
+    const totalSteps = 3;
 
     function init(){
         setupStepNavigation();
         setupAutoCalculations();
         setupFormValidation();
         setupHistoryTable();
+        loadCompanies();
         loadExisting();
         updateStepDisplay();
         loadHistory();
@@ -202,24 +203,6 @@
             }
         });
 
-        // Non-kiln fuel calculations
-        const nonKilnFields = ['non_kiln_equipment_vehicles_fuel', 'non_kiln_room_heating_cooling_fuel',
-                              'non_kiln_drying_raw_materials_fuel', 'non_kiln_onsite_power_generation_fuel'];
-        nonKilnFields.forEach(field => {
-            const element = scopeRoot.querySelector(`#${field}`);
-            if (element) {
-                element.addEventListener('input', calculateNonKilnTotal);
-            }
-        });
-
-        // Power consumption calculations
-        const powerFields = ['power_onsite_consumption', 'power_external_consumption'];
-        powerFields.forEach(field => {
-            const element = scopeRoot.querySelector(`#${field}`);
-            if (element) {
-                element.addEventListener('input', calculatePowerTotal);
-            }
-        });
 
         // Production totals calculations - trigger when clinker fields change
         const clinkerProductionFields = ['clinker_production', 'clinker_bought', 'clinker_sold', 'change_in_clinker_stocks'];
@@ -239,7 +222,7 @@
         if (totalSubstitutes) totalSubstitutes.addEventListener('input', calculateProductionTotals);
 
         // CO2 calculations
-        const co2RawMaterialFields = ['calcination_emission_factor', 'organic_carbon_content', 'raw_meal_clinker_ratio', 'clinker_production'];
+        const co2RawMaterialFields = ['calcination_emission_factor_35a', 'organic_carbon_content_35b', 'raw_meal_clinker_ratio_35c', 'clinker_production', 'bypass_dust_leaving_kiln_system', 'ckd_leaving_kiln_system', 'ckd_returned_to_kiln'];
         co2RawMaterialFields.forEach(field => {
             const element = scopeRoot.querySelector(`#${field}`);
             if (element) {
@@ -247,23 +230,6 @@
             }
         });
 
-        // CO2 from kiln fuels calculations
-        const co2KilnFields = ['co2_from_conventional_fossil_fuels', 'co2_from_alternative_fossil_fuels'];
-        co2KilnFields.forEach(field => {
-            const element = scopeRoot.querySelector(`#${field}`);
-            if (element) {
-                element.addEventListener('input', calculateCO2FromKilnFuels);
-            }
-        });
-
-        // CO2 from non-kiln fuels calculations
-        const co2NonKilnFields = ['co2_from_equipment_vehicles', 'co2_from_room_heating_cooling', 'co2_from_drying_materials', 'co2_from_onsite_power_generation'];
-        co2NonKilnFields.forEach(field => {
-            const element = scopeRoot.querySelector(`#${field}`);
-            if (element) {
-                element.addEventListener('input', calculateCO2FromNonKilnFuels);
-            }
-        });
 
         // Clinker composition calculations
         const clinker1Fields = ['clinker1_produced', 'clinker1_cao_content', 'clinker1_mgo_content'];
@@ -307,6 +273,7 @@
                 element.addEventListener('input', calculateTotalCO2);
             }
         });
+
     }
 
     function setupFormValidation() {
@@ -317,6 +284,104 @@
             field.addEventListener('input', () => clearFieldError(field));
         });
     }
+
+    // Company and Unit Management
+    function loadCompanies() {
+        const companySelect = scopeRoot.querySelector('#company');
+        if (!companySelect) return;
+
+        // Use frappe.call method like in unified_calculator.js
+        frappe.call({
+            method: 'frappe.client.get_list',
+            args: { 
+                doctype: 'Company', 
+                fields: ['name'], 
+                limit: 500 
+            },
+            callback: function(r) {
+                if (r.exc) {
+                    console.error('Error loading companies:', r.exc);
+                    companySelect.innerHTML = '<option value="">Error loading companies</option>';
+                    return;
+                }
+                
+                if (r.message && r.message.length > 0) {
+                    companySelect.innerHTML = '<option value="">Select Company</option>';
+                    r.message.forEach(company => {
+                        const option = document.createElement('option');
+                        option.value = company.name;
+                        option.textContent = company.name;
+                        companySelect.appendChild(option);
+                    });
+
+                    // Add event listener for company change
+                    companySelect.addEventListener('change', loadUnits);
+                    console.log('Companies loaded successfully:', r.message.length);
+                } else {
+                    console.log('No companies found');
+                    companySelect.innerHTML = '<option value="">No companies found</option>';
+                }
+            }
+        });
+    }
+
+    function loadUnits() {
+        const companySelect = scopeRoot.querySelector('#company');
+        const unitSelect = scopeRoot.querySelector('#company_unit');
+        
+        if (!companySelect || !unitSelect) return;
+
+        const selectedCompany = companySelect.value;
+        
+        if (!selectedCompany) {
+            unitSelect.innerHTML = '<option value="">Select Company first</option>';
+            unitSelect.disabled = true;
+            return;
+        }
+
+        // Show loading state
+        unitSelect.innerHTML = '<option value="">Loading units...</option>';
+        unitSelect.disabled = true;
+
+        // Use frappe.call method like in unified_calculator.js
+        frappe.call({
+            method: 'frappe.client.get_list',
+            args: { 
+                doctype: 'Units', 
+                fields: ['name'], 
+                filters: { 
+                    'company': selectedCompany
+                },
+                limit: 500 
+            },
+            callback: function(r) {
+                if (r.exc) {
+                    console.error('Error loading units:', r.exc);
+                    unitSelect.innerHTML = '<option value="">Error loading units</option>';
+                    unitSelect.disabled = false;
+                    return;
+                }
+                
+                if (r.message && r.message.length > 0) {
+                    unitSelect.innerHTML = '<option value="">Select Unit</option>';
+                    r.message.forEach(unit => {
+                        const option = document.createElement('option');
+                        option.value = unit.name;
+                        option.textContent = unit.name;
+                        unitSelect.appendChild(option);
+                    });
+
+                    unitSelect.disabled = false;
+                    console.log('Units loaded successfully:', r.message.length);
+                } else {
+                    console.log('No units found for company:', selectedCompany);
+                    unitSelect.innerHTML = '<option value="">No units found</option>';
+                    unitSelect.disabled = false;
+                }
+            }
+        });
+    }
+
 
     // Auto-calculation methods
     function calculateClinkerTotal() {
@@ -360,33 +425,6 @@
         }
     }
 
-    function calculateNonKilnTotal() {
-        const fields = ['non_kiln_equipment_vehicles_fuel', 'non_kiln_room_heating_cooling_fuel',
-                       'non_kiln_drying_raw_materials_fuel', 'non_kiln_onsite_power_generation_fuel'];
-        
-        let total = 0;
-        fields.forEach(field => {
-            const element = scopeRoot.querySelector(`#${field}`);
-            const value = parseFloat(element?.value) || 0;
-            total += value;
-        });
-
-        const totalField = scopeRoot.querySelector('#non_kiln_total_fuel_consumption');
-        if (totalField) {
-            totalField.value = total.toFixed(2);
-        }
-    }
-
-    function calculatePowerTotal() {
-        const onsite = parseFloat(scopeRoot.querySelector('#power_onsite_consumption')?.value) || 0;
-        const external = parseFloat(scopeRoot.querySelector('#power_external_consumption')?.value) || 0;
-
-        const total = onsite + external;
-        const totalField = scopeRoot.querySelector('#power_total_plant_consumption');
-        if (totalField) {
-            totalField.value = total.toFixed(2);
-        }
-    }
 
     function calculateProductionTotals() {
         // Line 11: Total clinker consumed = Line8 + Line9 - Line10 - Line10a
@@ -403,8 +441,19 @@
         // Line 19: Total pure MIC products used as cement substitutes
         const substitutes = parseFloat(scopeRoot.querySelector('#total_pure_mic_products_substitutes')?.value) || 0; // Line 19
 
+        // Debug logging
+        console.log('Production Totals Calculation:');
+        console.log('Line 8 (Clinker Production):', clinkerProduction);
+        console.log('Line 9 (Clinker Bought):', clinkerBought);
+        console.log('Line 10 (Clinker Sold):', clinkerSold);
+        console.log('Line 10a (Stock Change):', clinkerStockChange);
+        console.log('Line 11 (Total Clinker Consumed):', totalClinkerConsumed);
+        console.log('Line 18 (MIC Consumed):', micConsumed);
+        console.log('Line 19 (Substitutes):', substitutes);
+
         // Line 20: Total Portland + Blended cements = Line11 + Line18
         const portlandBlended = totalClinkerConsumed + micConsumed;
+        console.log('Line 20 (Portland/Blended):', portlandBlended);
         const portlandField = scopeRoot.querySelector('#total_portland_blended_cements');
         if (portlandField) {
             portlandField.value = portlandBlended.toFixed(2);
@@ -412,6 +461,7 @@
 
         // Line 21: Total cements + substitutes = Line11 + Line18 + Line19
         const totalCements = totalClinkerConsumed + micConsumed + substitutes;
+        console.log('Line 21 (Total Cements):', totalCements);
         const totalCementsField = scopeRoot.querySelector('#total_cements_substitutes_portland_blended_slag');
         if (totalCementsField) {
             totalCementsField.value = totalCements.toFixed(2);
@@ -419,6 +469,7 @@
 
         // Line 21a: Total cementitious products = Line8 + Line18 + Line19
         const totalCementitious = clinkerProduction + micConsumed + substitutes;
+        console.log('Line 21a (Cementitious):', totalCementitious);
         const cementitiousField = scopeRoot.querySelector('#total_cementitious_products');
         if (cementitiousField) {
             cementitiousField.value = totalCementitious.toFixed(2);
@@ -594,74 +645,76 @@
 
     // CO2 calculation methods
     function calculateCO2FromRawMaterials() {
-        const calcinationFactor = parseFloat(scopeRoot.querySelector('#calcination_emission_factor')?.value) || 0;
-        const organicCarbon = parseFloat(scopeRoot.querySelector('#organic_carbon_content')?.value) || 0;
-        const rawMealRatio = parseFloat(scopeRoot.querySelector('#raw_meal_clinker_ratio')?.value) || 0;
+        // Line 35a: Calcination emission factor (kg CO2/t clinker)
+        const calcinationFactor = parseFloat(scopeRoot.querySelector('#calcination_emission_factor_35a')?.value) || 0;
+        
+        // Line 35b: Organic carbon content of raw meal (%)
+        const organicCarbon = parseFloat(scopeRoot.querySelector('#organic_carbon_content_35b')?.value) || 0;
+        
+        // Line 35c: Raw meal : clinker ratio
+        const rawMealRatio = parseFloat(scopeRoot.querySelector('#raw_meal_clinker_ratio_35c')?.value) || 0;
+        
+        // Line 8: Clinker production (from Step 2)
         const clinkerProduction = parseFloat(scopeRoot.querySelector('#clinker_production')?.value) || 0;
-
-        // Raw meal consumption
+        
+        // Line 22: Bypass dust leaving kiln system (from Step 2)
+        const bypassDust = parseFloat(scopeRoot.querySelector('#bypass_dust_leaving_kiln_system')?.value) || 0;
+        
+        // Line 23: CKD leaving kiln system (from Step 2)
+        const ckdLeaving = parseFloat(scopeRoot.querySelector('#ckd_leaving_kiln_system')?.value) || 0;
+        
+        // Line 24: CKD returned to kiln (from Step 2)
+        const ckdReturned = parseFloat(scopeRoot.querySelector('#ckd_returned_to_kiln')?.value) || 0;
+        
+        // Line 35d: Raw meal consumption = 35c * Line 8
         const rawMealConsumption = rawMealRatio * clinkerProduction;
-        const rawMealField = scopeRoot.querySelector('#raw_meal_consumption');
+        const rawMealField = scopeRoot.querySelector('#raw_meal_consumption_35d');
         if (rawMealField) {
             rawMealField.value = rawMealConsumption.toFixed(2);
         }
-
-        // CO2 from calcination of clinker
-        const co2FromCalcination = (calcinationFactor * clinkerProduction) / 1000;
-        const calcinationField = scopeRoot.querySelector('#co2_from_calcination_clinker');
-        if (calcinationField) {
-            calcinationField.value = co2FromCalcination.toFixed(2);
+        
+        // Line 36: CO2 from calcination of clinker = (35a / 1000) * Line 8
+        const co2FromClinker = (calcinationFactor / 1000) * clinkerProduction;
+        const clinkerCO2Field = scopeRoot.querySelector('#co2_from_calcination_clinker_36');
+        if (clinkerCO2Field) {
+            clinkerCO2Field.value = co2FromClinker.toFixed(2);
         }
-
-        // CO2 from organic carbon content
+        
+        // Line 37: CO2 from calcination of bypass dust = (35a / 1000) * Line 22
+        const co2FromBypassDust = (calcinationFactor / 1000) * bypassDust;
+        const bypassDustCO2Field = scopeRoot.querySelector('#co2_from_calcination_bypass_dust_37');
+        if (bypassDustCO2Field) {
+            bypassDustCO2Field.value = co2FromBypassDust.toFixed(2);
+        }
+        
+        // Line 38a: CO2 from calcination of CKD = Line 23 * non-linear function
+        // For now, using a simplified calculation: CKD * calcination factor / 1000
+        const co2FromCKD = (ckdLeaving * calcinationFactor) / 1000;
+        const ckdCO2Field = scopeRoot.querySelector('#co2_from_calcination_ckd_38a');
+        if (ckdCO2Field) {
+            ckdCO2Field.value = co2FromCKD.toFixed(2);
+        }
+        
+        // Line 38b: CO2 from organic carbon = 35b * 35d * 3.664
         const co2FromOrganicCarbon = organicCarbon * rawMealConsumption * 3.664;
-        const organicField = scopeRoot.querySelector('#co2_from_organic_carbon');
-        if (organicField) {
-            organicField.value = co2FromOrganicCarbon.toFixed(2);
+        const organicCarbonCO2Field = scopeRoot.querySelector('#co2_from_organic_carbon_38b');
+        if (organicCarbonCO2Field) {
+            organicCarbonCO2Field.value = co2FromOrganicCarbon.toFixed(2);
         }
-
-        // Total CO2 from raw materials
-        const totalCO2RawMaterials = co2FromCalcination + co2FromOrganicCarbon;
-        const totalRawField = scopeRoot.querySelector('#total_co2_from_raw_materials');
+        
+        // Line 39: Total CO2 from raw materials = SUM(36, 37, 38a, 38b)
+        const totalCO2RawMaterials = co2FromClinker + co2FromBypassDust + co2FromCKD + co2FromOrganicCarbon;
+        const totalRawField = scopeRoot.querySelector('#total_co2_from_raw_materials_39');
         if (totalRawField) {
             totalRawField.value = totalCO2RawMaterials.toFixed(2);
         }
+        
+        // Trigger total CO2 calculation
+        calculateTotalCO2();
     }
 
-    function calculateCO2FromKilnFuels() {
-        const conventional = parseFloat(scopeRoot.querySelector('#co2_from_conventional_fossil_fuels')?.value) || 0;
-        const alternative = parseFloat(scopeRoot.querySelector('#co2_from_alternative_fossil_fuels')?.value) || 0;
-
-        const total = conventional + alternative;
-        const totalField = scopeRoot.querySelector('#total_co2_from_fossil_kiln_fuels');
-        if (totalField) {
-            totalField.value = total.toFixed(2);
-        }
-    }
-
-    function calculateCO2FromNonKilnFuels() {
-        const equipment = parseFloat(scopeRoot.querySelector('#co2_from_equipment_vehicles')?.value) || 0;
-        const heating = parseFloat(scopeRoot.querySelector('#co2_from_room_heating_cooling')?.value) || 0;
-        const drying = parseFloat(scopeRoot.querySelector('#co2_from_drying_materials')?.value) || 0;
-        const powerGen = parseFloat(scopeRoot.querySelector('#co2_from_onsite_power_generation')?.value) || 0;
-
-        const total = equipment + heating + drying + powerGen;
-        const totalField = scopeRoot.querySelector('#total_co2_from_non_kiln_fuels');
-        if (totalField) {
-            totalField.value = total.toFixed(2);
-        }
-    }
 
     function calculateTotalCO2() {
-        // CO2 from external power
-        const externalPower = parseFloat(scopeRoot.querySelector('#power_external_consumption')?.value) || 0;
-        const externalPowerCO2 = parseFloat(scopeRoot.querySelector('#power_external_co2_per_unit')?.value) || 0;
-        const co2FromExternalPower = (externalPower * externalPowerCO2) / 1000;
-        const externalPowerField = scopeRoot.querySelector('#co2_from_external_power');
-        if (externalPowerField) {
-            externalPowerField.value = co2FromExternalPower.toFixed(2);
-        }
-
         // CO2 from net clinker imports/exports
         const clinkerBought = parseFloat(scopeRoot.querySelector('#clinker_bought')?.value) || 0;
         const clinkerSold = parseFloat(scopeRoot.querySelector('#clinker_sold')?.value) || 0;
@@ -674,22 +727,21 @@
         }
 
         // Total indirect CO2
-        const totalIndirectCO2 = co2FromExternalPower + co2FromNetClinker;
+        const totalIndirectCO2 = co2FromNetClinker;
         const indirectField = scopeRoot.querySelector('#total_indirect_co2');
         if (indirectField) {
             indirectField.value = totalIndirectCO2.toFixed(2);
         }
 
-        // Total direct CO2
-        const totalRawMaterials = parseFloat(scopeRoot.querySelector('#total_co2_from_raw_materials')?.value) || 0;
-        const totalKilnFuels = parseFloat(scopeRoot.querySelector('#total_co2_from_fossil_kiln_fuels')?.value) || 0;
-        const totalNonKilnFuels = parseFloat(scopeRoot.querySelector('#total_co2_from_non_kiln_fuels')?.value) || 0;
-        const totalDirectCO2 = totalRawMaterials + totalKilnFuels + totalNonKilnFuels;
-        const directField = scopeRoot.querySelector('#total_direct_co2');
+        // Total direct CO2 (only raw materials now)
+        const totalRawMaterials = parseFloat(scopeRoot.querySelector('#total_co2_from_raw_materials_39')?.value) || 0;
+        const totalDirectCO2 = totalRawMaterials;
+        const directField = scopeRoot.querySelector('#total_direct_co2_48');
         if (directField) {
             directField.value = totalDirectCO2.toFixed(2);
         }
     }
+
 
     function loadExisting() {
         // Auto-save functionality
@@ -719,8 +771,6 @@
                 calculatePowerTotal();
                 calculateProductionTotals();
                 calculateCO2FromRawMaterials();
-                calculateCO2FromKilnFuels();
-                calculateCO2FromNonKilnFuels();
                 calculateTotalCO2();
             } catch (error) {
                 console.error('Error loading saved data:', error);
@@ -1049,13 +1099,12 @@
         calculatePowerTotal();
         calculateProductionTotals();
         calculateCO2FromRawMaterials();
-        calculateCO2FromKilnFuels();
-        calculateCO2FromNonKilnFuels();
         calculateTotalCO2();
         calculateClinker1Amounts();
         calculateClinker2Amounts();
         calculateRawMaterial1Amounts();
         calculateRawMaterial2Amounts();
+        calculateTotalKilnHeatConsumption();
     }
 
     function showEntryDetails(entry) {

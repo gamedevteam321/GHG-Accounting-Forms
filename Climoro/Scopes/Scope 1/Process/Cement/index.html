@@ -17,10 +17,6 @@
             </div>
             <div class="step-item" data-step="3">
                 <div class="step-number">3</div>
-                <div class="step-label">Fuel & Power</div>
-            </div>
-            <div class="step-item" data-step="4">
-                <div class="step-number">4</div>
                 <div class="step-label">CO2 Emissions</div>
             </div>
         </div>
@@ -41,15 +37,14 @@
                         <div class="form-group">
                             <label for="company">Company <span class="required">*</span></label>
                             <select class="form-control" id="company" name="company" required>
-                                <option value="">Select Company</option>
-                                <option value="company1">Company 1</option>
-                                <option value="company2">Company 2</option>
+                                <option value="">Loading companies...</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="company_unit">Company Unit</label>
-                            <input type="text" class="form-control" id="company_unit" name="company_unit" 
-                                   placeholder="Specific unit or plant within the company">
+                            <label for="company_unit">Company Unit <span class="required">*</span></label>
+                            <select class="form-control" id="company_unit" name="company_unit" required disabled>
+                                <option value="">Select Company first</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-row">
@@ -85,13 +80,13 @@
                     <div class="form-section">
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="clinker_production">Clinker Production (t/yr)</label>
+                                <label for="clinker_production">Clinker Production (tonnes)</label>
                                 <input type="number" class="form-control" id="clinker_production" name="clinker_production" 
                                        step="0.01" placeholder="Actual clinker production of active kilns">
                                 <small class="form-text">Actual clinker production of active kilns</small>
                             </div>
                             <div class="form-group">
-                                <label for="clinker_bought">Clinker Bought (t/yr)</label>
+                                <label for="clinker_bought">Clinker Bought (tonnes)</label>
                                 <input type="number" class="form-control" id="clinker_bought" name="clinker_bought" 
                                        step="0.01" placeholder="Amount of clinker purchased">
                                 <small class="form-text">Amount of clinker purchased from other plants or companies</small>
@@ -99,13 +94,13 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="clinker_sold">Clinker Sold (t/yr)</label>
+                                <label for="clinker_sold">Clinker Sold (tonnes)</label>
                                 <input type="number" class="form-control" id="clinker_sold" name="clinker_sold" 
                                        step="0.01" placeholder="Amount of clinker sold">
                                 <small class="form-text">Amount of clinker sold to other plants or companies</small>
                             </div>
                             <div class="form-group">
-                                <label for="change_in_clinker_stocks">Change in Clinker Stocks (t/yr)</label>
+                                <label for="change_in_clinker_stocks">Change in Clinker Stocks (tonnes)</label>
                                 <input type="number" class="form-control" id="change_in_clinker_stocks" name="change_in_clinker_stocks" 
                                        step="0.01" placeholder="Positive = added, Negative = taken">
                                 <small class="form-text">Amount of clinker added to stocks (positive) or taken from stocks (negative)</small>
@@ -113,7 +108,7 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="total_clinker_consumed">Total Clinker Consumed (t/yr)</label>
+                                <label for="total_clinker_consumed">Total Clinker Consumed (tonnes)</label>
                                 <input type="number" class="form-control" id="total_clinker_consumed" name="total_clinker_consumed" 
                                        step="0.01" readonly>
                                 <small class="form-text">Calculated: Production + Bought - Sold - Stock Change</small>
@@ -128,13 +123,13 @@
                     <div class="form-section">
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="mic_gypsum">MIC Gypsum (t/yr, dry weight)</label>
+                                <label for="mic_gypsum">MIC Gypsum (tonnes, dry weight)</label>
                                 <input type="number" class="form-control" id="mic_gypsum" name="mic_gypsum" 
                                        step="0.01" placeholder="Gypsum consumed">
                                 <small class="form-text">Gypsum consumed for Portland and blended cements</small>
                             </div>
                             <div class="form-group">
-                                <label for="mic_limestone">MIC Limestone (t/yr, dry weight)</label>
+                                <label for="mic_limestone">MIC Limestone (tonnes, dry weight)</label>
                                 <input type="number" class="form-control" id="mic_limestone" name="mic_limestone" 
                                        step="0.01" placeholder="Limestone consumed">
                                 <small class="form-text">Limestone consumed for Portland and blended cements</small>
@@ -142,13 +137,13 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="mic_slag_portland_blended">MIC Slag (Portland/Blended) (t/yr, dry weight)</label>
+                                <label for="mic_slag_portland_blended">MIC Slag (Portland/Blended) (tonnes, dry weight)</label>
                                 <input type="number" class="form-control" id="mic_slag_portland_blended" name="mic_slag_portland_blended" 
                                        step="0.01" placeholder="Slag consumed">
                                 <small class="form-text">Slag consumed for Portland and blended cements</small>
                             </div>
                             <div class="form-group">
-                                <label for="mic_fly_ash_blending">MIC Fly Ash Blending (t/yr, dry weight)</label>
+                                <label for="mic_fly_ash_blending">MIC Fly Ash Blending (tonnes, dry weight)</label>
                                 <input type="number" class="form-control" id="mic_fly_ash_blending" name="mic_fly_ash_blending" 
                                        step="0.01" placeholder="Fly ash consumed">
                                 <small class="form-text">Fly ash consumed for blending in Portland and blended cements</small>
@@ -156,13 +151,13 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="mic_pozzolana_blending">MIC Pozzolana Blending (t/yr, dry weight)</label>
+                                <label for="mic_pozzolana_blending">MIC Pozzolana Blending (tonnes, dry weight)</label>
                                 <input type="number" class="form-control" id="mic_pozzolana_blending" name="mic_pozzolana_blending" 
                                        step="0.01" placeholder="Pozzolana consumed">
                                 <small class="form-text">Pozzolana consumed for blending in Portland and blended cements</small>
                             </div>
                             <div class="form-group">
-                                <label for="mic_others_cement_mill">MIC Others (Cement Mill) (t/yr, dry weight)</label>
+                                <label for="mic_others_cement_mill">MIC Others (Cement Mill) (tonnes, dry weight)</label>
                                 <input type="number" class="form-control" id="mic_others_cement_mill" name="mic_others_cement_mill" 
                                        step="0.01" placeholder="Other mineral components">
                                 <small class="form-text">Other mineral components (e.g., CKD) added to cement mill</small>
@@ -170,7 +165,7 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="total_mic_consumed_portland_blended">Total MIC Consumed (Portland/Blended) (t/yr, dry weight)</label>
+                                <label for="total_mic_consumed_portland_blended">Total MIC Consumed (Portland/Blended) (tonnes, dry weight)</label>
                                 <input type="number" class="form-control" id="total_mic_consumed_portland_blended" name="total_mic_consumed_portland_blended" 
                                        step="0.01" readonly>
                                 <small class="form-text">Total MIC consumed for Portland and blended cements</small>
@@ -185,13 +180,13 @@
                     <div class="form-section">
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="mic_consumed_pure_slag_cement">MIC Consumed (Pure Slag Cement) (t/yr, dry weight)</label>
+                                <label for="mic_consumed_pure_slag_cement">MIC Consumed (Pure Slag Cement) (tonnes, dry weight)</label>
                                 <input type="number" class="form-control" id="mic_consumed_pure_slag_cement" name="mic_consumed_pure_slag_cement" 
                                        step="0.01" placeholder="MIC consumed for pure slag cement">
                                 <small class="form-text">MIC consumed for production of pure ground slag cement, containing no clinker</small>
                             </div>
                             <div class="form-group">
-                                <label for="mic_fly_ash_pozzolana_direct_sales">MIC Fly Ash/Pozzolana Direct Sales (t/yr, dry weight)</label>
+                                <label for="mic_fly_ash_pozzolana_direct_sales">MIC Fly Ash/Pozzolana Direct Sales (tonnes, dry weight)</label>
                                 <input type="number" class="form-control" id="mic_fly_ash_pozzolana_direct_sales" name="mic_fly_ash_pozzolana_direct_sales" 
                                        step="0.01" placeholder="Direct sales of fly ash and pozzolana">
                                 <small class="form-text">Pure fly ash and pozzolana sold directly to consumers for production of concrete</small>
@@ -199,7 +194,7 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="total_pure_mic_products_substitutes">Total Pure MIC Products (Substitutes) (t/yr, dry weight)</label>
+                                <label for="total_pure_mic_products_substitutes">Total Pure MIC Products (Substitutes) (tonnes, dry weight)</label>
                                 <input type="number" class="form-control" id="total_pure_mic_products_substitutes" name="total_pure_mic_products_substitutes" 
                                        step="0.01" readonly>
                                 <small class="form-text">Total pure MIC products used as cement substitutes</small>
@@ -214,13 +209,13 @@
                     <div class="form-section">
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="total_portland_blended_cements">Total Portland/Blended Cements (t/yr)</label>
+                                <label for="total_portland_blended_cements">Total Portland/Blended Cements (tonnes)</label>
                                 <input type="number" class="form-control" id="total_portland_blended_cements" name="total_portland_blended_cements" 
                                        step="0.01" readonly>
                                 <small class="form-text">Total cement produced (all types together except pure slag cement and direct fly ash sales)</small>
                             </div>
                             <div class="form-group">
-                                <label for="total_cements_substitutes_portland_blended_slag">Total Cements/Substitutes (Portland/Blended/Slag) (t/yr)</label>
+                                <label for="total_cements_substitutes_portland_blended_slag">Total Cements/Substitutes (Portland/Blended/Slag) (tonnes)</label>
                                 <input type="number" class="form-control" id="total_cements_substitutes_portland_blended_slag" name="total_cements_substitutes_portland_blended_slag" 
                                        step="0.01" readonly>
                                 <small class="form-text">Total cements produced, exclusive clinker sold to third parties</small>
@@ -228,7 +223,7 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="total_cementitious_products">Total Cementitious Products (t/yr)</label>
+                                <label for="total_cementitious_products">Total Cementitious Products (tonnes)</label>
                                 <input type="number" class="form-control" id="total_cementitious_products" name="total_cementitious_products" 
                                        step="0.01" readonly>
                                 <small class="form-text">Total clinker produced plus MIC consumed for blending or production of cement substitutes</small>
@@ -243,13 +238,13 @@
                     <div class="form-section">
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="bypass_dust_leaving_kiln_system">Bypass Dust Leaving Kiln System (t/yr, dry weight)</label>
+                                <label for="bypass_dust_leaving_kiln_system">Bypass Dust Leaving Kiln System (tonnes, dry weight)</label>
                                 <input type="number" class="form-control" id="bypass_dust_leaving_kiln_system" name="bypass_dust_leaving_kiln_system" 
                                        step="0.01" placeholder="Bypass dust leaving kiln system">
                                 <small class="form-text">Only bypass dust which leaves the kiln system, e.g. for landfilling</small>
                             </div>
                             <div class="form-group">
-                                <label for="ckd_leaving_kiln_system">CKD Leaving Kiln System (t/yr, dry weight)</label>
+                                <label for="ckd_leaving_kiln_system">CKD Leaving Kiln System (tonnes, dry weight)</label>
                                 <input type="number" class="form-control" id="ckd_leaving_kiln_system" name="ckd_leaving_kiln_system" 
                                        step="0.01" placeholder="CKD leaving kiln system">
                                 <small class="form-text">All CKD which leaves the kiln system, e.g. for additions to cement mill, direct sale, landfilling, etc.</small>
@@ -268,587 +263,86 @@
             </div>
         </div>
 
-        <!-- Step 3: Fuel & Power -->
+
+        <!-- Step 3: Direct CO2 Emissions -->
         <div class="step-content" id="step3">
             <div class="worksheet-section">
                 <div class="worksheet-header">
-                    <h2>Fuel & Power Consumption</h2>
-                    <p class="worksheet-description">Enter fuel consumption and power usage data.</p>
+                    <h2>Direct CO2 Emissions from Raw Materials</h2>
+                    <p class="worksheet-description">Enter data for CO2 emissions originating from raw materials used in clinker production.</p>
                 </div>
                 
-                <!-- Kiln Fuel Consumption -->
-                <div class="subsection">
-                    <h3>Kiln Fuel Consumption (Aggregate)</h3>
-                    <div class="form-section">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="kiln_total_heat_consumption">Total Heat Consumption of Kilns (TJ/yr)</label>
-                                <input type="number" class="form-control" id="kiln_total_heat_consumption" name="kiln_total_heat_consumption" 
-                                       step="0.01" placeholder="Sum of conventional, alternative, and biomass fuels">
-                                <small class="form-text">Sum of conventional fossil fuels, alternative fossil fuels, and biomass fuels</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="kiln_conventional_fossil_fuels">Conventional Fossil Fuels (TJ/yr)</label>
-                                <input type="number" class="form-control" id="kiln_conventional_fossil_fuels" name="kiln_conventional_fossil_fuels" 
-                                       step="0.01" placeholder="Conventional fossil fuels">
-                                <small class="form-text">Calculated based on consumption of individual fuels and their lower heating values</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="kiln_alternative_fossil_fuels">Alternative Fossil Fuels (TJ/yr)</label>
-                                <input type="number" class="form-control" id="kiln_alternative_fossil_fuels" name="kiln_alternative_fossil_fuels" 
-                                       step="0.01" placeholder="Alternative fossil fuels">
-                                <small class="form-text">Calculated based on consumption of individual fuels and their lower heating values</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="kiln_biomass_fuels">Biomass Fuels (TJ/yr)</label>
-                                <input type="number" class="form-control" id="kiln_biomass_fuels" name="kiln_biomass_fuels" 
-                                       step="0.01" placeholder="Biomass fuels">
-                                <small class="form-text">Calculated based on consumption of individual fuels and their lower heating values</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Non-Kiln Fuel Consumption -->
-                <div class="subsection">
-                    <h3>Non-Kiln Fuel Consumption</h3>
-                    <div class="form-section">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="non_kiln_equipment_vehicles_fuel">Equipment and On-site Vehicles (TJ/yr)</label>
-                                <input type="number" class="form-control" id="non_kiln_equipment_vehicles_fuel" name="non_kiln_equipment_vehicles_fuel" 
-                                       step="0.01" placeholder="Fuel for equipment and vehicles">
-                                <small class="form-text">Fuel used for quarry equipment and vehicles for internal transport</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="non_kiln_room_heating_cooling_fuel">Room Heating/Cooling (TJ/yr)</label>
-                                <input type="number" class="form-control" id="non_kiln_room_heating_cooling_fuel" name="non_kiln_room_heating_cooling_fuel" 
-                                       step="0.01" placeholder="Fuel for heating/cooling">
-                                <small class="form-text">Fuel used for office heating</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="non_kiln_drying_raw_materials_fuel">Drying of Raw Materials and Mineral Components (TJ/yr)</label>
-                                <input type="number" class="form-control" id="non_kiln_drying_raw_materials_fuel" name="non_kiln_drying_raw_materials_fuel" 
-                                       step="0.01" placeholder="Fuel for drying">
-                                <small class="form-text">Fuel used for drying of raw materials and mineral components</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="non_kiln_onsite_power_generation_fuel">On-site Power Generation (TJ/yr)</label>
-                                <input type="number" class="form-control" id="non_kiln_onsite_power_generation_fuel" name="non_kiln_onsite_power_generation_fuel" 
-                                       step="0.01" placeholder="Fuel for power generation">
-                                <small class="form-text">Fuel used for power generation on site (autoproduction)</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="non_kiln_total_fuel_consumption">Total Non-Kiln Fuel Consumption (TJ/yr)</label>
-                                <input type="number" class="form-control" id="non_kiln_total_fuel_consumption" name="non_kiln_total_fuel_consumption" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Sum of all non-kiln fuel consumption</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Power Consumption -->
-                <div class="subsection">
-                    <h3>Power Consumption</h3>
-                    <div class="form-section">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="power_onsite_consumption">Consumption of Power Produced On-site (MWh/yr)</label>
-                                <input type="number" class="form-control" id="power_onsite_consumption" name="power_onsite_consumption" 
-                                       step="0.01" placeholder="On-site power consumption">
-                                <small class="form-text">Consumption of power produced on site (= from autoproduction)</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="power_onsite_co2_per_unit">CO2 per Power Unit Produced On-site (kg CO2/MWh)</label>
-                                <input type="number" class="form-control" id="power_onsite_co2_per_unit" name="power_onsite_co2_per_unit" 
-                                       step="0.01" placeholder="CO2 per unit on-site">
-                                <small class="form-text">Calculated based on CO2 from on-site power generation and amount of power produced on-site</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="power_external_consumption">Consumption of Power Produced Externally (MWh/yr)</label>
-                                <input type="number" class="form-control" id="power_external_consumption" name="power_external_consumption" 
-                                       step="0.01" placeholder="External power consumption">
-                                <small class="form-text">Consumption of grid power</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="power_external_co2_per_unit">CO2 per Power Unit Produced Externally (kg CO2/MWh)</label>
-                                <input type="number" class="form-control" id="power_external_co2_per_unit" name="power_external_co2_per_unit" 
-                                       step="0.01" placeholder="CO2 per unit external">
-                                <small class="form-text">Specific CO2 emission per unit grid power, to be obtained from power supplier or national authorities</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="power_total_plant_consumption">Total Plant Power Consumption (MWh/yr)</label>
-                                <input type="number" class="form-control" id="power_total_plant_consumption" name="power_total_plant_consumption" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Sum of on-site and external power consumption</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Step 4: CO2 Emissions -->
-        <div class="step-content" id="step4">
-            <div class="worksheet-section">
-                <div class="worksheet-header">
-                    <h2>CO2 Emissions</h2>
-                    <p class="worksheet-description">Calculate CO2 emissions from raw materials, fuels, and power consumption.</p>
-                </div>
-                
-                <!-- Clinker Production and Composition -->
-                <div class="subsection">
-                    <h3>Clinker Production and Composition</h3>
-                    <div class="form-section">
-                        <!-- Clinker #1 -->
-                        <h4>Clinker #1</h4>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="clinker1_produced">21 Clinker Produced (t/yr)</label>
-                                <input type="number" class="form-control" id="clinker1_produced" name="clinker1_produced" 
-                                       step="0.01" placeholder="Clinker production">
-                            </div>
-                            <div class="form-group">
-                                <label for="clinker1_cao_content">22 CaO Content (incl. free lime) (%)</label>
-                                <input type="number" class="form-control" id="clinker1_cao_content" name="clinker1_cao_content" 
-                                       step="0.01" placeholder="CaO content percentage">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="clinker1_mgo_content">23 MgO Content (%)</label>
-                                <input type="number" class="form-control" id="clinker1_mgo_content" name="clinker1_mgo_content" 
-                                       step="0.01" placeholder="MgO content percentage">
-                            </div>
-                            <div class="form-group">
-                                <label for="clinker1_cao_amount">24 CaO Amount (t/yr)</label>
-                                <input type="number" class="form-control" id="clinker1_cao_amount" name="clinker1_cao_amount" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Calculated: Clinker produced × CaO content / 100</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="clinker1_mgo_amount">25 MgO Amount (t/yr)</label>
-                                <input type="number" class="form-control" id="clinker1_mgo_amount" name="clinker1_mgo_amount" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Calculated: Clinker produced × MgO content / 100</small>
-                            </div>
-                        </div>
-
-                        <!-- Clinker #2 -->
-                        <h4>Clinker #2</h4>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="clinker2_produced">31 Clinker Produced (t/yr)</label>
-                                <input type="number" class="form-control" id="clinker2_produced" name="clinker2_produced" 
-                                       step="0.01" placeholder="Clinker production">
-                            </div>
-                            <div class="form-group">
-                                <label for="clinker2_cao_content">32 CaO Content (incl. free lime) (%)</label>
-                                <input type="number" class="form-control" id="clinker2_cao_content" name="clinker2_cao_content" 
-                                       step="0.01" placeholder="CaO content percentage">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="clinker2_mgo_content">33 MgO Content (%)</label>
-                                <input type="number" class="form-control" id="clinker2_mgo_content" name="clinker2_mgo_content" 
-                                       step="0.01" placeholder="MgO content percentage">
-                            </div>
-                            <div class="form-group">
-                                <label for="clinker2_cao_amount">34 CaO Amount (t/yr)</label>
-                                <input type="number" class="form-control" id="clinker2_cao_amount" name="clinker2_cao_amount" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Calculated: Clinker produced × CaO content / 100</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="clinker2_mgo_amount">35 MgO Amount (t/yr)</label>
-                                <input type="number" class="form-control" id="clinker2_mgo_amount" name="clinker2_mgo_amount" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Calculated: Clinker produced × MgO content / 100</small>
-                            </div>
-                        </div>
-
-                        <!-- Total Clinker -->
-                        <h4>Total Clinker</h4>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="total_clinker_produced_composition">41 Total Clinker Produced (t/yr)</label>
-                                <input type="number" class="form-control" id="total_clinker_produced_composition" name="total_clinker_produced_composition" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Sum of all clinker types</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="average_cao_content">42 Average CaO Content (incl. free lime) (%)</label>
-                                <input type="number" class="form-control" id="average_cao_content" name="average_cao_content" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Weighted average CaO content</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="average_mgo_content">43 Average MgO Content (%)</label>
-                                <input type="number" class="form-control" id="average_mgo_content" name="average_mgo_content" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Weighted average MgO content</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="total_cao_amount">44 Total CaO Amount (t/yr)</label>
-                                <input type="number" class="form-control" id="total_cao_amount" name="total_cao_amount" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Sum of all CaO amounts</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="total_mgo_amount">45 Total MgO Amount (t/yr)</label>
-                                <input type="number" class="form-control" id="total_mgo_amount" name="total_mgo_amount" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Sum of all MgO amounts</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Correction for Non-carbonate Sources -->
-                <div class="subsection">
-                    <h3>Correction for Non-carbonate Sources of CaO, MgO found in Clinker</h3>
-                    <div class="form-section">
-                        <!-- Raw Material #1 -->
-                        <h4>Raw Material #1</h4>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="raw_material1_consumed">51 Raw Material Consumed (dry weight) (t/yr)</label>
-                                <input type="number" class="form-control" id="raw_material1_consumed" name="raw_material1_consumed" 
-                                       step="0.01" placeholder="Raw material consumption">
-                            </div>
-                            <div class="form-group">
-                                <label for="raw_material1_cao_content">52 CaO Content (%)</label>
-                                <input type="number" class="form-control" id="raw_material1_cao_content" name="raw_material1_cao_content" 
-                                       step="0.01" placeholder="CaO content percentage">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="raw_material1_mgo_content">53 MgO Content (%)</label>
-                                <input type="number" class="form-control" id="raw_material1_mgo_content" name="raw_material1_mgo_content" 
-                                       step="0.01" placeholder="MgO content percentage">
-                            </div>
-                            <div class="form-group">
-                                <label for="raw_material1_cao_amount">54 CaO Amount (t/yr)</label>
-                                <input type="number" class="form-control" id="raw_material1_cao_amount" name="raw_material1_cao_amount" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Calculated: Raw material consumed × CaO content / 100</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="raw_material1_mgo_amount">55 MgO Amount (t/yr)</label>
-                                <input type="number" class="form-control" id="raw_material1_mgo_amount" name="raw_material1_mgo_amount" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Calculated: Raw material consumed × MgO content / 100</small>
-                            </div>
-                        </div>
-
-                        <!-- Raw Material #2 -->
-                        <h4>Raw Material #2</h4>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="raw_material2_consumed">61 Raw Material Consumed (dry weight) (t/yr)</label>
-                                <input type="number" class="form-control" id="raw_material2_consumed" name="raw_material2_consumed" 
-                                       step="0.01" placeholder="Raw material consumption">
-                            </div>
-                            <div class="form-group">
-                                <label for="raw_material2_cao_content">62 CaO Content (%)</label>
-                                <input type="number" class="form-control" id="raw_material2_cao_content" name="raw_material2_cao_content" 
-                                       step="0.01" placeholder="CaO content percentage">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="raw_material2_mgo_content">63 MgO Content (%)</label>
-                                <input type="number" class="form-control" id="raw_material2_mgo_content" name="raw_material2_mgo_content" 
-                                       step="0.01" placeholder="MgO content percentage">
-                            </div>
-                            <div class="form-group">
-                                <label for="raw_material2_cao_amount">64 CaO Amount (t/yr)</label>
-                                <input type="number" class="form-control" id="raw_material2_cao_amount" name="raw_material2_cao_amount" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Calculated: Raw material consumed × CaO content / 100</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="raw_material2_mgo_amount">65 MgO Amount (t/yr)</label>
-                                <input type="number" class="form-control" id="raw_material2_mgo_amount" name="raw_material2_mgo_amount" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Calculated: Raw material consumed × MgO content / 100</small>
-                            </div>
-                        </div>
-
-                        <!-- Total Raw Materials -->
-                        <h4>Total of Raw Materials</h4>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="total_raw_material_consumed">71 Total Raw Material Consumed (dry weight) (t/yr)</label>
-                                <input type="number" class="form-control" id="total_raw_material_consumed" name="total_raw_material_consumed" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Sum of all raw materials</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="average_raw_material_cao_content">72 Average CaO Content (%)</label>
-                                <input type="number" class="form-control" id="average_raw_material_cao_content" name="average_raw_material_cao_content" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Weighted average CaO content</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="average_raw_material_mgo_content">73 Average MgO Content (%)</label>
-                                <input type="number" class="form-control" id="average_raw_material_mgo_content" name="average_raw_material_mgo_content" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Weighted average MgO content</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="total_raw_material_cao_amount">74 Total CaO Amount (t/yr)</label>
-                                <input type="number" class="form-control" id="total_raw_material_cao_amount" name="total_raw_material_cao_amount" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Sum of all CaO amounts from raw materials</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="total_raw_material_mgo_amount">75 Total MgO Amount (t/yr)</label>
-                                <input type="number" class="form-control" id="total_raw_material_mgo_amount" name="total_raw_material_mgo_amount" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Sum of all MgO amounts from raw materials</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CO2 Emissions from Raw Material Calcination -->
-                <div class="subsection">
-                    <h3>CO2 Emissions from Raw Material Calcination</h3>
-                    <div class="form-section">
-                        <h4>Absolute CO2 Emissions</h4>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="uncorrected_co2_emissions">81 Uncorrected CO2 Emissions, based on CaO- and MgO content of clinker (t CO2/yr)</label>
-                                <input type="number" class="form-control" id="uncorrected_co2_emissions" name="uncorrected_co2_emissions" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Calculated from total CaO and MgO amounts in clinker</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="correction_non_carbonate_sources">82 Correction for Non-carbonate Sources of CaO and MgO (t CO2/yr)</label>
-                                <input type="number" class="form-control" id="correction_non_carbonate_sources" name="correction_non_carbonate_sources" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Calculated from CaO and MgO amounts in pre-calcined raw materials</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="corrected_direct_co2_emissions">83 Corrected, Direct CO2 Emissions (t CO2/yr)</label>
-                                <input type="number" class="form-control" id="corrected_direct_co2_emissions" name="corrected_direct_co2_emissions" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Line 81 - Line 82</small>
-                            </div>
-                        </div>
-
-                        <h4>Specific CO2 Emissions per Ton of Clinker</h4>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="calcination_factor_uncorrected">84 Calcination Factor, Uncorrected (kg CO2/t cli)</label>
-                                <input type="number" class="form-control" id="calcination_factor_uncorrected" name="calcination_factor_uncorrected" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Uncorrected CO2 emissions / Total clinker produced × 1000</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="calcination_factor_corrected">85 Calcination Factor, Corrected for Non-carbonate Sources (kg CO2/t cli)</label>
-                                <input type="number" class="form-control" id="calcination_factor_corrected" name="calcination_factor_corrected" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Corrected CO2 emissions / Total clinker produced × 1000</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- CO2 from Raw Materials -->
                 <div class="subsection">
-                    <h3>CO2 from Raw Materials (Original Section)</h3>
+                    <h3>CO2 from Raw Materials</h3>
                     <div class="form-section">
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="calcination_emission_factor">Calcination Emission Factor (kg CO2/t cli)</label>
-                                <input type="number" class="form-control" id="calcination_emission_factor" name="calcination_emission_factor" 
+                                <label for="calcination_emission_factor_35a">Calcination emission factor, corrected for CaO- and MgO imports (kg CO2/tonne clinker)</label>
+                                <input type="number" class="form-control" id="calcination_emission_factor_35a" name="calcination_emission_factor_35a" 
                                        step="0.01" value="525" placeholder="Default: 525 kg CO2/t cli">
                                 <small class="form-text">Default = 525 kg CO2 per tonne of clinker. Replace with company-specific data if available</small>
                             </div>
                             <div class="form-group">
-                                <label for="organic_carbon_content">Organic Carbon Content of Raw Meal (%, dry weight)</label>
-                                <input type="number" class="form-control" id="organic_carbon_content" name="organic_carbon_content" 
+                                <label for="organic_carbon_content_35b">Organic carbon content of raw meal (average) (%, dry weight)</label>
+                                <input type="number" class="form-control" id="organic_carbon_content_35b" name="organic_carbon_content_35b" 
                                        step="0.01" value="0.2" placeholder="Default: 0.2%">
                                 <small class="form-text">Default = 0.2%. Replace with company-specific data if raw materials have substantially higher or lower organic carbon content</small>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="raw_meal_clinker_ratio">Raw Meal : Clinker Ratio (--, dry weight)</label>
-                                <input type="number" class="form-control" id="raw_meal_clinker_ratio" name="raw_meal_clinker_ratio" 
+                                <label for="raw_meal_clinker_ratio_35c">Raw meal : clinker ratio (--, dry weight)</label>
+                                <input type="number" class="form-control" id="raw_meal_clinker_ratio_35c" name="raw_meal_clinker_ratio_35c" 
                                        step="0.01" value="1.55" placeholder="Default: 1.55">
                                 <small class="form-text">Default = 1.55. Replace with company-specific data (excluding fuel ash content)</small>
                             </div>
                             <div class="form-group">
-                                <label for="raw_meal_consumption">Raw Meal Consumption (t/yr, dry weight)</label>
-                                <input type="number" class="form-control" id="raw_meal_consumption" name="raw_meal_consumption" 
+                                <label for="raw_meal_consumption_35d">Raw meal consumption (tonnes, dry weight)</label>
+                                <input type="number" class="form-control" id="raw_meal_consumption_35d" name="raw_meal_consumption_35d" 
                                        step="0.01" readonly>
                                 <small class="form-text">Calculated: Raw meal:clinker ratio × Clinker production</small>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="co2_from_calcination_clinker">CO2 from Calcination of Clinker (t CO2/yr)</label>
-                                <input type="number" class="form-control" id="co2_from_calcination_clinker" name="co2_from_calcination_clinker" 
+                                <label for="co2_from_calcination_clinker_36">CO2 from calcination of clinker (tonnes CO2)</label>
+                                <input type="number" class="form-control" id="co2_from_calcination_clinker_36" name="co2_from_calcination_clinker_36" 
                                        step="0.01" readonly>
                                 <small class="form-text">Calculated: Calcination emission factor × Clinker production / 1000</small>
                             </div>
                             <div class="form-group">
-                                <label for="co2_from_organic_carbon">CO2 from Organic Carbon Content of Raw Meal (t CO2/yr)</label>
-                                <input type="number" class="form-control" id="co2_from_organic_carbon" name="co2_from_organic_carbon" 
+                                <label for="co2_from_calcination_bypass_dust_37">CO2 from calcination of bypass dust leaving the kiln system (tonnes CO2)</label>
+                                <input type="number" class="form-control" id="co2_from_calcination_bypass_dust_37" name="co2_from_calcination_bypass_dust_37" 
+                                       step="0.01" readonly>
+                                <small class="form-text">Calculated: Calcination emission factor × Bypass dust / 1000</small>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="co2_from_calcination_ckd_38a">CO2 from calcination of CKD leaving the kiln system (tonnes CO2)</label>
+                                <input type="number" class="form-control" id="co2_from_calcination_ckd_38a" name="co2_from_calcination_ckd_38a" 
+                                       step="0.01" readonly>
+                                <small class="form-text">Calculated: CKD amount × Non-linear function of calcination factor and calcination rate</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="co2_from_organic_carbon_38b">CO2 from organic carbon content of raw meal (tonnes CO2)</label>
+                                <input type="number" class="form-control" id="co2_from_organic_carbon_38b" name="co2_from_organic_carbon_38b" 
                                        step="0.01" readonly>
                                 <small class="form-text">Calculated: Organic carbon content × Raw meal consumption × 3.664</small>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="total_co2_from_raw_materials">Total CO2 from Raw Materials (t CO2/yr)</label>
-                                <input type="number" class="form-control" id="total_co2_from_raw_materials" name="total_co2_from_raw_materials" 
+                                <label for="total_co2_from_raw_materials_39">Total CO2 from raw materials (tonnes CO2)</label>
+                                <input type="number" class="form-control" id="total_co2_from_raw_materials_39" name="total_co2_from_raw_materials_39" 
                                        step="0.01" readonly>
-                                <small class="form-text">Sum of CO2 from calcination and organic carbon</small>
+                               
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- CO2 from Fuels -->
-                <div class="subsection">
-                    <h3>CO2 from Fuels</h3>
-                    <div class="form-section">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="co2_from_conventional_fossil_fuels">CO2 from Conventional Fossil Fuels (t CO2/yr)</label>
-                                <input type="number" class="form-control" id="co2_from_conventional_fossil_fuels" name="co2_from_conventional_fossil_fuels" 
-                                       step="0.01" placeholder="CO2 from conventional fossil fuels">
-                                <small class="form-text">Sum of CO2 emissions from conventional fossil fuels</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="co2_from_alternative_fossil_fuels">CO2 from Alternative Fossil Fuels (t CO2/yr)</label>
-                                <input type="number" class="form-control" id="co2_from_alternative_fossil_fuels" name="co2_from_alternative_fossil_fuels" 
-                                       step="0.01" placeholder="CO2 from alternative fossil fuels">
-                                <small class="form-text">Sum of CO2 emissions from alternative fossil fuels</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="co2_from_equipment_vehicles">CO2 from Equipment and On-site Vehicles (t CO2/yr)</label>
-                                <input type="number" class="form-control" id="co2_from_equipment_vehicles" name="co2_from_equipment_vehicles" 
-                                       step="0.01" placeholder="CO2 from equipment and vehicles">
-                                <small class="form-text">Sum of CO2 emissions from equipment and on-site vehicles</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="co2_from_room_heating_cooling">CO2 from Room Heating/Cooling (t CO2/yr)</label>
-                                <input type="number" class="form-control" id="co2_from_room_heating_cooling" name="co2_from_room_heating_cooling" 
-                                       step="0.01" placeholder="CO2 from room heating/cooling">
-                                <small class="form-text">Sum of CO2 emissions from room heating and cooling</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="co2_from_drying_materials">CO2 from Drying of Raw Materials and Mineral Components (t CO2/yr)</label>
-                                <input type="number" class="form-control" id="co2_from_drying_materials" name="co2_from_drying_materials" 
-                                       step="0.01" placeholder="CO2 from drying materials">
-                                <small class="form-text">Sum of CO2 emissions from drying of raw materials and mineral components</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="co2_from_onsite_power_generation">CO2 from On-site Power Generation (t CO2/yr)</label>
-                                <input type="number" class="form-control" id="co2_from_onsite_power_generation" name="co2_from_onsite_power_generation" 
-                                       step="0.01" placeholder="CO2 from on-site power generation">
-                                <small class="form-text">Sum of CO2 emissions from on-site power generation (excluding biomass CO2)</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Total CO2 Emissions -->
-                <div class="subsection">
-                    <h3>Total CO2 Emissions</h3>
-                    <div class="form-section">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="total_co2_from_fossil_kiln_fuels">Total CO2 from Fossil-based Kiln Fuels (t CO2/yr)</label>
-                                <input type="number" class="form-control" id="total_co2_from_fossil_kiln_fuels" name="total_co2_from_fossil_kiln_fuels" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Sum of CO2 from conventional and alternative fossil fuels</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="total_co2_from_non_kiln_fuels">Total CO2 from Non-Kiln Fuels (t CO2/yr)</label>
-                                <input type="number" class="form-control" id="total_co2_from_non_kiln_fuels" name="total_co2_from_non_kiln_fuels" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Sum of CO2 from equipment, heating, drying, and power generation</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="co2_from_external_power">CO2 from External Power Generation (t CO2/yr)</label>
-                                <input type="number" class="form-control" id="co2_from_external_power" name="co2_from_external_power" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Calculated: External power consumption × CO2 per unit / 1000</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="emission_factor_bought_clinker">Emission Factor for Bought Clinker (kg CO2/t cli)</label>
-                                <input type="number" class="form-control" id="emission_factor_bought_clinker" name="emission_factor_bought_clinker" 
-                                       step="0.01" value="862" placeholder="Default: 862 kg CO2/t cli">
-                                <small class="form-text">Default = 862 kg CO2 per tonne of clinker (average from several cement companies)</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="co2_from_net_clinker_imports">CO2 from Net Clinker Imports/Exports (t CO2/yr)</label>
-                                <input type="number" class="form-control" id="co2_from_net_clinker_imports" name="co2_from_net_clinker_imports" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Calculated: (Clinker bought - Clinker sold) × Emission factor / 1000</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="total_direct_co2">Total Direct CO2: All Sources (t CO2/yr)</label>
-                                <input type="number" class="form-control" id="total_direct_co2" name="total_direct_co2" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Sum of total CO2 from raw materials, kiln fuels, and non-kiln fuels</small>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="total_indirect_co2">Total Indirect CO2 (Main Sources) (t CO2/yr)</label>
-                                <input type="number" class="form-control" id="total_indirect_co2" name="total_indirect_co2" 
-                                       step="0.01" readonly>
-                                <small class="form-text">Sum of CO2 from external power and net clinker imports/exports</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
