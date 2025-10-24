@@ -1,0 +1,58 @@
+<div class="default-co2-container">
+    <div class="header-section">
+        <h1>Default CO2 Method – Electrolysis Process</h1>
+        <p class="description">Multiply Weight of Aluminium by Default Emission Factor (DEF). If Custom EF is provided, it overrides DEF.</p>
+    </div>
+
+    <div class="table-section">
+        <div class="table-container">
+            <table class="default-table">
+                <thead>
+                    <tr>
+                        <th>S.NO</th>
+                        <th>DATE</th>
+                        <th>UNIT</th>
+                        <th>TYPE</th>
+                        <th>WEIGHT<br><span class="unit">(t Al)</span></th>
+                        <th>DEFAULT EF<br><span class="unit">(t CO2/t Al)</span></th>
+                        <th>CUSTOM EF<br><span class="unit">(t CO2/t Al)</span></th>
+                        <th>EF USED<br><span class="unit">(t CO2/t Al)</span></th>
+                        <th>CO2 EMISSIONS<br><span class="unit">(t CO2)</span></th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody id="entryBody">
+                    <tr class="data-entry-row">
+                        <td><span class="sno-display" id="currentSno">1</span></td>
+                        <td><input type="date" id="entryDate" class="form-control" /></td>
+                        <td>
+                            <select id="entryUnit" class="form-control">
+                                <option value="">-- Unit --</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="entryType" class="form-control">
+                                <option value="">-- Type --</option>
+                                <option value="Soderberg">Soderberg</option>
+                                <option value="Prebake">Prebake</option>
+                            </select>
+                        </td>
+                        <td><input type="number" id="entryWeight" class="form-control" step="0.001" min="0" placeholder="0.000" /></td>
+                        <td><span id="entryDefaultEF" class="calculated-value">-</span></td>
+                        <td><input type="number" id="entryCustomEF" class="form-control" step="0.001" min="0" placeholder="0.000" /></td>
+                        <td><span id="entryEFUsed" class="calculated-value">-</span></td>
+                        <td><span id="entryCO2" class="calculated-value">0.00</span></td>
+                        <td><button id="saveBtn" class="btn btn-success">Save</button></td>
+                    </tr>
+                </tbody>
+                <tbody id="historyRowsBody">
+                    <tr class="no-history-row">
+                        <td colspan="10" style="text-align:center; padding: 1rem; color: #64748b;">
+                            <em>No entries yet. Add your first entry above.</em>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
