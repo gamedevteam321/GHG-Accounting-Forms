@@ -19,7 +19,7 @@
         <!-- Data Table Section -->
         <div class="table-section">
             <div class="table-header">
-                <h2><i class="fa fa-table"></i> Cement Process Records</h2>
+                <h2> Cement Process Records</h2>
                 <button type="button" class="btn btn-add" id="addRecordBtn">
                     <i class="fa fa-plus"></i> Add New Record
                 </button>
@@ -54,15 +54,15 @@
         </div>
     </div>
 
-    <!-- Modal for Add/Edit Form -->
-    <div class="modal fade" id="cementFormModal" tabindex="-1" aria-labelledby="cementFormModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
+    <!-- Custom Modal for Add/Edit Form -->
+    <div class="custom-modal" id="cementFormModal">
+        <div class="custom-modal-dialog">
+            <div class="custom-modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="cementFormModalLabel">
                         <i class="fa fa-plus"></i> Add New Cement Process Record
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close">X</button>
+                    <button type="button" class="btn-close btn-close-white" id="closeModalBtn" aria-label="Close">X</button>
                 </div>
                 <div class="modal-body">
                     <!-- Step Indicator -->
@@ -511,6 +511,9 @@
                     </button>
                     <button type="button" class="btn btn-save" id="saveRecordBtn" style="display: none;">
                         <i class="fa fa-save"></i> Save Record
+                    </button>
+                    <button type="button" class="btn btn-cancel" id="cancelBtn">
+                        <i class="fa fa-times"></i> Cancel
                     </button>
                 </div>
             </div>

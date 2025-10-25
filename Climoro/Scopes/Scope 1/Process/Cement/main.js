@@ -35,6 +35,7 @@ function setupEventListeners() {
     const prevStepBtn = scopeRoot.querySelector('#prevStepBtn');
     const nextStepBtn = scopeRoot.querySelector('#nextStepBtn');
     const saveRecordBtn = scopeRoot.querySelector('#saveRecordBtn');
+    const cancelBtn = scopeRoot.querySelector('#cancelBtn');
 
     if (prevStepBtn) {
         prevStepBtn.addEventListener('click', previousStep);
@@ -44,6 +45,9 @@ function setupEventListeners() {
     }
     if (saveRecordBtn) {
         saveRecordBtn.addEventListener('click', saveRecord);
+    }
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', closeModal);
     }
 
     // Step indicators
@@ -59,10 +63,10 @@ function setupEventListeners() {
     setupModalCloseListeners();
 }
 
-// Setup modal close button listeners
+// Setup custom modal close button listeners
 function setupModalCloseListeners() {
     // Close button in modal header
-    const closeBtn = scopeRoot.querySelector('[data-bs-dismiss="modal"]');
+    const closeBtn = scopeRoot.querySelector('#closeModalBtn');
     if (closeBtn) {
         closeBtn.addEventListener('click', closeModal);
     }
@@ -472,26 +476,10 @@ function openAddForm() {
     const modalElement = scopeRoot.querySelector('#cementFormModal');
     console.log('Modal element found:', modalElement);
     if (modalElement) {
-        // Check if Bootstrap is available
-        if (typeof bootstrap !== 'undefined') {
-            console.log('Bootstrap available, creating modal...');
-            const modal = new bootstrap.Modal(modalElement);
-            console.log('Bootstrap modal created:', modal);
-            modal.show();
-        } else {
-            console.log('Bootstrap not available, showing modal manually...');
-            // Fallback: Show modal manually
-            modalElement.style.display = 'block';
-            modalElement.classList.add('show');
-            modalElement.setAttribute('aria-hidden', 'false');
-            document.body.classList.add('modal-open');
-            
-            // Add backdrop
-            const backdrop = document.createElement('div');
-            backdrop.className = 'modal-backdrop fade show';
-            backdrop.id = 'modal-backdrop';
-            document.body.appendChild(backdrop);
-        }
+        console.log('Showing custom modal...');
+        modalElement.style.display = 'flex';
+        modalElement.classList.add('show');
+        document.body.style.overflow = 'hidden';
     } else {
         console.error('Modal element not found!');
     }
@@ -621,24 +609,10 @@ function validateCurrentStep() {
 function closeModal() {
     const modalElement = scopeRoot.querySelector('#cementFormModal');
     if (modalElement) {
-        if (typeof bootstrap !== 'undefined') {
-            const modal = bootstrap.Modal.getInstance(modalElement);
-            if (modal) {
-                modal.hide();
-            }
-        } else {
-            // Manual close
-            modalElement.style.display = 'none';
-            modalElement.classList.remove('show');
-            modalElement.setAttribute('aria-hidden', 'true');
-            document.body.classList.remove('modal-open');
-            
-            // Remove backdrop
-            const backdrop = document.getElementById('modal-backdrop');
-            if (backdrop) {
-                backdrop.remove();
-            }
-        }
+        console.log('Closing custom modal...');
+        modalElement.style.display = 'none';
+        modalElement.classList.remove('show');
+        document.body.style.overflow = 'auto';
     }
 }
 

@@ -358,13 +358,194 @@ body {
     opacity: 0.8;
 }
 
-/* Modal Styles */
-.modal-content {
+/* Custom Modal Styles - Ultra High Z-Index for Frappe */
+.custom-modal {
+    display: none;
+    position: fixed;
+    z-index: 999999 !important;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    animation: customModalFadeIn 0.3s ease-out;
+}
+
+.custom-modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-modal-dialog {
+    position: relative;
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    z-index: 1000000 !important;
+    animation: customModalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.custom-modal-content {
+    position: relative;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    max-height: 90vh;
+    overflow-y: auto;
+    z-index: 1000001 !important;
+}
+
+@keyframes customModalFadeIn {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0px);
+        -webkit-backdrop-filter: blur(0px);
+    }
+    to {
+        opacity: 1;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+}
+
+@keyframes customModalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Custom Modal Header */
+.custom-modal .modal-header {
+    background: var(--primary-gradient);
+    color: var(--text-light);
+    border: none;
+    padding: 20px 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.custom-modal .modal-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.custom-modal .modal-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.custom-modal .modal-title i {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.custom-modal .btn-close {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: var(--text-light);
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.custom-modal .btn-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Ultra-aggressive Frappe header override */
+.custom-modal {
+    z-index: 999999 !important;
+}
+
+/* Ensure modal is above Frappe header and navigation */
+html body .custom-modal,
+html body .custom-modal-dialog,
+html body .custom-modal-content {
+    z-index: 999999 !important;
+}
+
+/* Override any Frappe header z-index */
+.navbar,
+.navbar-header,
+.navbar-brand,
+.navbar-nav,
+.navbar-toggler,
+.navbar-collapse,
+.navbar-expand,
+.navbar-light,
+.navbar-dark,
+.navbar-fixed-top,
+.navbar-sticky-top,
+.navbar-static-top {
+    z-index: 1000 !important;
+}
+
+@keyframes backdropFadeIn {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0px);
+        -webkit-backdrop-filter: blur(0px);
+    }
+    to {
+        opacity: 1;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+}
+
+.modal-content,
+.modal-dialog {
     border-radius: var(--border-radius-lg);
     border: none;
-    box-shadow: var(--shadow-xl);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
     overflow: hidden;
     position: relative;
+    z-index: 1055 !important;
+    animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    transform: translateY(0) !important;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .modal-content::before {
@@ -375,6 +556,20 @@ body {
     right: 0;
     height: 4px;
     background: var(--primary-gradient);
+    z-index: 1055;
+}
+
+.modal-content::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, rgba(0, 123, 255, 0.1), rgba(40, 167, 69, 0.1), rgba(255, 193, 7, 0.1));
+    border-radius: calc(var(--border-radius-lg) + 2px);
+    z-index: -1;
+    opacity: 0.6;
 }
 
 .modal-header {
@@ -475,6 +670,12 @@ body {
     100% { background-position: 200% 0; }
 }
 
+/* Cancel button positioning */
+.modal-footer .btn-cancel {
+    margin-left: auto;
+    order: 3;
+}
+
 /* Tab Navigation */
 .tab-navigation {
     display: flex;
@@ -566,20 +767,46 @@ body {
 /* Step Indicator */
 .step-indicator {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     margin-bottom: 35px;
     flex-wrap: nowrap;
-    gap: 10px;
+    gap: 8px;
     overflow-x: auto;
+    overflow-y: hidden;
     padding: 0 10px;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc #f1f1f1;
+    width: 100%;
+    max-width: 100%;
+    scroll-behavior: smooth;
+    /* Force scrolling on all screen sizes */
+    min-width: 0;
+}
+
+.step-indicator::-webkit-scrollbar {
+    height: 6px;
+}
+
+.step-indicator::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.step-indicator::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.step-indicator::-webkit-scrollbar-thumb:hover {
+    background: #999;
 }
 
 .step-item {
     display: flex;
     align-items: center;
-    padding: 15px 25px;
+    padding: 10px 15px;
     background: #f8f9fa;
-    border-radius: 30px;
+    border-radius: 20px;
     font-weight: 600;
     color: var(--text-muted);
     transition: var(--transition);
@@ -587,9 +814,10 @@ body {
     border: 2px solid transparent;
     position: relative;
     overflow: hidden;
-    flex-shrink: 0;
-    min-width: 140px;
+    flex: 1;
+    min-width: 120px;
     white-space: nowrap;
+    justify-content: center;
 }
 
 .step-item::before {
@@ -601,7 +829,7 @@ body {
     height: 100%;
     background: var(--primary-gradient);
     transition: left 0.3s;
-    z-index: 0;
+    z-index: 1055;
 }
 
 .step-item.active {
@@ -623,28 +851,36 @@ body {
 
 .step-number {
     background: rgba(255,255,255,0.3);
-    color: var(--text-light);
-    width: 30px;
-    height: 30px;
+    color: var(--text-dark);
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9rem;
-    margin-right: 12px;
+    font-size: 0.8rem;
+    margin-right: 8px;
     font-weight: 700;
     position: relative;
-    z-index: 1;
+    z-index: 1055;
+    flex-shrink: 0;
+    min-width: 24px;
+    min-height: 24px;
+}
+
+.step-item.active .step-number {
+    background: rgba(255,255,255,0.3);
+    color: #000000 !important;
 }
 
 .step-item:not(.active) .step-number {
     background: var(--text-muted);
-    color: var(--text-light);
+    color: #ffffff !important;
 }
 
 .step-label {
     position: relative;
-    z-index: 1;
+    z-index: 1055;
 }
 
 /* Form Styles */
@@ -949,21 +1185,45 @@ body {
         overflow-x: auto;
         justify-content: flex-start;
         padding: 0 10px;
+        gap: 5px;
+        scrollbar-width: thin;
+        scrollbar-color: #ccc #f1f1f1;
+    }
+    
+    .step-indicator::-webkit-scrollbar {
+        height: 4px;
+    }
+    
+    .step-indicator::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 2px;
+    }
+    
+    .step-indicator::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 2px;
     }
     
     .step-item {
-        flex-shrink: 0;
-        min-width: 120px;
-        padding: 10px 15px;
-        font-size: 12px;
+        flex: 1;
+        min-width: 80px;
+        padding: 5px 8px;
+        font-size: 9px;
     }
     
     .step-number {
-        font-size: 14px;
+        font-size: 10px;
+        width: 18px;
+        height: 18px;
+        margin-right: 5px;
+        color: #ffffff !important;
+        flex-shrink: 0;
+        min-width: 18px;
+        min-height: 18px;
     }
     
     .step-label {
-        font-size: 11px;
+        font-size: 8px;
     }
     
     .modal-body {
@@ -988,8 +1248,133 @@ body {
         font-size: 1.8rem;
     }
     
+    .step-indicator {
+        gap: 3px;
+        padding: 0 5px;
+    }
+    
+    .step-item {
+        flex: 1;
+        min-width: 70px;
+        padding: 3px 5px;
+        font-size: 8px;
+    }
+    
+    .step-number {
+        width: 16px;
+        height: 16px;
+        font-size: 8px;
+        margin-right: 3px;
+        flex-shrink: 0;
+        min-width: 16px;
+        min-height: 16px;
+    }
+    
+    .step-label {
+        font-size: 7px;
+    }
+    
     .header-section p {
         font-size: 1rem;
+    }
+}
+
+/* Universal backdrop hiding - Last resort */
+*[class*="backdrop"],
+*[id*="backdrop"],
+*[class*="modal-backdrop"],
+*[id*="modal-backdrop"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    top: -9999px !important;
+    left: -9999px !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Large screens - ensure proper scrolling */
+@media (min-width: 1200px) {
+    .step-indicator {
+        gap: 8px;
+        padding: 0 10px;
+        max-width: 100%;
+        overflow-x: auto;
+        /* Force scrollbar to always be visible */
+        scrollbar-width: auto;
+        /* Ensure scrollbar is always visible */
+        scrollbar-gutter: stable;
+    }
+    
+    .step-item {
+        flex: 1;
+        padding: 10px 15px;
+        min-width: 100px;
+    }
+}
+
+/* Extra large screens - ensure scrolling is always available */
+@media (min-width: 1400px) {
+    .step-indicator {
+        gap: 10px;
+        padding: 0 15px;
+        max-width: 100%;
+        overflow-x: auto;
+        /* Force scrollbar to always be visible */
+        scrollbar-width: auto;
+        scrollbar-gutter: stable;
+    }
+    
+    .step-item {
+        flex: 1;
+        padding: 12px 18px;
+        min-width: 110px;
+    }
+}
+
+/* Ultra large screens - force scrolling */
+@media (min-width: 1600px) {
+    .step-indicator {
+        max-width: 100%;
+        gap: 12px;
+        padding: 0 20px;
+    }
+    
+    .step-item {
+        flex: 1;
+        padding: 14px 20px;
+        min-width: 120px;
+    }
+}
+
+/* Extra small screens - ensure all tabs are visible */
+@media (max-width: 400px) {
+    .step-indicator {
+        gap: 2px;
+        padding: 0 3px;
+    }
+    
+    .step-item {
+        flex: 1;
+        min-width: 60px;
+        padding: 2px 4px;
+        font-size: 7px;
+    }
+    
+    .step-number {
+        width: 14px;
+        height: 14px;
+        font-size: 7px;
+        margin-right: 2px;
+        flex-shrink: 0;
+        min-width: 14px;
+        min-height: 14px;
+    }
+    
+    .step-label {
+        font-size: 6px;
     }
     
     .btn-add {
@@ -1067,8 +1452,7 @@ body {
 @media print {
     .btn-add,
     .action-buttons,
-    .modal,
-    .step-indicator {
+    .modal {
         display: none !important;
     }
     
