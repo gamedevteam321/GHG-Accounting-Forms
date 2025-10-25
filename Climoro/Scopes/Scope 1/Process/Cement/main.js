@@ -136,6 +136,45 @@ function setupModalCloseListeners() {
             const element = scopeRoot.querySelector(`#${field}`);
             if (element) {
                 element.addEventListener('input', calculateCalcinationStep);
+                element.addEventListener('blur', () => validateField(element));
+            }
+        });
+
+        // Add validation listeners for steps 1, 2, and 3 only
+        const validationFields = [
+            'company', 'company_unit', 'date_of_input', 'duration_type',
+            'clinker_production'
+        ];
+        
+        validationFields.forEach(field => {
+            const element = scopeRoot.querySelector(`#${field}`);
+            if (element) {
+                element.addEventListener('blur', () => validateField(element));
+                element.addEventListener('input', () => {
+                    // Clear error styling on input
+                    element.classList.remove('field-error');
+                    const errorMessage = element.parentNode.querySelector('.field-error-message');
+                    if (errorMessage) {
+                        errorMessage.remove();
+                    }
+                });
+            }
+        });
+
+        // Add validation for MIC fields
+        const micValidationFields = ['limestone_mic', 'clay_mic', 'shale_mic', 'sand_mic', 'bauxite_mic', 
+                                   'iron_ore_mic', 'gypsum_mic', 'fly_ash_mic', 'slag_mic', 'other_mic'];
+        micValidationFields.forEach(field => {
+            const element = scopeRoot.querySelector(`#${field}`);
+            if (element) {
+                element.addEventListener('blur', () => validateField(element));
+                element.addEventListener('input', () => {
+                    element.classList.remove('field-error');
+                    const errorMessage = element.parentNode.querySelector('.field-error-message');
+                    if (errorMessage) {
+                        errorMessage.remove();
+                    }
+                });
             }
         });
 
@@ -605,6 +644,114 @@ function validateCurrentStep() {
     return true;
 }
 
+// Comprehensive validation for steps 1, 2, and 3 only
+function validateAllSteps() {
+    const validationErrors = [];
+    
+    // Step 1: Basic Information
+    const company = scopeRoot.querySelector('#company')?.value?.trim();
+    const companyUnit = scopeRoot.querySelector('#company_unit')?.value?.trim();
+    const dateOfInput = scopeRoot.querySelector('#date_of_input')?.value?.trim();
+    const durationType = scopeRoot.querySelector('#duration_type')?.value?.trim();
+    
+    if (!company) validationErrors.push('Company is required');
+    if (!companyUnit) validationErrors.push('Company Unit is required');
+    if (!dateOfInput) validationErrors.push('Date of Input is required');
+    if (!durationType) validationErrors.push('Duration Type is required');
+    
+    // Validate date format and not in future
+    if (dateOfInput) {
+        const inputDate = new Date(dateOfInput);
+        const today = new Date();
+        if (inputDate > today) {
+            validationErrors.push('Date of Input cannot be in the future');
+        }
+    }
+    
+    // Step 2: Clinker Production
+    const clinkerProduction = parseFloat(scopeRoot.querySelector('#clinker_production')?.value || 0);
+    const clinkerBought = parseFloat(scopeRoot.querySelector('#clinker_bought')?.value || 0);
+    const clinkerSold = parseFloat(scopeRoot.querySelector('#clinker_sold')?.value || 0);
+    const changeInStocks = parseFloat(scopeRoot.querySelector('#change_in_clinker_stocks')?.value || 0);
+    
+    if (clinkerProduction <= 0) {
+        validationErrors.push('Clinker Production must be greater than 0');
+    }
+    
+    // Step 3: Mineral Components (MIC)
+    const limestoneMic = parseFloat(scopeRoot.querySelector('#limestone_mic')?.value || 0);
+    const clayMic = parseFloat(scopeRoot.querySelector('#clay_mic')?.value || 0);
+    const shaleMic = parseFloat(scopeRoot.querySelector('#shale_mic')?.value || 0);
+    const sandMic = parseFloat(scopeRoot.querySelector('#sand_mic')?.value || 0);
+    const bauxiteMic = parseFloat(scopeRoot.querySelector('#bauxite_mic')?.value || 0);
+    const ironOreMic = parseFloat(scopeRoot.querySelector('#iron_ore_mic')?.value || 0);
+    const gypsumMic = parseFloat(scopeRoot.querySelector('#gypsum_mic')?.value || 0);
+    const flyAshMic = parseFloat(scopeRoot.querySelector('#fly_ash_mic')?.value || 0);
+    const slagMic = parseFloat(scopeRoot.querySelector('#slag_mic')?.value || 0);
+    const otherMic = parseFloat(scopeRoot.querySelector('#other_mic')?.value || 0);
+    
+    // Check for negative values
+    const micFields = [limestoneMic, clayMic, shaleMic, sandMic, bauxiteMic, ironOreMic, gypsumMic, flyAshMic, slagMic, otherMic];
+    micFields.forEach((value, index) => {
+        if (value < 0) {
+            const fieldNames = ['Limestone', 'Clay', 'Shale', 'Sand', 'Bauxite', 'Iron Ore', 'Gypsum', 'Fly Ash', 'Slag', 'Other'];
+            validationErrors.push(`${fieldNames[index]} MIC cannot be negative`);
+        }
+    });
+    
+    // Display validation errors
+    if (validationErrors.length > 0) {
+        const errorMessage = 'Please fix the following errors:\n\n' + validationErrors.join('\n');
+        alert(errorMessage);
+        return false;
+    }
+    
+    return true;
+}
+
+// Real-time field validation
+function validateField(field) {
+    const value = parseFloat(field.value || 0);
+    const fieldName = field.previousElementSibling?.textContent || field.name;
+    const fieldId = field.id;
+    
+    // Remove existing error styling
+    field.classList.remove('field-error');
+    const existingError = field.parentNode.querySelector('.field-error-message');
+    if (existingError) {
+        existingError.remove();
+    }
+    
+    let errorMessage = '';
+    
+    // Validate based on field type (steps 1, 2, 3 only)
+    switch (fieldId) {
+        case 'clinker_production':
+            if (value <= 0) errorMessage = 'Clinker Production must be greater than 0';
+            break;
+        default:
+            // Check for negative values in MIC fields (Step 3)
+            if (fieldId.includes('_mic') && value < 0) {
+                errorMessage = 'This value cannot be negative';
+            }
+            break;
+    }
+    
+    // Display error if validation fails
+    if (errorMessage) {
+        field.classList.add('field-error');
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'field-error-message';
+        errorDiv.textContent = errorMessage;
+        errorDiv.style.color = '#dc3545';
+        errorDiv.style.fontSize = '0.875rem';
+        errorDiv.style.marginTop = '4px';
+        field.parentNode.appendChild(errorDiv);
+    }
+    
+    return !errorMessage;
+}
+
 // Close modal manually (fallback for when Bootstrap is not available)
 function closeModal() {
     const modalElement = scopeRoot.querySelector('#cementFormModal');
@@ -618,7 +765,8 @@ function closeModal() {
 
 // Save record
 function saveRecord() {
-    if (!validateCurrentStep()) {
+    // Validate all steps before saving
+    if (!validateAllSteps()) {
         return;
     }
 
@@ -655,126 +803,245 @@ function collectFormData() {
     return data;
 }
 
-// Add new record
+// Add new record to Frappe database
 function addRecord(data) {
-    const records = getRecords();
-    const newId = Date.now().toString();
-    data.id = newId;
-    records.push(data);
-    saveRecords(records);
-    loadDataTable();
-    
-    showNotification('Record added successfully!', 'success');
+    frappe.call({
+        method: 'frappe.client.insert',
+        args: {
+            doc: {
+                doctype: 'Cement Process',
+                company: data.company,
+                company_unit: data.company_unit,
+                date_of_input: data.date_of_input,
+                duration_type: data.duration_type,
+                clinker_production: data.clinker_production,
+                clinker_bought: data.clinker_bought,
+                clinker_sold: data.clinker_sold,
+                change_in_clinker_stocks: data.change_in_clinker_stocks,
+                total_clinker_consumed: data.total_clinker_consumed,
+                limestone_mic: data.limestone_mic,
+                clay_mic: data.clay_mic,
+                shale_mic: data.shale_mic,
+                sand_mic: data.sand_mic,
+                bauxite_mic: data.bauxite_mic,
+                iron_ore_mic: data.iron_ore_mic,
+                gypsum_mic: data.gypsum_mic,
+                fly_ash_mic: data.fly_ash_mic,
+                slag_mic: data.slag_mic,
+                other_mic: data.other_mic,
+                total_mic: data.total_mic,
+                cao_content_clinker_22: data.cao_content_clinker_22,
+                mgo_content_clinker_23: data.mgo_content_clinker_23,
+                cao_amount_clinker_24: data.cao_amount_clinker_24,
+                mgo_amount_clinker_25: data.mgo_amount_clinker_25,
+                raw_material_consumed_51: data.raw_material_consumed_51,
+                cao_content_raw_material_52: data.cao_content_raw_material_52,
+                mgo_content_raw_material_53: data.mgo_content_raw_material_53,
+                cao_amount_raw_material_54: data.cao_amount_raw_material_54,
+                mgo_amount_raw_material_55: data.mgo_amount_raw_material_55,
+                uncorrected_co2_emissions_81: data.uncorrected_co2_emissions_81,
+                correction_non_carbonate_82: data.correction_non_carbonate_82,
+                corrected_direct_co2_emissions_83: data.corrected_direct_co2_emissions_83,
+                calcination_factor_uncorrected_84: data.calcination_factor_uncorrected_84,
+                calcination_factor_corrected_85: data.calcination_factor_corrected_85,
+                total_portland_blended_cements: data.total_portland_blended_cements,
+                total_cements_substitutes: data.total_cements_substitutes,
+                total_cementitious_products: data.total_cementitious_products,
+                ckd_produced: data.ckd_produced,
+                bypass_dust_produced: data.bypass_dust_produced,
+                ckd_recycled: data.ckd_recycled,
+                bypass_dust_recycled: data.bypass_dust_recycled,
+                ckd_disposed: data.ckd_disposed,
+                bypass_dust_disposed: data.bypass_dust_disposed,
+                calcination_emission_factor_35a: data.calcination_emission_factor_35a,
+                organic_carbon_content_35b: data.organic_carbon_content_35b,
+                raw_meal_clinker_ratio_35c: data.raw_meal_clinker_ratio_35c,
+                raw_meal_consumption_35d: data.raw_meal_consumption_35d,
+                co2_from_calcination_clinker_36: data.co2_from_calcination_clinker_36,
+                co2_from_calcination_bypass_dust_37: data.co2_from_calcination_bypass_dust_37,
+                co2_from_calcination_ckd_38a: data.co2_from_calcination_ckd_38a,
+                co2_from_organic_carbon_38b: data.co2_from_organic_carbon_38b,
+                total_co2_from_raw_materials_39: data.total_co2_from_raw_materials_39,
+                total_direct_co2_48: data.total_direct_co2_48
+            }
+        },
+        callback: function(response) {
+            if (response.message) {
+                loadDataTable();
+                showNotification('Record added successfully!', 'success');
+            } else {
+                showNotification('Error adding record', 'error');
+            }
+        }
+    });
 }
 
-// Update existing record
+// Update existing record in Frappe database
 function updateRecord(id, data) {
-    const records = getRecords();
-    const index = records.findIndex(record => record.id === id);
-    
-    if (index !== -1) {
-        data.id = id;
-        data.created_at = records[index].created_at;
-        data.updated_at = new Date().toISOString();
-        records[index] = data;
-        saveRecords(records);
-        loadDataTable();
-        
-        showNotification('Record updated successfully!', 'success');
-    }
+    frappe.call({
+        method: 'frappe.client.set_value',
+        args: {
+            doctype: 'Cement Process',
+            name: id,
+            fieldname: {
+                company: data.company,
+                company_unit: data.company_unit,
+                date_of_input: data.date_of_input,
+                duration_type: data.duration_type,
+                clinker_production: data.clinker_production,
+                clinker_bought: data.clinker_bought,
+                clinker_sold: data.clinker_sold,
+                change_in_clinker_stocks: data.change_in_clinker_stocks,
+                total_clinker_consumed: data.total_clinker_consumed,
+                limestone_mic: data.limestone_mic,
+                clay_mic: data.clay_mic,
+                shale_mic: data.shale_mic,
+                sand_mic: data.sand_mic,
+                bauxite_mic: data.bauxite_mic,
+                iron_ore_mic: data.iron_ore_mic,
+                gypsum_mic: data.gypsum_mic,
+                fly_ash_mic: data.fly_ash_mic,
+                slag_mic: data.slag_mic,
+                other_mic: data.other_mic,
+                total_mic: data.total_mic,
+                cao_content_clinker_22: data.cao_content_clinker_22,
+                mgo_content_clinker_23: data.mgo_content_clinker_23,
+                cao_amount_clinker_24: data.cao_amount_clinker_24,
+                mgo_amount_clinker_25: data.mgo_amount_clinker_25,
+                raw_material_consumed_51: data.raw_material_consumed_51,
+                cao_content_raw_material_52: data.cao_content_raw_material_52,
+                mgo_content_raw_material_53: data.mgo_content_raw_material_53,
+                cao_amount_raw_material_54: data.cao_amount_raw_material_54,
+                mgo_amount_raw_material_55: data.mgo_amount_raw_material_55,
+                uncorrected_co2_emissions_81: data.uncorrected_co2_emissions_81,
+                correction_non_carbonate_82: data.correction_non_carbonate_82,
+                corrected_direct_co2_emissions_83: data.corrected_direct_co2_emissions_83,
+                calcination_factor_uncorrected_84: data.calcination_factor_uncorrected_84,
+                calcination_factor_corrected_85: data.calcination_factor_corrected_85,
+                total_portland_blended_cements: data.total_portland_blended_cements,
+                total_cements_substitutes: data.total_cements_substitutes,
+                total_cementitious_products: data.total_cementitious_products,
+                ckd_produced: data.ckd_produced,
+                bypass_dust_produced: data.bypass_dust_produced,
+                ckd_recycled: data.ckd_recycled,
+                bypass_dust_recycled: data.bypass_dust_recycled,
+                ckd_disposed: data.ckd_disposed,
+                bypass_dust_disposed: data.bypass_dust_disposed,
+                calcination_emission_factor_35a: data.calcination_emission_factor_35a,
+                organic_carbon_content_35b: data.organic_carbon_content_35b,
+                raw_meal_clinker_ratio_35c: data.raw_meal_clinker_ratio_35c,
+                raw_meal_consumption_35d: data.raw_meal_consumption_35d,
+                co2_from_calcination_clinker_36: data.co2_from_calcination_clinker_36,
+                co2_from_calcination_bypass_dust_37: data.co2_from_calcination_bypass_dust_37,
+                co2_from_calcination_ckd_38a: data.co2_from_calcination_ckd_38a,
+                co2_from_organic_carbon_38b: data.co2_from_organic_carbon_38b,
+                total_co2_from_raw_materials_39: data.total_co2_from_raw_materials_39,
+                total_direct_co2_48: data.total_direct_co2_48
+            }
+        },
+        callback: function(response) {
+            if (response.message) {
+                loadDataTable();
+                showNotification('Record updated successfully!', 'success');
+            } else {
+                showNotification('Error updating record', 'error');
+            }
+        }
+    });
 }
 
-// Delete record
+// Delete record from Frappe database
 function deleteRecord(id) {
     if (confirm('Are you sure you want to delete this record?')) {
-        const records = getRecords();
-        const filteredRecords = records.filter(record => record.id !== id);
-        saveRecords(filteredRecords);
-        loadDataTable();
-        
-        showNotification('Record deleted successfully!', 'success');
+        frappe.call({
+            method: 'frappe.client.delete',
+            args: {
+                doctype: 'Cement Process',
+                name: id
+            },
+            callback: function(response) {
+                if (response.message) {
+                    loadDataTable();
+                    showNotification('Record deleted successfully!', 'success');
+                } else {
+                    showNotification('Error deleting record', 'error');
+                }
+            }
+        });
     }
 }
 
 // View record
 function viewRecord(id) {
-    const records = getRecords();
-    const record = records.find(r => r.id === id);
-    
-    if (record) {
-        // Open modal in view mode
-        isEditMode = false;
-        currentRecordId = id;
-        populateForm(record);
-        updateModalTitle('View Cement Process Record');
-        showStep(1);
-        updateNavigationButtons();
-        
-        // Disable all form fields
-        const form = scopeRoot.querySelector('#cementProcessForm');
-        const inputs = form.querySelectorAll('input, select');
-        inputs.forEach(input => input.disabled = true);
-        
-        const modalElement = scopeRoot.querySelector('#cementFormModal');
-        if (modalElement) {
-            if (typeof bootstrap !== 'undefined') {
-                const modal = new bootstrap.Modal(modalElement);
-                modal.show();
-            } else {
-                // Manual show
-                modalElement.style.display = 'block';
-                modalElement.classList.add('show');
-                modalElement.setAttribute('aria-hidden', 'false');
-                document.body.classList.add('modal-open');
+    frappe.call({
+        method: 'frappe.client.get',
+        args: {
+            doctype: 'Cement Process',
+            name: id
+        },
+        callback: function(response) {
+            if (response.message) {
+                const record = response.message;
+                // Open modal in view mode
+                isEditMode = false;
+                currentRecordId = id;
+                populateForm(record);
+                updateModalTitle('View Cement Process Record');
+                showStep(1);
+                updateNavigationButtons();
                 
-                // Add backdrop
-                const backdrop = document.createElement('div');
-                backdrop.className = 'modal-backdrop fade show';
-                backdrop.id = 'modal-backdrop';
-                document.body.appendChild(backdrop);
+                // Disable all form fields
+                const form = scopeRoot.querySelector('#cementProcessForm');
+                const inputs = form.querySelectorAll('input, select');
+                inputs.forEach(input => input.disabled = true);
+                
+                const modalElement = scopeRoot.querySelector('#cementFormModal');
+                if (modalElement) {
+                    modalElement.style.display = 'flex';
+                    modalElement.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                }
+            } else {
+                showNotification('Error loading record', 'error');
             }
         }
-    }
+    });
 }
 
-// Edit record
+// Edit record from Frappe database
 function editRecord(id) {
-    const records = getRecords();
-    const record = records.find(r => r.id === id);
-    
-    if (record) {
-        isEditMode = true;
-        currentRecordId = id;
-        populateForm(record);
-        updateModalTitle('Edit Cement Process Record');
-        showStep(1);
-        updateNavigationButtons();
-        
-        // Enable all form fields
-        const form = scopeRoot.querySelector('#cementProcessForm');
-        const inputs = form.querySelectorAll('input, select');
-        inputs.forEach(input => input.disabled = false);
-        
-        const modalElement = scopeRoot.querySelector('#cementFormModal');
-        if (modalElement) {
-            if (typeof bootstrap !== 'undefined') {
-                const modal = new bootstrap.Modal(modalElement);
-                modal.show();
-            } else {
-                // Manual show
-                modalElement.style.display = 'block';
-                modalElement.classList.add('show');
-                modalElement.setAttribute('aria-hidden', 'false');
-                document.body.classList.add('modal-open');
+    frappe.call({
+        method: 'frappe.client.get',
+        args: {
+            doctype: 'Cement Process',
+            name: id
+        },
+        callback: function(response) {
+            if (response.message) {
+                const record = response.message;
+                isEditMode = true;
+                currentRecordId = id;
+                populateForm(record);
+                updateModalTitle('Edit Cement Process Record');
+                showStep(1);
+                updateNavigationButtons();
                 
-                // Add backdrop
-                const backdrop = document.createElement('div');
-                backdrop.className = 'modal-backdrop fade show';
-                backdrop.id = 'modal-backdrop';
-                document.body.appendChild(backdrop);
+                // Enable all form fields
+                const form = scopeRoot.querySelector('#cementProcessForm');
+                const inputs = form.querySelectorAll('input, select');
+                inputs.forEach(input => input.disabled = false);
+                
+                const modalElement = scopeRoot.querySelector('#cementFormModal');
+                if (modalElement) {
+                    modalElement.style.display = 'flex';
+                    modalElement.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                }
+            } else {
+                showNotification('Error loading record', 'error');
             }
         }
-    }
+    });
 }
 
     // Populate form with data
@@ -841,15 +1108,86 @@ function loadDataTable() {
     `).join('');
 }
 
-// Get records from localStorage
+// Get records from Frappe database
 function getRecords() {
-    const records = localStorage.getItem('cement_process_records');
-    return records ? JSON.parse(records) : [];
+    // This function is now replaced by loadDataTable which fetches from Frappe
+    return [];
 }
 
-// Save records to localStorage
-function saveRecords(records) {
-    localStorage.setItem('cement_process_records', JSON.stringify(records));
+// Load data table from Frappe database
+function loadDataTable() {
+    console.log('Loading records from Frappe database...');
+    
+    // Show loading indicator
+    const tbody = scopeRoot.querySelector('#dataTable tbody');
+    if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading records...</td></tr>';
+    }
+    
+    frappe.call({
+        method: 'frappe.client.get_list',
+        args: {
+            doctype: 'Cement Process',
+            fields: ['name', 'company', 'company_unit', 'date_of_input', 'duration_type', 'clinker_production', 'total_direct_co2_48', 'total_indirect_co2', 'creation', 'modified'],
+            order_by: 'creation desc',
+            limit: 100
+        },
+        callback: function(response) {
+            console.log('Frappe API response:', response);
+            if (response.message) {
+                console.log('Records loaded:', response.message.length);
+                displayRecords(response.message);
+            } else {
+                console.error('Error loading records:', response);
+                showNotification('Error loading records from database', 'error');
+            }
+        },
+        error: function(err) {
+            console.error('Frappe API error:', err);
+            showNotification('Failed to connect to database', 'error');
+        }
+    });
+}
+
+// Display records in the table
+function displayRecords(records) {
+    const tbody = scopeRoot.querySelector('#dataTable tbody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    if (records.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="text-center">No records found</td></tr>';
+        return;
+    }
+    
+    records.forEach((record, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${formatDate(record.date_of_input)}</td>
+            <td>${record.company || '-'}</td>
+            <td>${record.company_unit || '-'}</td>
+            <td>${record.duration_type || '-'}</td>
+            <td>${record.clinker_production || 0}</td>
+            <td>${record.total_direct_co2_48 || 0}</td>
+            <td>${record.total_indirect_co2 || 0}</td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn btn-sm btn-info" onclick="viewRecord('${record.name}')" title="View">
+                        <i class="fa fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-warning" onclick="editRecord('${record.name}')" title="Edit">
+                        <i class="fa fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteRecord('${record.name}')" title="Delete">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
 }
 
 // Format date
