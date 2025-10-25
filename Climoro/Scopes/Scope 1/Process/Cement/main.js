@@ -10,6 +10,12 @@ console.log('Using scope root:', scopeRoot);
 let currentRecordId = null;
 let isEditMode = false;
 
+// Pagination variables
+let currentPage = 1;
+let pageSize = 25;
+let totalRecords = 0;
+let allRecords = [];
+
 // Initialize the application
 function init() {
     console.log('Initializing cement data manager for Frappe...');
@@ -58,6 +64,9 @@ function setupEventListeners() {
 
     // Form field listeners
     setupFormFieldListeners();
+    
+    // Pagination listeners
+    setupPaginationListeners();
     
     // Modal close button listeners
     setupModalCloseListeners();
@@ -1128,7 +1137,7 @@ function loadDataTable() {
         method: 'frappe.client.get_list',
         args: {
             doctype: 'Cement Process',
-            fields: ['name', 'company', 'company_unit', 'date_of_input', 'duration_type', 'clinker_production', 'total_direct_co2_48', 'total_indirect_co2', 'creation', 'modified'],
+            fields: ['name', 'company', 'company_unit', 'date_of_input', 'duration_type', 'clinker_production', 'total_co2_from_raw_materials_39', 'creation', 'modified'],
             order_by: 'creation desc',
             limit: 100
         },
@@ -1136,7 +1145,11 @@ function loadDataTable() {
             console.log('Frappe API response:', response);
             if (response.message) {
                 console.log('Records loaded:', response.message.length);
-                displayRecords(response.message);
+                allRecords = response.message;
+                totalRecords = allRecords.length;
+                currentPage = 1;
+                displayRecords(getCurrentPageRecords());
+                updatePagination();
             } else {
                 console.error('Error loading records:', response);
                 showNotification('Error loading records from database', 'error');
@@ -1157,21 +1170,21 @@ function displayRecords(records) {
     tbody.innerHTML = '';
     
     if (records.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" class="text-center">No records found</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center">No records found</td></tr>';
         return;
     }
     
     records.forEach((record, index) => {
         const row = document.createElement('tr');
+        const rowNumber = (currentPage - 1) * pageSize + index + 1;
         row.innerHTML = `
-            <td>${index + 1}</td>
+            <td>${rowNumber}</td>
             <td>${formatDate(record.date_of_input)}</td>
             <td>${record.company || '-'}</td>
             <td>${record.company_unit || '-'}</td>
             <td>${record.duration_type || '-'}</td>
             <td>${record.clinker_production || 0}</td>
-            <td>${record.total_direct_co2_48 || 0}</td>
-            <td>${record.total_indirect_co2 || 0}</td>
+            <td>${record.total_co2_from_raw_materials_39 || 0}</td>
             <td>
                 <div class="action-buttons">
                     <button class="btn btn-sm btn-info" onclick="viewRecord('${record.name}')" title="View">
@@ -1195,6 +1208,160 @@ function formatDate(dateString) {
     if (!dateString) return '-';
     const date = new Date(dateString);
     return date.toLocaleDateString();
+}
+
+// Setup pagination event listeners
+function setupPaginationListeners() {
+    // First page button
+    const firstPageBtn = scopeRoot.querySelector('#firstPageBtn');
+    if (firstPageBtn) {
+        firstPageBtn.addEventListener('click', () => goToPage(1));
+    }
+    
+    // Previous page button
+    const prevPageBtn = scopeRoot.querySelector('#prevPageBtn');
+    if (prevPageBtn) {
+        prevPageBtn.addEventListener('click', () => goToPage(currentPage - 1));
+    }
+    
+    // Next page button
+    const nextPageBtn = scopeRoot.querySelector('#nextPageBtn');
+    if (nextPageBtn) {
+        nextPageBtn.addEventListener('click', () => goToPage(currentPage + 1));
+    }
+    
+    // Last page button
+    const lastPageBtn = scopeRoot.querySelector('#lastPageBtn');
+    if (lastPageBtn) {
+        lastPageBtn.addEventListener('click', () => goToPage(getTotalPages()));
+    }
+    
+    // Page size selector
+    const pageSizeSelect = scopeRoot.querySelector('#pageSize');
+    if (pageSizeSelect) {
+        pageSizeSelect.addEventListener('change', (e) => {
+            pageSize = parseInt(e.target.value);
+            currentPage = 1;
+            displayRecords(getCurrentPageRecords());
+            updatePagination();
+        });
+    }
+}
+
+// Go to specific page
+function goToPage(page) {
+    const totalPages = getTotalPages();
+    if (page < 1 || page > totalPages) return;
+    
+    currentPage = page;
+    displayRecords(getCurrentPageRecords());
+    updatePagination();
+}
+
+// Get current page records
+function getCurrentPageRecords() {
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return allRecords.slice(startIndex, endIndex);
+}
+
+// Get total pages
+function getTotalPages() {
+    return Math.ceil(totalRecords / pageSize);
+}
+
+// Update pagination controls
+function updatePagination() {
+    const totalPages = getTotalPages();
+    const startRecord = (currentPage - 1) * pageSize + 1;
+    const endRecord = Math.min(currentPage * pageSize, totalRecords);
+    
+    // Update pagination info
+    const paginationInfo = scopeRoot.querySelector('#paginationInfo');
+    if (paginationInfo) {
+        paginationInfo.textContent = `Showing ${startRecord}-${endRecord} of ${totalRecords} records`;
+    }
+    
+    // Update button states
+    const firstPageBtn = scopeRoot.querySelector('#firstPageBtn');
+    const prevPageBtn = scopeRoot.querySelector('#prevPageBtn');
+    const nextPageBtn = scopeRoot.querySelector('#nextPageBtn');
+    const lastPageBtn = scopeRoot.querySelector('#lastPageBtn');
+    
+    if (firstPageBtn) firstPageBtn.disabled = currentPage === 1;
+    if (prevPageBtn) prevPageBtn.disabled = currentPage === 1;
+    if (nextPageBtn) nextPageBtn.disabled = currentPage === totalPages;
+    if (lastPageBtn) lastPageBtn.disabled = currentPage === totalPages;
+    
+    // Update page numbers
+    updatePageNumbers();
+    
+    // Show/hide pagination container
+    const paginationContainer = scopeRoot.querySelector('#paginationContainer');
+    if (paginationContainer) {
+        paginationContainer.style.display = totalRecords > 0 ? 'flex' : 'none';
+    }
+}
+
+// Update page numbers
+function updatePageNumbers() {
+    const pageNumbersContainer = scopeRoot.querySelector('#pageNumbers');
+    if (!pageNumbersContainer) return;
+    
+    const totalPages = getTotalPages();
+    pageNumbersContainer.innerHTML = '';
+    
+    if (totalPages <= 7) {
+        // Show all pages if 7 or fewer
+        for (let i = 1; i <= totalPages; i++) {
+            addPageNumber(i);
+        }
+    } else {
+        // Show first page
+        addPageNumber(1);
+        
+        if (currentPage > 4) {
+            addEllipsis();
+        }
+        
+        // Show pages around current page
+        const start = Math.max(2, currentPage - 1);
+        const end = Math.min(totalPages - 1, currentPage + 1);
+        
+        for (let i = start; i <= end; i++) {
+            if (i !== 1 && i !== totalPages) {
+                addPageNumber(i);
+            }
+        }
+        
+        if (currentPage < totalPages - 3) {
+            addEllipsis();
+        }
+        
+        // Show last page
+        if (totalPages > 1) {
+            addPageNumber(totalPages);
+        }
+    }
+}
+
+// Add page number button
+function addPageNumber(page) {
+    const pageNumbersContainer = scopeRoot.querySelector('#pageNumbers');
+    const button = document.createElement('button');
+    button.className = `page-number ${page === currentPage ? 'active' : ''}`;
+    button.textContent = page;
+    button.addEventListener('click', () => goToPage(page));
+    pageNumbersContainer.appendChild(button);
+}
+
+// Add ellipsis
+function addEllipsis() {
+    const pageNumbersContainer = scopeRoot.querySelector('#pageNumbers');
+    const ellipsis = document.createElement('span');
+    ellipsis.className = 'page-number ellipsis';
+    ellipsis.textContent = '...';
+    pageNumbersContainer.appendChild(ellipsis);
 }
 
 // Show notification

@@ -888,20 +888,13 @@ html body .custom-modal-content {
 
 .data-table th:nth-child(7),
 .data-table td:nth-child(7) {
-    width: 130px;
-    min-width: 130px;
+    width: 150px;
+    min-width: 150px;
     text-align: right;
 }
 
 .data-table th:nth-child(8),
 .data-table td:nth-child(8) {
-    width: 130px;
-    min-width: 130px;
-    text-align: right;
-}
-
-.data-table th:nth-child(9),
-.data-table td:nth-child(9) {
     width: 100px;
     min-width: 100px;
     text-align: center;
@@ -912,6 +905,170 @@ html body .custom-modal-content {
     white-space: normal;
     word-wrap: break-word;
     hyphens: auto;
+}
+
+/* Pagination Styles - Frappe Theme */
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    margin-top: 16px;
+    border-top: 1px solid #e1e8ed;
+    background: white;
+    border-radius: 0 0 4px 4px;
+}
+
+.pagination-info {
+    color: #6c757d;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.pagination-controls .btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e1e8ed;
+    background: white;
+    color: #495057;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+}
+
+.pagination-controls .btn:hover:not(:disabled) {
+    background: #f8f9fa;
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.pagination-controls .btn:disabled {
+    background: #f8f9fa;
+    color: #adb5bd;
+    cursor: not-allowed;
+    border-color: #e9ecef;
+}
+
+.page-numbers {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin: 0 8px;
+}
+
+.page-number {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e1e8ed;
+    background: white;
+    color: #495057;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.page-number:hover {
+    background: #f8f9fa;
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.page-number.active {
+    background: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.page-number.ellipsis {
+    border: none;
+    background: transparent;
+    cursor: default;
+    color: #6c757d;
+}
+
+.page-number.ellipsis:hover {
+    background: transparent;
+    border: none;
+    color: #6c757d;
+}
+
+.pagination-size {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagination-size label {
+    color: #6c757d;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.pagination-size .form-control-sm {
+    width: 60px;
+    height: 32px;
+    padding: 4px 8px;
+    font-size: 0.875rem;
+    border: 1px solid #e1e8ed;
+    border-radius: 4px;
+    background: white;
+    color: #495057;
+}
+
+.pagination-size .form-control-sm:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+/* Responsive Pagination */
+@media (max-width: 768px) {
+    .pagination-container {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+    
+    .pagination-controls {
+        justify-content: center;
+    }
+    
+    .pagination-info {
+        text-align: center;
+    }
+    
+    .pagination-size {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .pagination-controls .btn,
+    .page-number {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+    }
+    
+    .page-numbers {
+        margin: 0 4px;
+    }
 }
 
 /* Responsive Table */
