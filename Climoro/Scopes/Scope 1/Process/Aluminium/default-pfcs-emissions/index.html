@@ -1,0 +1,53 @@
+<div class="default-pfcs-container">
+  <div class="header-section">
+    <h1>Default PFCs Emissions</h1>
+    <p class="description">Enter production and technology; default EFs will be applied. All values show up to 4 decimals.</p>
+  </div>
+
+  <div class="table-section">
+    <div class="table-container">
+      <table class="default-pfcs-table">
+        <thead>
+          <tr>
+            <th>S.NO</th>
+            <th>DATE</th>
+            <th>UNIT</th>
+            <th>Technology</th>
+            <th>Weight of Al produced (t)</th>
+            <th>EF CF4 (kg/t Al)</th>
+            <th>Weight of CF4 Emitted (kg)</th>
+            <th>EF C2F6 (kg/t Al)</th>
+            <th>Weight of C2F6 Emitted (kg)</th>
+            <th>Total CO2 (t)</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="data-entry-row">
+            <td><span class="sno-display" id="sno">1</span></td>
+            <td><input type="date" id="date" class="form-control" /></td>
+            <td><select id="unit" class="form-control"><option value="">-- Unit --</option></select></td>
+            <td>
+              <select id="technology" class="form-control">
+                <option value="">-- Select --</option>
+                <option value="Center Work Prebake">Center Work Prebake</option>
+                <option value="Side Work Prebake">Side Work Prebake</option>
+                <option value="Vertical Stud Soderberg">Vertical Stud Soderberg</option>
+                <option value="Horizontal Stud Soderberg">Horizontal Stud Soderberg</option>
+              </select>
+            </td>
+            <td><input type="number" id="production" class="form-control" step="0.0001" min="0" placeholder="0.0000" /></td>
+            <td><span id="ef_cf4" class="calculated-value">-</span></td>
+            <td><span id="cf4_kg" class="calculated-value">0.0000</span></td>
+            <td><span id="ef_c2f6" class="calculated-value">-</span></td>
+            <td><span id="c2f6_kg" class="calculated-value">0.0000</span></td>
+            <td><span id="total_co2" class="calculated-value">0.0000</span></td>
+            <td><button id="saveBtn" class="btn btn-success">Save</button></td>
+          </tr>
+        </tbody>
+        <tbody id="historyBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
