@@ -1,0 +1,145 @@
+<div class="pfcs-container">
+  <div class="header-section">
+    <h1>PFCs Emissions</h1>
+    <p class="description">Two-method wizard: Equation 1 (Slope) and Equation 2 (Overvoltage). Inline history per tab. All masses in metric tonnes; emissions kg where noted.</p>
+  </div>
+
+  <!-- Wizard Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="slopeTab">Equation 1 – Slope Method</button>
+    <button class="tab-btn" data-tab="ovTab">Equation 2 – Overvoltage Method</button>
+  </div>
+
+  <!-- Slope Method Tab -->
+  <div id="slopeTab" class="tab-panel active">
+    <div class="table-section">
+      <div class="table-container">
+        <table class="pfcs-table">
+          <thead>
+            <tr>
+              <th>S.NO</th>
+              <th>DATE</th>
+              <th>UNIT</th>
+              <th>Type of cell (A1)</th>
+              <th>Weight of aluminium produced (A2)<br><span class="unit">(t Al)</span></th>
+              <th>AEM (B)<br><span class="unit">(min per cell-day)</span></th>
+              <th>AEF (B1)<br><span class="unit">(AE per cell per day)</span></th>
+              <th>AED (B2 = B/B1)<br><span class="unit">(min per AE)</span></th>
+              <th>Used CF4 Slope Coefficient (C)<br><span class="unit">(C1 optional override)</span></th>
+              <th>CF4 Emissions (D = A2×B2×C)<br><span class="unit">(kg CF4)</span></th>
+              <th>Used Weight Fraction C2F6/CF4 (E)<br><span class="unit">(E1 optional override)</span></th>
+              <th>C2F6 Emissions (F = D×E)<br><span class="unit">(kg C2F6)</span></th>
+              <th>Total CO2 Emissions (G = D×6.5 + F×9.2)<br><span class="unit">(t CO2)</span></th>
+              <th>ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="data-entry-row">
+              <td><span class="sno-display" id="slopeSno">1</span></td>
+              <td><input type="date" id="slopeDate" class="form-control" /></td>
+              <td>
+                <select id="slopeUnit" class="form-control"><option value="">-- Unit --</option></select>
+              </td>
+              <td>
+                <select id="slopeCellType" class="form-control">
+                  <option value="">-- Select --</option>
+                  <option value="Horizontal Stud Soderberg">Horizontal Stud Soderberg</option>
+                  <option value="Center Work Prebake">Center Work Prebake</option>
+                  <option value="Side Work Prebake">Side Work Prebake</option>
+                  <option value="Vertical Stud Soderberg">Vertical Stud Soderberg</option>
+                </select>
+              </td>
+              <td><input type="number" id="slopeA2" class="form-control" step="0.001" min="0" placeholder="0.000" /></td>
+              <td><input type="number" id="slopeB" class="form-control" step="0.001" min="0" placeholder="0.000" /></td>
+              <td><input type="number" id="slopeB1" class="form-control" step="0.001" min="0.0001" placeholder="0.000" /></td>
+              <td><span id="slopeB2" class="calculated-value">-</span></td>
+              <td>
+                <div class="inline-flex">
+                  <span id="slopeC" class="calculated-value">-</span>
+                  <input type="number" id="slopeC1" class="form-control optional-input" step="0.0001" min="0" placeholder="C1 (optional)" />
+                </div>
+              </td>
+              <td><span id="slopeD" class="calculated-value">0.00</span></td>
+              <td>
+                <div class="inline-flex">
+                  <span id="slopeE" class="calculated-value">-</span>
+                  <input type="number" id="slopeE1" class="form-control optional-input" step="0.0001" min="0" max="1" placeholder="E1 (0-1)" />
+                </div>
+              </td>
+              <td><span id="slopeF" class="calculated-value">0.00</span></td>
+              <td><span id="slopeG" class="calculated-value">0.00</span></td>
+              <td><button id="slopeSave" class="btn btn-success">Save</button></td>
+            </tr>
+          </tbody>
+          <tbody id="slopeHistory"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overvoltage Method Tab -->
+  <div id="ovTab" class="tab-panel">
+    <div class="table-section">
+      <div class="table-container">
+        <table class="pfcs-table">
+          <thead>
+            <tr>
+              <th>S.NO</th>
+              <th>DATE</th>
+              <th>UNIT</th>
+              <th>Type of cell (A1)</th>
+              <th>Weight of aluminium produced (A2)<br><span class="unit">(t Al)</span></th>
+              <th>AEF (B1)<br><span class="unit">(AE per cell per day)</span></th>
+              <th>AEO (B2)<br><span class="unit">(mV per cell)</span></th>
+              <th>Current efficiency (B3)<br><span class="unit">(%)</span></th>
+              <th>Used CF4 Overvoltage Coefficient (C)<br><span class="unit">(C1 optional override)</span></th>
+              <th>CF4 Emissions (D = (A2×B2×C)/B3)<br><span class="unit">(kg CF4)</span></th>
+              <th>Used Weight Fraction C2F6/CF4 (E)<br><span class="unit">(E1 optional override)</span></th>
+              <th>C2F6 Emissions (F = D×E)<br><span class="unit">(kg C2F6)</span></th>
+              <th>Total CO2 Emissions (G = D×6.5 + F×9.2)<br><span class="unit">(t CO2)</span></th>
+              <th>ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="data-entry-row">
+              <td><span class="sno-display" id="ovSno">1</span></td>
+              <td><input type="date" id="ovDate" class="form-control" /></td>
+              <td>
+                <select id="ovUnit" class="form-control"><option value="">-- Unit --</option></select>
+              </td>
+              <td>
+                <select id="ovCellType" class="form-control">
+                  <option value="">-- Select --</option>
+                  <option value="Center Work Prebake">Center Work Prebake</option>
+                  <option value="Side Work Prebake">Side Work Prebake</option>
+                </select>
+              </td>
+              <td><input type="number" id="ovA2" class="form-control" step="0.001" min="0" placeholder="0.000" /></td>
+              <td><input type="number" id="ovB1" class="form-control" step="0.001" min="0" placeholder="0.000" /></td>
+              <td><input type="number" id="ovB2" class="form-control" step="0.001" min="0" placeholder="0.000" /></td>
+              <td><input type="number" id="ovB3" class="form-control" step="0.01" min="0.01" max="100" placeholder="%" /></td>
+              <td>
+                <div class="inline-flex">
+                  <span id="ovC" class="calculated-value">-</span>
+                  <input type="number" id="ovC1" class="form-control optional-input" step="0.0001" min="0" placeholder="C1 (optional)" />
+                </div>
+              </td>
+              <td><span id="ovD" class="calculated-value">0.00</span></td>
+              <td>
+                <div class="inline-flex">
+                  <span id="ovE" class="calculated-value">-</span>
+                  <input type="number" id="ovE1" class="form-control optional-input" step="0.0001" min="0" max="1" placeholder="E1 (0-1)" />
+                </div>
+              </td>
+              <td><span id="ovF" class="calculated-value">0.00</span></td>
+              <td><span id="ovG" class="calculated-value">0.00</span></td>
+              <td><button id="ovSave" class="btn btn-success">Save</button></td>
+            </tr>
+          </tbody>
+          <tbody id="ovHistory"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
